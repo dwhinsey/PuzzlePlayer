@@ -90,7 +90,10 @@
         return out;
     }
 
-    solverView.querySelector('.settings-btn').addEventListener('click', () => Settings.open());
+    // The gear in both headers.
+    for (const btn of document.querySelectorAll('.settings-btn')) {
+        btn.addEventListener('click', () => Settings.open());
+    }
     Settings.onChange(() => setBars());
 
     // The header's back button (and the solver's own, which the app hides)

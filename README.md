@@ -36,8 +36,9 @@ files, using the mobile solving interface from hinseypuzzles.com.
   shows the letter above the key while it is held.
 - A header bar across the top holds the back button, the puzzle's title and
   author, and a settings button.
-- **Settings → Appearance:** Light, Dark (a neutral grey "Graphite" palette,
-  css/theme-dark.css) or Match phone setting.
+- **Settings** (the gear on the home page and in the solver) **→ Appearance:**
+  Light, Dark (a neutral grey "Graphite" palette, css/theme-dark.css) or
+  Match phone setting.
 - Progress (letters, pencil marks, reveals and time) is saved as you go and
   survives closing the app. The timer pauses when you leave the app.
 - Scrambled .puz files can be solved but not checked; the app says so.

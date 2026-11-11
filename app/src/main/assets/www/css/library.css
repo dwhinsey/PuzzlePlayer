@@ -10,7 +10,7 @@
     gap: 2px;
     flex-shrink: 0;
     min-height: 56px;
-    padding: var(--inset-top) 6px 0 16px;
+    padding: var(--inset-top) 4px 0 16px;
     background: var(--navy);
     color: #ffffff;
 }
@@ -47,7 +47,7 @@
 
 .lib-icon-btn {
     flex-shrink: 0;
-    width: 46px;
+    width: 44px;
     height: 46px;
     padding: 0;
     border: none;
