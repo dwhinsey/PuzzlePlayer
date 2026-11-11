@@ -36,14 +36,9 @@
         'size-desc': 'Size (biggest first)',
     };
 
-    // How the size sorts order puzzles of the same size: by the date or
-    // title sort in use before switching to size.
-    const THEN_BY = {
-        'added-desc': 'then newest first',
-        'added-asc': 'then oldest first',
-        'title-asc': 'then A to Z',
-        'title-desc': 'then Z to A',
-    };
+    // The size sorts order puzzles of the same size by the date or title
+    // sort in use before switching to size (lib.sortThen).
+    const BASE_SORTS = ['added-desc', 'added-asc', 'title-asc', 'title-desc'];
 
     const isSizeSort = (key) => key === 'size-asc' || key === 'size-desc';
 
@@ -72,7 +67,7 @@
             ...(data || {}),
         };
         if (!SORTS[lib.sort]) lib.sort = 'added-desc';
-        if (!THEN_BY[lib.sortThen]) lib.sortThen = 'added-desc';
+        if (!BASE_SORTS.includes(lib.sortThen)) lib.sortThen = 'added-desc';
         const ids = new Set(lib.folders.map((f) => f.id));
         for (const p of lib.puzzles) if (p.folderId && !ids.has(p.folderId)) p.folderId = null;
     }
@@ -571,7 +566,6 @@
             title: 'Sort by',
             items: Object.keys(SORTS).map((key) => ({
                 label: SORTS[key],
-                sub: isSizeSort(key) ? THEN_BY[baseSort()] : null,
                 checked: lib.sort === key,
                 action: () => {
                     // Leaving a date or title sort for size: it becomes the tie-break.
