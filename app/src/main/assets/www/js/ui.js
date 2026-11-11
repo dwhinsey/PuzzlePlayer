@@ -176,6 +176,11 @@
 
         toast(message, ms) {
             toastEl.textContent = message;
+            // In the solver, sit just above the clue bar, clear of the timer
+            // row and the keyboard.
+            const clueBar = document.body.classList.contains('solving')
+                ? document.querySelector('.solver-host > .mobile-clue-bar') : null;
+            toastEl.style.bottom = clueBar ? (window.innerHeight - clueBar.getBoundingClientRect().top + 12) + 'px' : '';
             toastEl.hidden = false;
             requestAnimationFrame(() => toastEl.classList.add('show'));
             clearTimeout(toastTimer);

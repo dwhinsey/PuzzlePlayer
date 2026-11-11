@@ -109,6 +109,31 @@ button {
     display: none;
 }
 
+/* Keeps the Assist menu above the grid now that the row is moved down
+   (js/solver-app.js centres it in the space above the grid). */
+.solver-view .solver-topbar {
+    position: relative;
+    z-index: 16;
+}
+
+/* The help button, labelled "Assist": a pill like the site's Rebus button. */
+.solver-view .icon-btn.assist-btn {
+    width: auto;
+    padding: 0 14px;
+    border-radius: 17px;
+    font-size: 0.85em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+@media (min-width: 701px) {
+    .solver-view .icon-btn.assist-btn {
+        padding: 0 20px;
+        border-radius: 23px;
+        font-size: 1em;
+    }
+}
+
 
 /* The site's solver fills the screen below the status bar. */
 .solver-host {
@@ -384,15 +409,7 @@ button {
     pointer-events: none;
 }
 
-/* In the solver the bottom of the screen is all keyboard. */
-body.solving .toast {
-    top: calc(var(--inset-top) + 120px);
-    bottom: auto;
-    transform: translate(-50%, -12px);
-}
-
-.toast.show,
-body.solving .toast.show {
+.toast.show {
     opacity: 1;
     transform: translate(-50%, 0);
 }

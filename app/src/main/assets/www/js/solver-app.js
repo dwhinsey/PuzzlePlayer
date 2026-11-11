@@ -260,10 +260,32 @@
         _layout() {
             if (this.destroyed) return;
             super._layout();
+            this._centreTopbar();
+        }
+
+        /**
+         * The grid sits at the bottom of the space it's given, leaving a band
+         * between the header and the grid. Move the timer row down to the
+         * middle of that band. A transform, so the solver's own measurements
+         * of the layout are untouched.
+         */
+        _centreTopbar() {
+            if (!this.topbarEl || !this.gridEl || !this.gridWrapEl) return;
+            const gridTop = this.gridEl.getBoundingClientRect().top;
+            const wrapTop = this.gridWrapEl.getBoundingClientRect().top;
+            const spare = Math.max(0, Math.round(gridTop - wrapTop));
+            this.topbarEl.style.transform = spare ? 'translateY(' + Math.round(spare / 2) + 'px)' : '';
         }
 
         _render() {
             super._render();
+            // "?" becomes "Assist"; Clear Grid and Reset Puzzle move to the
+            // Settings sheet (see puzzleSettings below).
+            this.helpBtn.textContent = 'Assist';
+            this.helpBtn.classList.add('assist-btn');
+            for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
+                if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
+            }
             // For dark mode: each shaded square's lighter shade, and the black
             // squares whose right or lower neighbour is a letter square (those
             // edges keep their grid line; edges between two black squares
@@ -293,6 +315,61 @@
             const keyboard = super._buildMobileKeyboard();
             this.releaseKeys = attachFastKeyboard(keyboard, this);
             return keyboard;
+        }
+
+        // ----- Clear and reset, from the Settings sheet -----
+
+        /** Runs one of the site's methods that asks window.confirm() first, answering yes. */
+        _confirmed(method) {
+            const original = window.confirm;
+            window.confirm = () => true;
+            try {
+                method.call(this);
+            } finally {
+                window.confirm = original;
+            }
+        }
+
+        clearGrid() {
+            UI.confirm({
+                title: 'Clear the grid?',
+                message: 'All letters are removed. The timer keeps running.',
+                okLabel: 'Clear',
+                danger: true,
+            }).then((ok) => { if (ok && !this.destroyed) this._confirmed(super.clearGrid); });
+        }
+
+        resetPuzzle() {
+            UI.confirm({
+                title: 'Reset the puzzle?',
+                message: 'All letters are removed and the timer goes back to zero.',
+                okLabel: 'Reset',
+                danger: true,
+            }).then((ok) => { if (ok && !this.destroyed) this._confirmed(super.resetPuzzle); });
+        }
+
+        /** Items for the Settings sheet while this puzzle is open. */
+        puzzleSettings() {
+            return [
+                { section: 'This puzzle' },
+                { label: 'Clear grid', action: () => this.clearGrid() },
+                { label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
+            ];
+        }
+
+        // ----- Reveal -----
+
+        // The site marks every revealed square as revealed (purple), even
+        // ones already filled in correctly. Only letters the reveal supplies
+        // are marked; correct entries keep their colour (and lose any pencil).
+        _revealCell(r, c) {
+            const solution = this.puzzle.cells[r][c].solution;
+            const entry = this.userGrid[r][c];
+            if (solution && entry && entry.toUpperCase() === solution.toUpperCase()) {
+                this.pencilGrid[r][c] = false;
+                return;
+            }
+            super._revealCell(r, c);
         }
 
         // ----- Puzzles without an answer key -----

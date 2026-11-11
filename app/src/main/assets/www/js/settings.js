@@ -35,7 +35,8 @@
         apply();
     }
 
-    function open() {
+    /** extraItems: more sheet items, e.g. the open puzzle's Clear and Reset. */
+    function open(extraItems) {
         const t = settings.theme;
         UI.sheet({
             title: 'Settings',
@@ -49,6 +50,7 @@
                     checked: t === 'system',
                     action: () => setTheme('system'),
                 },
+                ...(extraItems || []),
             ],
         });
     }

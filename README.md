@@ -28,8 +28,11 @@ files, using the mobile solving interface from hinseypuzzles.com.
 
 **Solver**
 - The hinseypuzzles.com solver, as it works on a phone: same grid, clue bar,
-  keyboard, timer, pencil, rebus (the **...** key), check/reveal, Clear Grid
-  and Reset Puzzle. The comment section is left out.
+  keyboard, timer, pencil, rebus (the **...** key) and check/reveal (the
+  **Assist** menu). The comment section is left out. Clear grid and Reset
+  puzzle are in the solver's Settings sheet, under "This puzzle". Revealing
+  only turns the letters it supplies purple; correct entries keep their
+  colour.
 - The on-screen keyboard tracks each finger separately, so fast, overlapping
   taps don't drop letters. A key types when the finger lifts, as on Gboard
   (slide to a neighbouring key before lifting to change it), and a pop-up
