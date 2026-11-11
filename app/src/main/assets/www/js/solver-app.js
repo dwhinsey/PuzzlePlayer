@@ -39,7 +39,9 @@
 
     // Clues that point at others, e.g. "See 17-Across" or "With 5- and 9-Down".
     function findRefs(text, known) {
-        const re = /((?:\d+\s*(?:-|–)?\s*(?:,|and|&|or|\/)?\s*)+)(across|down)\b/gi;
+        // Each number may be followed by several separators, as in
+        // "17-, 25-, 49-, and 62-Across" (a comma and then "and").
+        const re = /((?:\d+\s*[-\u2013]?(?:\s*(?:,|and|&|or|\/))*\s*)+)(across|down)\b/gi;
         const refs = [];
         const seen = new Set();
         let m;
