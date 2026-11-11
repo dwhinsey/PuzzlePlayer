@@ -10,8 +10,9 @@
     const media = global.matchMedia ? global.matchMedia('(prefers-color-scheme: dark)') : null;
     const THEMES = ['light', 'dark', 'system'];
 
-    const settings = { theme: 'light', ...(Store.readJSON(FILE) || {}) };
-    if (!THEMES.includes(settings.theme)) settings.theme = 'light';
+    // Until a choice is made in Settings, follow the phone's light or dark theme.
+    const settings = { theme: 'system', ...(Store.readJSON(FILE) || {}) };
+    if (!THEMES.includes(settings.theme)) settings.theme = 'system';
 
     // The phone's own dark theme. The app's WebView always reports a light
     // preference, so on Android the answer comes from the system instead.

@@ -46,7 +46,7 @@ files, using the mobile solving interface from hinseypuzzles.com.
   or deleted.
 - **Settings** (the gear on the home page and in the solver) **→ Appearance:**
   Light, Dark (a neutral grey "Graphite" palette, css/theme-dark.css) or
-  Match phone setting.
+  Match phone setting (the default).
 - Progress (letters, pencil marks, reveals and time) is saved as you go and
   survives closing the app. The timer pauses when you leave the app.
 - Scrambled .puz files can be solved but not checked; the app says so.

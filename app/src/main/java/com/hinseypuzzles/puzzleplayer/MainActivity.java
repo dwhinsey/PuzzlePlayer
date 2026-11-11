@@ -228,10 +228,11 @@ public class MainActivity extends Activity {
     private boolean savedThemeIsDark() {
         try {
             String json = bridge.read("settings.json");
-            String theme = json == null ? "light" : new JSONObject(json).optString("theme", "light");
+            // Matches js/settings.js: no choice yet means follow the phone.
+            String theme = json == null ? "system" : new JSONObject(json).optString("theme", "system");
             return "dark".equals(theme) || ("system".equals(theme) && isSystemNight());
         } catch (Exception e) {
-            return false;
+            return isSystemNight();
         }
     }
 
