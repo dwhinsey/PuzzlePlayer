@@ -20,7 +20,8 @@ files, using the mobile solving interface from hinseypuzzles.com.
   crossword.
 - Folders (nested if you like): the folder button creates one in the current
   folder; puzzles added while inside a folder go into it.
-- Search by title or author (searches every folder).
+- Search by title or author with the magnifier in the top bar (searches every
+  folder; the back arrow or Back gesture closes it).
 - Sort by date added (newest/oldest) or title (A–Z/Z–A).
 - Every puzzle and folder has a **⋮** menu (or long-press it): move to folder,
   rename, reset progress, delete.

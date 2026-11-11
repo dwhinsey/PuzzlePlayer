@@ -19,6 +19,9 @@
         sort: q('.lib-sort-btn'),
         newFolder: q('.lib-folder-btn'),
         add: q('.lib-add-btn'),
+        topbar: q('.lib-topbar'),
+        searchBtn: q('.lib-search-btn'),
+        searchClose: q('.lib-search-close'),
         search: q('.lib-search'),
         searchClear: q('.lib-search-clear'),
         list: q('.lib-list'),
@@ -40,6 +43,7 @@
     let lib = null;
     let currentFolder = null; // folder id, or null for the top level
     let query = '';
+    let searching = false; // the search box is open
     let callbacks = null;
 
     // ---------- Persistence ----------
@@ -327,8 +331,28 @@
 
     // ---------- Navigation ----------
 
+    function openSearch() {
+        searching = true;
+        E.topbar.classList.add('searching');
+        E.search.focus();
+    }
+
+    function closeSearch() {
+        searching = false;
+        query = '';
+        E.search.value = '';
+        E.search.blur();
+        E.topbar.classList.remove('searching');
+        render();
+    }
+
     function openFolder(id) {
         currentFolder = id;
+        if (searching) {
+            searching = false;
+            E.search.blur();
+            E.topbar.classList.remove('searching');
+        }
         query = '';
         E.search.value = '';
         render();
@@ -664,6 +688,9 @@
     E.newFolder.addEventListener('click', () => createFolder(query ? null : currentFolder));
     E.add.addEventListener('click', () => callbacks.pickFiles());
 
+    E.searchBtn.addEventListener('click', openSearch);
+    E.searchClose.addEventListener('click', closeSearch);
+
     E.search.addEventListener('input', () => {
         query = E.search.value;
         render();
@@ -676,6 +703,7 @@
         E.search.value = '';
         query = '';
         render();
+        E.search.focus();
     });
 
     // ---------- Public API ----------
@@ -711,11 +739,8 @@
         },
 
         handleBack() {
-            if (query) {
-                E.search.value = '';
-                query = '';
-                E.search.blur();
-                render();
+            if (searching) {
+                closeSearch();
                 return true;
             }
             if (currentFolder) {
