@@ -342,6 +342,12 @@ body.solving .toast.show {
     transform: translate(-50%, 0);
 }
 
+/* No panning or zooming starts from the keyboard, so a finger that drifts
+   while pressing a key isn't taken for a scroll and cancelled. */
+.solver-view .mobile-keyboard {
+    touch-action: none;
+}
+
 /* ----- Key preview -----
    The letter pops up above the key while it is held, as on Gboard. Sized
    and placed by js/solver-app.js from the key underneath. */

@@ -108,15 +108,17 @@
     // ----- Keyboard -----
     //
     // The site's keyboard types on 'click'. On a touch screen a click only
-    // arrives when the finger lifts, and only for a lone touch: at normal
-    // typing speed the next finger lands before the last one lifts, and that
-    // key's click never comes. Here each key acts the moment it is touched,
-    // with every finger tracked on its own, and shows a Gboard-style preview
-    // of the letter above it.
+    // arrives when a lone finger lifts: at normal typing speed the next
+    // finger lands before the last one lifts, and that key's click never
+    // comes. Here every finger is tracked on its own instead:
+    //
+    //   - A key types when its finger lifts, as on Gboard, so a finger can
+    //     slide to the neighbouring key before letting go.
+    //   - If another finger lands while a key is still held, the held key is
+    //     typed at once, so overlapping taps always come out in order.
+    //   - While a letter is held, a Gboard-style preview pops up above it.
 
     const PREVIEW_LINGER_MS = 60;
-    const REPEAT_DELAY_MS = 450;
-    const REPEAT_EVERY_MS = 70;
 
     function showPreview(key, letter) {
         const r = key.getBoundingClientRect();
@@ -135,52 +137,71 @@
         return p;
     }
 
-    function attachFastKeyboard(keyboard, solver) {
-        const active = new Map(); // pointerId -> { key, preview, timer }
+    const letterOf = (key) => {
+        const t = key.textContent.trim();
+        return /^[A-Z]$/.test(t) ? t : null;
+    };
 
-        const release = (pointerId) => {
-            const press = active.get(pointerId);
+    function attachFastKeyboard(keyboard, solver) {
+        const held = new Map(); // pointerId -> { key, preview }, in the order pressed
+
+        const actionFor = (key) => {
+            if (key.classList.contains('kb-backspace')) return () => solver._backspaceAction();
+            if (key.classList.contains('kb-more')) return () => solver._openRebusOverlay();
+            const letter = letterOf(key);
+            return letter ? () => solver._enterLetter(letter) : null;
+        };
+
+        const highlight = (press, key) => {
+            if (press.key) press.key.classList.remove('pressed');
+            if (press.preview) press.preview.remove();
+            press.key = key;
+            key.classList.add('pressed');
+            const letter = letterOf(key);
+            press.preview = letter ? showPreview(key, letter) : null;
+        };
+
+        const finish = (pointerId, type) => {
+            const press = held.get(pointerId);
             if (!press) return;
-            active.delete(pointerId);
-            clearTimeout(press.timer);
-            clearInterval(press.timer);
+            held.delete(pointerId);
             press.key.classList.remove('pressed');
             if (press.preview) {
                 const preview = press.preview;
                 setTimeout(() => preview.remove(), PREVIEW_LINGER_MS);
             }
+            if (type) {
+                const action = actionFor(press.key);
+                if (action) action();
+            }
         };
 
         keyboard.addEventListener('pointerdown', (e) => {
             const key = e.target.closest('.kb-key');
-            if (!key || key.classList.contains('kb-spacer')) return;
+            if (!key || key.classList.contains('kb-spacer') || !actionFor(key)) return;
             e.preventDefault(); // keeps focus on the grid, as the site's mousedown handler does
-            release(e.pointerId);
+            finish(e.pointerId, false);
+            // Keys still held were pressed first, so they are typed first.
+            for (const id of Array.from(held.keys())) finish(id, true);
+            const press = { key: null, preview: null };
+            highlight(press, key);
+            held.set(e.pointerId, press);
+        }, true);
 
-            const letter = key.textContent.trim();
-            let action = null;
-            if (key.classList.contains('kb-backspace')) action = () => solver._backspaceAction();
-            else if (key.classList.contains('kb-more')) action = () => solver._openRebusOverlay();
-            else if (/^[A-Z]$/.test(letter)) action = () => solver._enterLetter(letter);
-            if (!action) return;
-
-            const press = { key, preview: null, timer: null };
-            key.classList.add('pressed');
-            if (/^[A-Z]$/.test(letter)) press.preview = showPreview(key, letter);
-            active.set(e.pointerId, press);
-            action();
-
-            // Holding backspace keeps deleting, as on a phone keyboard.
-            if (key.classList.contains('kb-backspace')) {
-                press.timer = setTimeout(() => {
-                    press.timer = setInterval(action, REPEAT_EVERY_MS);
-                }, REPEAT_DELAY_MS);
+        // Sliding a finger onto another key changes the key it will type.
+        keyboard.addEventListener('pointermove', (e) => {
+            const press = held.get(e.pointerId);
+            if (!press) return;
+            const under = document.elementFromPoint(e.clientX, e.clientY);
+            const key = under && under.closest('.kb-key');
+            if (key && key !== press.key && keyboard.contains(key) &&
+                !key.classList.contains('kb-spacer') && actionFor(key)) {
+                highlight(press, key);
             }
         }, true);
 
-        for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-            keyboard.addEventListener(type, (e) => release(e.pointerId), true);
-        }
+        keyboard.addEventListener('pointerup', (e) => finish(e.pointerId, true), true);
+        keyboard.addEventListener('pointercancel', (e) => finish(e.pointerId, false), true);
 
         // The keys' own click handlers would type each letter a second time.
         keyboard.addEventListener('click', (e) => {
@@ -190,7 +211,7 @@
 
         // Leaving the puzzle mid-press shouldn't strand a preview on screen.
         return () => {
-            for (const id of Array.from(active.keys())) release(id);
+            for (const id of Array.from(held.keys())) finish(id, false);
         };
     }
 

@@ -62,6 +62,13 @@ async function shot(page, name) {
         const filled = async () => (await page.locator('.solver-grid .cell-letter').allInnerTexts()).filter(Boolean).length;
         const before = await filled();
         const dpr = await page.evaluate(() => devicePixelRatio);
+        await page.evaluate(() => {
+            window.__touchLog = [];
+            for (const t of ['pointerdown', 'pointerup', 'pointercancel']) {
+                document.addEventListener(t, (e) => __touchLog.push(t + '@' + Math.round(e.clientX) + ',' + Math.round(e.clientY) +
+                    ':' + ((e.target.closest && e.target.closest('.kb-key')) ? e.target.closest('.kb-key').textContent.trim() : e.target.className)), true);
+            }
+        });
         for (const k of 'WORLD') {
             const bb = await page.locator('.mobile-keyboard .kb-key', { hasText: new RegExp('^' + k + '$') }).boundingBox();
             await device.shell(`input tap ${Math.round((bb.x + bb.width / 2) * dpr)} ${Math.round((bb.y + bb.height / 2) * dpr)}`);
@@ -69,7 +76,12 @@ async function shot(page, name) {
         await page.waitForTimeout(1000);
         const typed = (await filled()) - before;
         console.log('letters from 5 screen taps:', typed);
-        if (typed !== 5) fail('expected 5 letters from 5 taps, got ' + typed);
+        if (typed !== 5) {
+            console.log('touch events the page saw:', JSON.stringify(await page.evaluate(() => __touchLog)));
+            console.log('focused window:', await device.shell('dumpsys window | grep -E "mCurrentFocus|mFocusedApp"').then(String));
+            await shot(page, 'taps-failed');
+            fail('expected 5 letters from 5 taps, got ' + typed);
+        }
         if (await page.locator('.kb-preview').count()) fail('key preview left on screen');
         await page.waitForTimeout(1500);
         await shot(page, 'solving');
