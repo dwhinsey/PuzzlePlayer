@@ -254,6 +254,12 @@ html[data-theme="dark"] .cell-circle {
     border-color: var(--d-number);
 }
 
+/* Shaded squares: the puzzle's shade colour at 30% (set per square by
+   js/solver-app.js) instead of the site's 68%. */
+html[data-theme="dark"] .cell.shaded {
+    box-shadow: inset 0 0 0 999px var(--shade-dark, var(--shade-color));
+}
+
 html[data-theme="dark"] .cell.active-word:not(.selected) {
     background: var(--d-word);
 }

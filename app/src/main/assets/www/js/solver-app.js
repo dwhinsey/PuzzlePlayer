@@ -215,6 +215,10 @@
         };
     }
 
+    // Strength of shaded squares in dark mode. The site's 68% suits white
+    // squares but washes out dark ones and hides their numbers.
+    const DARK_SHADE_ALPHA = 0.3;
+
     // CrosswordSolver calls _load() from its constructor, before a subclass
     // could store anything on `this`, so the store is handed over here.
     let incomingStore = null;
@@ -260,13 +264,24 @@
 
         _render() {
             super._render();
-            // Mark black squares whose right or lower neighbour is a letter
-            // square. In dark mode those edges keep their light grid line;
-            // edges between two black squares don't get one.
+            // For dark mode: each shaded square's lighter shade, and the black
+            // squares whose right or lower neighbour is a letter square (those
+            // edges keep their grid line; edges between two black squares
+            // don't get one).
             const { cells, width, height } = this.puzzle;
             for (let r = 0; r < height; r++) {
                 for (let c = 0; c < width; c++) {
-                    if (cells[r][c]) continue;
+                    const cell = cells[r][c];
+                    if (cell) {
+                        // Dark mode shades with the same colour, more lightly.
+                        const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(cell.styleColor || '');
+                        if (m) {
+                            const [red, green, blue] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16));
+                            this.cellEls[r][c].style.setProperty('--shade-dark',
+                                'rgba(' + red + ',' + green + ',' + blue + ',' + DARK_SHADE_ALPHA + ')');
+                        }
+                        continue;
+                    }
                     const el = this.cellEls[r][c];
                     if (c + 1 < width && cells[r][c + 1]) el.classList.add('open-right');
                     if (r + 1 < height && cells[r + 1][c]) el.classList.add('open-below');
