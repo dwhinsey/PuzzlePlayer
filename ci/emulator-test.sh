@@ -31,7 +31,7 @@ dump_logs() {
   echo "===== crash buffer ====="
   cat "$OUT/crash.txt"
   echo "===== app / WebView log ====="
-  grep -a -E "AndroidRuntime|FATAL|$PKG|chromium|Console|PuzzlePlayer" "$OUT/logcat.txt" | tail -150
+  grep -a -E "AndroidRuntime|FATAL|$PKG|chromium|Console|PuzzlePlayer" "$OUT/logcat.txt" | grep -a -v -E "AppsFilter|dns_config|ShortcutService" | tail -80
 }
 
 forward_devtools() {
@@ -43,24 +43,32 @@ forward_devtools() {
   adb forward tcp:9222 "localabstract:$sock"
 }
 
+app_crashed() {
+  # The crash buffer holds every app's crashes; only ours count.
+  adb logcat -d -b crash | grep -a -q "Process: $PKG"
+}
+
 launch
 adb exec-out screencap -p > "$OUT/launch.png"
-if ! check_alive || [ -s <(adb logcat -d -b crash) ]; then
+if ! check_alive || app_crashed; then
+  echo "STEP FAILED: launch"
   dump_logs
   exit 1
 fi
+echo "STEP OK: launch"
 
-forward_devtools || { dump_logs; exit 1; }
-node ci/emulator-test.js phase1 || { dump_logs; exit 1; }
+forward_devtools || { echo "STEP FAILED: devtools"; dump_logs; exit 1; }
+node ci/emulator-test.js phase1 || { echo "STEP FAILED: phase1"; dump_logs; exit 1; }
 
 # Kill the app outright, as Android does to apps in the background, and
 # check the progress survives.
 adb shell am force-stop "$PKG"
 sleep 2
 launch
-check_alive || { dump_logs; exit 1; }
-forward_devtools || { dump_logs; exit 1; }
-node ci/emulator-test.js phase2 || { dump_logs; exit 1; }
+check_alive || { echo "STEP FAILED: relaunch"; dump_logs; exit 1; }
+forward_devtools || { echo "STEP FAILED: devtools after relaunch"; dump_logs; exit 1; }
+node ci/emulator-test.js phase2 || { echo "STEP FAILED: phase2"; dump_logs; exit 1; }
+if app_crashed; then echo "STEP FAILED: crash during test"; dump_logs; exit 1; fi
 
 adb exec-out screencap -p > "$OUT/final.png"
 dump_logs
