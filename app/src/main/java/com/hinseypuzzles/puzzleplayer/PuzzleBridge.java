@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -30,6 +31,12 @@ import java.util.regex.Pattern;
  * Storage is a flat directory of small files under the app's private files
  * directory: library.json plus one parsed-puzzle file and one progress file
  * per puzzle. It survives restarts and is removed only when the app is.
+ *
+ * Writes return at once and reach the disk on a background thread: the page
+ * waits for every bridge call, and the solver saves on every keystroke, so a
+ * write that waited for the flash storage made typing lag. Until a write is
+ * on disk, reads are answered from memory, so the page always sees its
+ * latest data.
  */
 public class PuzzleBridge {
 
@@ -40,6 +47,12 @@ public class PuzzleBridge {
     private final WebView webView;
     private final File dataDir;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
+    private final ExecutorService disk = Executors.newSingleThreadExecutor();
+
+    /** Writes not yet on disk, by file name. DELETED marks a pending removal. */
+    private final ConcurrentHashMap<String, String> pending = new ConcurrentHashMap<>();
+    @SuppressWarnings("StringOperationCanBeSimplified")
+    private static final String DELETED = new String("\u0000deleted"); // compared by identity
 
     PuzzleBridge(MainActivity activity, WebView webView) {
         this.activity = activity;
@@ -51,6 +64,7 @@ public class PuzzleBridge {
 
     void shutdown() {
         io.shutdown();
+        disk.shutdown(); // queued writes still finish
     }
 
     private File fileFor(String name) {
@@ -66,6 +80,8 @@ public class PuzzleBridge {
     public String read(String name) {
         try {
             File f = fileFor(name);
+            String unsaved = pending.get(name);
+            if (unsaved != null) return unsaved == DELETED ? null : unsaved;
             if (!f.exists()) return null;
             return new String(readAll(new FileInputStream(f), Long.MAX_VALUE), StandardCharsets.UTF_8);
         } catch (Exception e) {
@@ -75,33 +91,62 @@ public class PuzzleBridge {
 
     @JavascriptInterface
     public boolean write(String name, String content) {
-        File target;
+        if (content == null) return false;
         try {
-            target = fileFor(name);
+            fileFor(name);
         } catch (IllegalArgumentException e) {
             return false;
         }
+        pending.put(name, content);
+        disk.execute(() -> flush(name));
+        return true;
+    }
+
+    @JavascriptInterface
+    public boolean remove(String name) {
+        try {
+            fileFor(name);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        pending.put(name, DELETED);
+        disk.execute(() -> flush(name));
+        return true;
+    }
+
+    /** Puts the latest pending version of a file on disk. Runs on `disk`. */
+    @SuppressWarnings("StringEquality")
+    private void flush(String name) {
+        // Several saves queued for one file collapse into a single write of
+        // the newest; the later tasks find nothing left to do.
+        String content = pending.get(name);
+        if (content == null) return;
+        File target = new File(dataDir, name);
+        if (content == DELETED) {
+            //noinspection ResultOfMethodCallIgnored
+            target.delete();
+        } else {
+            writeAtomically(target, content);
+        }
+        // Keep the entry if a newer save arrived meanwhile.
+        pending.remove(name, content);
+    }
+
+    private void writeAtomically(File target, String content) {
         // Write a temporary file and rename it over the old one, so a crash
         // mid-write never leaves a half-written library or progress file.
-        File tmp = new File(dataDir, name + ".tmp");
+        File tmp = new File(dataDir, target.getName() + ".tmp");
         try (FileOutputStream out = new FileOutputStream(tmp)) {
             out.write(content.getBytes(StandardCharsets.UTF_8));
             out.getFD().sync();
         } catch (IOException e) {
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
-            return false;
+            android.util.Log.e("PuzzlePlayer", "Could not save " + target.getName(), e);
+            return;
         }
-        return tmp.renameTo(target);
-    }
-
-    @JavascriptInterface
-    public boolean remove(String name) {
-        try {
-            File f = fileFor(name);
-            return !f.exists() || f.delete();
-        } catch (IllegalArgumentException e) {
-            return false;
+        if (!tmp.renameTo(target)) {
+            android.util.Log.e("PuzzlePlayer", "Could not save " + target.getName());
         }
     }
 

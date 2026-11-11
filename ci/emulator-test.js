@@ -56,7 +56,22 @@ async function shot(page, name) {
         await shot(page, 'start-card');
         await page.locator('.solver-overlay:not([hidden]) .overlay-start-btn').click();
         for (const k of 'HELLO') await key(k);
-        await page.waitForTimeout(2500);
+        await page.waitForTimeout(1000);
+
+        // Real taps on the screen, through Android's own touch input.
+        const filled = async () => (await page.locator('.solver-grid .cell-letter').allInnerTexts()).filter(Boolean).length;
+        const before = await filled();
+        const dpr = await page.evaluate(() => devicePixelRatio);
+        for (const k of 'WORLD') {
+            const bb = await page.locator('.mobile-keyboard .kb-key', { hasText: new RegExp('^' + k + '$') }).boundingBox();
+            await device.shell(`input tap ${Math.round((bb.x + bb.width / 2) * dpr)} ${Math.round((bb.y + bb.height / 2) * dpr)}`);
+        }
+        await page.waitForTimeout(1000);
+        const typed = (await filled()) - before;
+        console.log('letters from 5 screen taps:', typed);
+        if (typed !== 5) fail('expected 5 letters from 5 taps, got ' + typed);
+        if (await page.locator('.kb-preview').count()) fail('key preview left on screen');
+        await page.waitForTimeout(1500);
         await shot(page, 'solving');
         const grid = await page.locator('.solver-grid').boundingBox();
         const vp = page.viewportSize() || await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));

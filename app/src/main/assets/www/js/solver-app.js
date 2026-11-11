@@ -105,6 +105,95 @@
         };
     }
 
+    // ----- Keyboard -----
+    //
+    // The site's keyboard types on 'click'. On a touch screen a click only
+    // arrives when the finger lifts, and only for a lone touch: at normal
+    // typing speed the next finger lands before the last one lifts, and that
+    // key's click never comes. Here each key acts the moment it is touched,
+    // with every finger tracked on its own, and shows a Gboard-style preview
+    // of the letter above it.
+
+    const PREVIEW_LINGER_MS = 60;
+    const REPEAT_DELAY_MS = 450;
+    const REPEAT_EVERY_MS = 70;
+
+    function showPreview(key, letter) {
+        const r = key.getBoundingClientRect();
+        const width = Math.max(r.width * 1.35, 44);
+        const height = r.height * 1.15;
+        const left = Math.min(Math.max(r.left + r.width / 2 - width / 2, 4), window.innerWidth - width - 4);
+        const p = document.createElement('div');
+        p.className = 'kb-preview';
+        p.textContent = letter;
+        p.style.left = left + 'px';
+        p.style.top = (r.top - height - 8) + 'px';
+        p.style.width = width + 'px';
+        p.style.height = height + 'px';
+        p.style.fontSize = Math.round(height * 0.55) + 'px';
+        document.body.appendChild(p);
+        return p;
+    }
+
+    function attachFastKeyboard(keyboard, solver) {
+        const active = new Map(); // pointerId -> { key, preview, timer }
+
+        const release = (pointerId) => {
+            const press = active.get(pointerId);
+            if (!press) return;
+            active.delete(pointerId);
+            clearTimeout(press.timer);
+            clearInterval(press.timer);
+            press.key.classList.remove('pressed');
+            if (press.preview) {
+                const preview = press.preview;
+                setTimeout(() => preview.remove(), PREVIEW_LINGER_MS);
+            }
+        };
+
+        keyboard.addEventListener('pointerdown', (e) => {
+            const key = e.target.closest('.kb-key');
+            if (!key || key.classList.contains('kb-spacer')) return;
+            e.preventDefault(); // keeps focus on the grid, as the site's mousedown handler does
+            release(e.pointerId);
+
+            const letter = key.textContent.trim();
+            let action = null;
+            if (key.classList.contains('kb-backspace')) action = () => solver._backspaceAction();
+            else if (key.classList.contains('kb-more')) action = () => solver._openRebusOverlay();
+            else if (/^[A-Z]$/.test(letter)) action = () => solver._enterLetter(letter);
+            if (!action) return;
+
+            const press = { key, preview: null, timer: null };
+            key.classList.add('pressed');
+            if (/^[A-Z]$/.test(letter)) press.preview = showPreview(key, letter);
+            active.set(e.pointerId, press);
+            action();
+
+            // Holding backspace keeps deleting, as on a phone keyboard.
+            if (key.classList.contains('kb-backspace')) {
+                press.timer = setTimeout(() => {
+                    press.timer = setInterval(action, REPEAT_EVERY_MS);
+                }, REPEAT_DELAY_MS);
+            }
+        }, true);
+
+        for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+            keyboard.addEventListener(type, (e) => release(e.pointerId), true);
+        }
+
+        // The keys' own click handlers would type each letter a second time.
+        keyboard.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        }, true);
+
+        // Leaving the puzzle mid-press shouldn't strand a preview on screen.
+        return () => {
+            for (const id of Array.from(active.keys())) release(id);
+        };
+    }
+
     // CrosswordSolver calls _load() from its constructor, before a subclass
     // could store anything on `this`, so the store is handed over here.
     let incomingStore = null;
@@ -146,6 +235,12 @@
         _layout() {
             if (this.destroyed) return;
             super._layout();
+        }
+
+        _buildMobileKeyboard() {
+            const keyboard = super._buildMobileKeyboard();
+            this.releaseKeys = attachFastKeyboard(keyboard, this);
+            return keyboard;
         }
 
         // ----- Puzzles without an answer key -----
@@ -202,6 +297,7 @@
         }
 
         destroy() {
+            if (this.releaseKeys) this.releaseKeys();
             if (this.timerInterval) {
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;

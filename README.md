@@ -29,6 +29,9 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - The hinseypuzzles.com solver, as it works on a phone: same grid, clue bar,
   keyboard, timer, pencil, rebus (the **...** key), check/reveal, Clear Grid
   and Reset Puzzle. The comment section is left out.
+- The on-screen keyboard types the moment a key is touched, with each finger
+  tracked separately, so fast typing doesn't drop letters. A pop-up shows the
+  letter above the key, as on Gboard, and holding backspace keeps deleting.
 - Progress (letters, pencil marks, reveals and time) is saved as you go and
   survives closing the app. The timer pauses when you leave the app.
 - Scrambled .puz files can be solved but not checked; the app says so.
