@@ -19,14 +19,14 @@ html[data-theme="dark"] {
     --d-accent: #4f7fd9;
 
     /* Grid */
-    --d-cell: #1e1e1e;
+    --d-cell: #303030;
     --d-block: #000000;
-    --d-grid-line: #4a4a4a;
+    --d-grid-line: #555555;
     --d-number: #b0b0b0;
     --d-letter: #f5f5f5;
     --d-selected: #f0c14b;
     --d-selected-text: #111111;
-    --d-word: #2f4a63;
+    --d-word: #35526e;
     --d-referenced: #4a4426;
     --d-pencil: #8a8a8a;
     --d-correct: #6cc070;
@@ -34,7 +34,7 @@ html[data-theme="dark"] {
     --d-revealed: #c792ea;
 
     /* Clue bar and keyboard */
-    --d-clue-bar: #2f4a63;
+    --d-clue-bar: #35526e;
     --d-keyboard: #1a1a1a;
     --d-key: #3b3b3b;
     --d-key-special: #2a2a2a;
@@ -223,6 +223,18 @@ html[data-theme="dark"] .cell {
 
 html[data-theme="dark"] .cell.block {
     background: var(--d-block);
+    border-color: var(--d-block);
+}
+
+/* Grid lines only run between letter squares: an edge that touches a black
+   square takes the black square's colour, so blocks read as solid shapes.
+   js/solver-app.js marks the squares whose neighbour is a block. */
+html[data-theme="dark"] .cell.block-right {
+    border-right-color: var(--d-block);
+}
+
+html[data-theme="dark"] .cell.block-below {
+    border-bottom-color: var(--d-block);
 }
 
 html[data-theme="dark"] .cell.void {

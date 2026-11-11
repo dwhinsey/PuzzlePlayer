@@ -258,6 +258,21 @@
             super._layout();
         }
 
+        _render() {
+            super._render();
+            // Mark squares whose right or lower neighbour is a black square,
+            // so dark mode can leave the grid line off that edge.
+            const { cells, width, height } = this.puzzle;
+            for (let r = 0; r < height; r++) {
+                for (let c = 0; c < width; c++) {
+                    if (!cells[r][c]) continue;
+                    const el = this.cellEls[r][c];
+                    if (c + 1 < width && !cells[r][c + 1]) el.classList.add('block-right');
+                    if (r + 1 < height && !cells[r + 1][c]) el.classList.add('block-below');
+                }
+            }
+        }
+
         _buildMobileKeyboard() {
             const keyboard = super._buildMobileKeyboard();
             this.releaseKeys = attachFastKeyboard(keyboard, this);
