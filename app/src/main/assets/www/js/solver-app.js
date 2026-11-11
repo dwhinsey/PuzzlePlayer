@@ -217,7 +217,7 @@
 
     // Strength of shaded squares in dark mode. The site's 68% suits white
     // squares but washes out dark ones and hides their numbers.
-    const DARK_SHADE_ALPHA = 0.3;
+    const DARK_SHADE_ALPHA = 0.24;
 
     // CrosswordSolver calls _load() from its constructor, before a subclass
     // could store anything on `this`, so the store is handed over here.

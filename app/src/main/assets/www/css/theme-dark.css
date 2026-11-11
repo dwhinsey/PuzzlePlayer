@@ -21,7 +21,7 @@ html[data-theme="dark"] {
     /* Grid */
     --d-cell: #303030;
     --d-block: #000000;
-    --d-grid-line: #555555;
+    --d-grid-line: #000000;
     --d-number: #b0b0b0;
     --d-letter: #f5f5f5;
     --d-selected: #f0c14b;
@@ -254,7 +254,7 @@ html[data-theme="dark"] .cell-circle {
     border-color: var(--d-number);
 }
 
-/* Shaded squares: the puzzle's shade colour at 30% (set per square by
+/* Shaded squares: the puzzle's shade colour at 24% (set per square by
    js/solver-app.js) instead of the site's 68%. */
 html[data-theme="dark"] .cell.shaded {
     box-shadow: inset 0 0 0 999px var(--shade-dark, var(--shade-color));
