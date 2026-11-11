@@ -1,0 +1,313 @@
+/* The library (home page). */
+
+.library-view {
+    background: var(--page-bg);
+}
+
+.lib-topbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+    min-height: 56px;
+    padding: var(--inset-top) 6px 0 16px;
+    background: var(--navy);
+    color: #ffffff;
+}
+
+.lib-back-btn {
+    margin-left: -10px;
+}
+
+.lib-heading {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lib-title {
+    margin: 0;
+    font-size: 1.3em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-path {
+    font-size: 0.78em;
+    opacity: 0.75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-icon-btn {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.lib-icon-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.lib-searchbar {
+    position: relative;
+    flex-shrink: 0;
+    padding: 10px 12px;
+    background: var(--navy);
+}
+
+.lib-search {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    padding: 0 40px 0 40px;
+    border: none;
+    border-radius: 21px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-size: 1em;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.lib-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.lib-search-icon {
+    position: absolute;
+    left: 26px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.lib-search-clear {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    font-size: 1.5em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.lib-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 6px 0 calc(16px + max(var(--inset-bottom), var(--ime)));
+    -webkit-overflow-scrolling: touch;
+}
+
+.lib-section {
+    padding: 14px 18px 6px;
+    color: var(--muted);
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.lib-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 64px;
+    margin: 6px 10px;
+    padding: 10px 4px 10px 14px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(20, 40, 80, 0.08);
+    cursor: pointer;
+    outline: none;
+    transition: background 0.12s ease;
+}
+
+.lib-row:active,
+.lib-row.pressing {
+    background: #eef3fa;
+}
+
+.lib-status {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lib-folder-icon {
+    color: #e2a93b;
+}
+
+.lib-row-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lib-row-title {
+    font-weight: 700;
+    font-size: 1.02em;
+    line-height: 1.25;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.lib-row-sub {
+    font-size: 0.9em;
+    color: #3d4757;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-row-meta {
+    font-size: 0.78em;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-row-side {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.lib-chevron {
+    color: #9aa6b8;
+}
+
+.lib-state {
+    font-size: 0.78em;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.lib-state.new {
+    background: #e1ecfb;
+    color: var(--navy-light);
+}
+
+.lib-state.progress {
+    background: #fff3cd;
+    color: #8a5a00;
+}
+
+.lib-state.done {
+    background: #e2f3e4;
+    color: #2e7d32;
+}
+
+.lib-state-sub {
+    font-size: 0.78em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.lib-more {
+    flex-shrink: 0;
+    width: 40px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #8792a3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.lib-more:active {
+    background: #e4eaf2;
+}
+
+.lib-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 56px 32px;
+}
+
+.lib-empty-art {
+    margin-bottom: 14px;
+}
+
+.lib-empty-title {
+    margin: 0 0 6px;
+    font-size: 1.15em;
+    font-weight: 700;
+}
+
+.lib-empty-text {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 320px;
+}
+
+.lib-empty-btn {
+    margin-top: 20px;
+    font: inherit;
+    font-weight: 700;
+    padding: 11px 26px;
+    border: none;
+    border-radius: 8px;
+    background: var(--navy);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.lib-empty-btn:active {
+    background: var(--navy-light);
+}
+
+@media (min-width: 701px) {
+    .lib-list {
+        padding-left: max(0px, calc((100% - 760px) / 2));
+        padding-right: max(0px, calc((100% - 760px) / 2));
+    }
+}

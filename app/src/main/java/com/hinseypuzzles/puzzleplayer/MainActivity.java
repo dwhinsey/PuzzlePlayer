@@ -1,0 +1,287 @@
+package com.hinseypuzzles.puzzleplayer;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Hosts the puzzle library and solver, which are written in HTML/JS and live
+ * in assets/www. This class only supplies what a web page cannot do itself:
+ * the system file picker, durable storage, window insets and the back button.
+ */
+public class MainActivity extends Activity {
+
+    private static final String START_URL = "file:///android_asset/www/index.html";
+    static final int REQUEST_PICK_PUZZLES = 41;
+
+    private WebView webView;
+    private PuzzleBridge bridge;
+    private OnBackInvokedCallback backCallback;
+
+    /** Last known insets, in CSS pixels: top, right, bottom, left, keyboard. */
+    private final float[] insets = new float[5];
+    private boolean pageLoaded = false;
+
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Phones solve in portrait only: in landscape the keyboard leaves no
+        // room for the grid. Tablets have the height to spare either way.
+        if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        setUpEdgeToEdge();
+
+        webView = new WebView(this);
+        webView.setBackgroundColor(Color.parseColor("#E9EEF4"));
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        webView.setHapticFeedbackEnabled(false);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setSupportZoom(false);
+        settings.setBuiltInZoomControls(false);
+        settings.setDisplayZoomControls(false);
+        // The solver lays itself out to the screen; system font scaling would
+        // only push the keyboard off the bottom.
+        settings.setTextZoom(100);
+        settings.setAllowContentAccess(false);
+        settings.setMediaPlaybackRequiresUserGesture(true);
+
+        bridge = new PuzzleBridge(this, webView);
+        webView.addJavascriptInterface(bridge, "AndroidBridge");
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                if ("file".equals(uri.getScheme())) {
+                    return false;
+                }
+                // Links in puzzle notes open in the browser, not in the app.
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                } catch (ActivityNotFoundException ignored) {
+                }
+                return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                pageLoaded = true;
+                pushInsets();
+            }
+        });
+
+        webView.setOnApplyWindowInsetsListener((v, windowInsets) -> {
+            readInsets(windowInsets);
+            pushInsets();
+            return windowInsets;
+        });
+
+        setContentView(webView);
+        webView.loadUrl(START_URL);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            backCallback = this::dispatchBackToPage;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, backCallback);
+        }
+    }
+
+    private void setUpEdgeToEdge() {
+        Window window = getWindow();
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= 29) {
+            window.setNavigationBarContrastEnforced(false);
+            window.setStatusBarContrastEnforced(false);
+        }
+        if (Build.VERSION.SDK_INT >= 30) {
+            window.setDecorFitsSystemWindows(false);
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+        setBarAppearance(false, true);
+    }
+
+    /**
+     * @param darkStatusIcons dark icons for a light status bar background
+     * @param darkNavIcons    dark icons for a light navigation bar background
+     */
+    @SuppressWarnings("deprecation")
+    void setBarAppearance(boolean darkStatusIcons, boolean darkNavIcons) {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller == null) return;
+            int appearance = 0;
+            if (darkStatusIcons) appearance |= WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
+            if (darkNavIcons) appearance |= WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+            controller.setSystemBarsAppearance(appearance,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                            | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+        } else {
+            View decor = window.getDecorView();
+            int flags = decor.getSystemUiVisibility();
+            flags = darkStatusIcons
+                    ? flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    : flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            flags = darkNavIcons
+                    ? flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                    : flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            decor.setSystemUiVisibility(flags);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void readInsets(WindowInsets windowInsets) {
+        float density = getResources().getDisplayMetrics().density;
+        int top, right, bottom, left, ime = 0;
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.graphics.Insets bars = windowInsets.getInsets(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            top = bars.top;
+            right = bars.right;
+            bottom = bars.bottom;
+            left = bars.left;
+            ime = windowInsets.getInsets(WindowInsets.Type.ime()).bottom;
+        } else {
+            // Before API 30 the bottom inset already includes the keyboard.
+            top = windowInsets.getSystemWindowInsetTop();
+            right = windowInsets.getSystemWindowInsetRight();
+            bottom = windowInsets.getSystemWindowInsetBottom();
+            left = windowInsets.getSystemWindowInsetLeft();
+        }
+        insets[0] = top / density;
+        insets[1] = right / density;
+        insets[2] = bottom / density;
+        insets[3] = left / density;
+        insets[4] = ime / density;
+    }
+
+    String insetsJson() {
+        try {
+            JSONObject o = new JSONObject();
+            o.put("top", insets[0]);
+            o.put("right", insets[1]);
+            o.put("bottom", insets[2]);
+            o.put("left", insets[3]);
+            o.put("ime", insets[4]);
+            return o.toString();
+        } catch (Exception e) {
+            return "{}";
+        }
+    }
+
+    private void pushInsets() {
+        if (!pageLoaded || webView == null) return;
+        webView.evaluateJavascript(
+                "window.App && App.setInsets(" + insetsJson() + ")", null);
+    }
+
+    /** Lets the page close a dialog, leave the solver or go up a folder first. */
+    private void dispatchBackToPage() {
+        if (webView == null || !pageLoaded) {
+            moveTaskToBack(true);
+            return;
+        }
+        webView.evaluateJavascript("window.App ? App.handleBack() : false", value -> {
+            if (!"true".equals(value)) {
+                moveTaskToBack(true);
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onBackPressed() {
+        // Only reached below API 33; newer versions use the callback above.
+        dispatchBackToPage();
+    }
+
+    void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        // .puz, .ipuz and .jpz have no dependable MIME types, so offer
+        // everything and sort the files out by content after they are picked.
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        try {
+            startActivityForResult(intent, REQUEST_PICK_PUZZLES);
+        } catch (ActivityNotFoundException e) {
+            bridge.deliverPickedFiles(new ArrayList<>());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_PICK_PUZZLES) return;
+
+        List<Uri> uris = new ArrayList<>();
+        if (resultCode == RESULT_OK && data != null) {
+            ClipData clip = data.getClipData();
+            if (clip != null) {
+                for (int i = 0; i < clip.getItemCount(); i++) {
+                    Uri uri = clip.getItemAt(i).getUri();
+                    if (uri != null) uris.add(uri);
+                }
+            } else if (data.getData() != null) {
+                uris.add(data.getData());
+            }
+        }
+        bridge.deliverPickedFiles(uris);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null && pageLoaded) {
+            // Stops the timer and flushes progress before the app can be killed.
+            webView.evaluateJavascript("window.App && App.onAppPause()", null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (Build.VERSION.SDK_INT >= 33 && backCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
+        }
+        if (bridge != null) bridge.shutdown();
+        if (webView != null) {
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
+    }
+}

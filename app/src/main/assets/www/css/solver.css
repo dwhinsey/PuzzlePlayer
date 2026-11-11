@@ -1,0 +1,729 @@
+/*
+ * The solver, adapted from the mobile layout of the hinseypuzzles.com solver.
+ * The desktop parts (clue lists, desktop clue bar, comments, print, the rebus
+ * button) are gone and the phone rules apply all the time; the tablet rules
+ * apply on wide screens. App-specific additions are marked "App:".
+ */
+
+.solver {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+/* App: the top part of the solver, which the overlays cover. The keyboard
+   sits outside it so the rebus overlay can still be typed into. */
+.solver-main {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-clue-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 6px 6px;
+    background: #cfe8ff;
+}
+
+.clue-nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.6em;
+    line-height: 1;
+    color: #000000;
+    padding: 2px 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-clue-bar .clue-text {
+    flex: 1;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+    height: 48px;
+    line-height: 1.2em;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    white-space: normal;
+}
+
+/* App: the clue is wrapped in one element so it wraps as text rather than as
+   a row of flex items, and so js/solver.js can measure it. */
+.clue-inner {
+    display: block;
+    max-width: 100%;
+}
+
+.mobile-clue-bar .clue-text.overflowing {
+    align-items: flex-start;
+}
+
+.clue-label {
+    font-weight: 800;
+    margin-right: 0.25em;
+}
+
+.solver-btn {
+    font: inherit;
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.solver-btn:hover {
+    background: #f0f0f0;
+}
+
+.solver-btn:disabled {
+    color: #aaa;
+    background: #ffffff;
+}
+
+.solver-topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+    padding: 1px 8px;
+    /* App: room above and below the buttons that the page's own header gave
+       on the site. */
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+.timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: center;
+    align-self: center;
+    border-radius: 999px;
+    border: 1px solid #ccc;
+    background: #ffffff;
+    padding: 6px 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.timer-display {
+    font-size: 1.3em;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5em;
+}
+
+.icon-btn {
+    box-sizing: border-box;
+    width: 34px;
+    height: 34px;
+    /* Buttons carry a UA padding of ~1px 6px. On the narrow pause button that
+       left only 10px of content width, squeezing its 14px icon sideways. */
+    padding: 0;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: #ffffff;
+    color: #222;
+    font-size: 1em;
+    font-family: inherit;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.icon-btn::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+.back-btn {
+    display: flex;
+    text-decoration: none;
+}
+
+.icon-btn:focus {
+    outline: none;
+}
+
+.timer-pause-btn {
+    border: none;
+    background: transparent;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: start;
+    align-self: center;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+    align-self: center;
+}
+
+.pencil-btn.active {
+    background: #cfe8ff;
+    border-color: #7fb8ec;
+    color: #00458f;
+}
+
+.help-btn.active {
+    background: #cfe8ff;
+    border-color: #7fb8ec;
+    color: #00458f;
+}
+
+.help-wrap {
+    position: relative;
+}
+
+.help-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    min-width: 170px;
+    overflow: hidden;
+    z-index: 15;
+}
+
+.help-menu[hidden] {
+    display: none;
+}
+
+.help-menu .solver-btn {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    padding: 10px 14px;
+}
+
+.help-menu .solver-btn:last-child {
+    border-bottom: none;
+}
+
+/* App: separates the check, reveal and housekeeping groups. */
+.help-menu [data-action="reveal-square"],
+.help-menu [data-action="clear-incorrect"] {
+    border-top: 1px solid #d4d4d4;
+}
+
+.solver-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+}
+
+.landscape-blocker {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #e9eef4;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.landscape-blocker p {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .landscape-blocker {
+        display: flex;
+    }
+}
+
+.solver-overlay[hidden] {
+    display: none;
+}
+
+.solver-overlay-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 26px 30px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    /* App: long notes scroll inside the card. */
+    box-sizing: border-box;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.overlay-title {
+    margin: 0 0 8px;
+    font-size: 1.4em;
+}
+
+.overlay-title.long {
+    font-size: 1.1em;
+}
+
+.overlay-author,
+.overlay-copyright,
+.overlay-notes {
+    margin: 4px 0;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.overlay-notes {
+    white-space: pre-line;
+}
+
+.overlay-title[hidden],
+.overlay-author[hidden],
+.overlay-copyright[hidden],
+.overlay-notes[hidden] {
+    display: none;
+}
+
+.overlay-paused-message {
+    margin: 10px 0 0;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #222;
+}
+
+.overlay-paused-message[hidden] {
+    display: none;
+}
+
+.overlay-start-btn {
+    margin-top: 20px;
+    padding: 10px 32px;
+    font: inherit;
+    font-size: 1.1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: #00008b;
+    color: #ffffff;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.overlay-start-btn:active {
+    background: #0000ff;
+}
+
+.rebus-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+}
+
+.rebus-overlay[hidden] {
+    display: none;
+}
+
+.rebus-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.6em;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 16px;
+    padding: 0 10px;
+    font: inherit;
+    font-size: 1.3em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1;
+    border: 3px solid #ffd54f;
+    border-radius: 8px;
+}
+
+.rebus-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 18px;
+}
+
+.rebus-action-btn {
+    width: 44px;
+    height: 44px;
+}
+
+.rebus-cancel-btn {
+    color: #c62828;
+}
+
+.rebus-confirm-btn {
+    color: #2e7d32;
+}
+
+.solver-layout {
+    display: flex;
+    gap: 25px;
+    /* App: fills the space between the top bar and the clue bar, which the
+       grid is then sized to. */
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+}
+
+.solver-grid-wrap {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+}
+
+.solver-grid {
+    display: grid;
+    width: auto;
+    border: 1px solid #222;
+    background: #ffffff;
+    gap: 0;
+    outline: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.cell {
+    position: relative;
+    background: #ffffff;
+    box-sizing: border-box;
+    border-right: 1px solid #222;
+    border-bottom: 1px solid #222;
+    padding-top: 22%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cell.edge-right {
+    border-right: none;
+}
+
+.cell.edge-bottom {
+    border-bottom: none;
+}
+
+.cell.block {
+    background: #222;
+    cursor: default;
+}
+
+/* App: squares outside an irregular grid. */
+.cell.void {
+    background: #e9eef4;
+}
+
+.cell.shaded {
+    box-shadow: inset 0 0 0 999px var(--shade-color);
+}
+
+.cell-number {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-size: calc(var(--cell-size, 24px) * 0.25);
+    font-weight: 700;
+    color: #333;
+    line-height: 1;
+}
+
+.cell-circle {
+    position: absolute;
+    inset: 8%;
+    border: 1.5px solid #333;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.cell-letter {
+    font-size: calc(var(--cell-size, 24px) * 0.54);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #111;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.cell.selected {
+    background: #ffd54f;
+}
+
+.cell.rebus-editing {
+    background: #ffffff;
+    box-shadow: inset 0 0 0 3px #ffd54f;
+}
+
+.cell.active-word:not(.selected) {
+    background: #cfe8ff;
+}
+
+.cell.referenced {
+    background: #fff9c4;
+}
+
+.cell.pencil .cell-letter {
+    color: #6b6b6b;
+}
+
+.cell.correct .cell-letter {
+    color: #2e7d32;
+}
+
+.cell.incorrect .cell-letter {
+    color: #c62828;
+}
+
+.cell.revealed .cell-letter {
+    color: #6a1b9a;
+}
+
+/* App: a corner slash marks squares that were checked wrong. */
+.cell.incorrect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 calc(var(--cell-size, 24px) * 0.22) calc(var(--cell-size, 24px) * 0.22) 0;
+    border-color: transparent #c62828 transparent transparent;
+}
+
+.mobile-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 10px 6px;
+    background: #d3d6da;
+}
+
+.kb-row {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    justify-content: center;
+}
+
+.kb-key {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #ffffff;
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 1.1em;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    /* Without this Chrome paints its own translucent blue box over a
+       tapped key, on top of the grey :active state below. */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.kb-key:active,
+.kb-key.pressed {
+    background: #e0e0e0;
+}
+
+.kb-key.kb-backspace,
+.kb-key.kb-more {
+    flex: 1.5;
+    font-size: 1.2em;
+    background: #bcc2cc;
+}
+
+/* App: "123" is a label, not a symbol, so it stays at the letters' size. */
+.kb-key.kb-more {
+    font-size: 0.95em;
+}
+
+/* App: the rebus key on the second keyboard layer. */
+.kb-key.kb-rebus {
+    flex: 5.5;
+    font-size: 1em;
+}
+
+.kb-key.kb-backspace:active,
+.kb-key.kb-more:active,
+.kb-key.kb-backspace.pressed,
+.kb-key.kb-more.pressed {
+    background: #a9b0bc;
+}
+
+.kb-key.kb-spacer {
+    flex: 0.5;
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* The same layout on a tablet, sized for the larger screen: the phone's
+   touch targets look lost at this size. */
+@media (min-width: 701px) {
+    .icon-btn {
+        width: 46px;
+        height: 46px;
+    }
+
+    .icon-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .timer-display {
+        font-size: 1.7em;
+    }
+
+    .timer-wrap {
+        padding: 9px 24px;
+    }
+
+    .timer-pause-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .solver-topbar {
+        margin-bottom: 6px;
+        padding: 4px 14px;
+        padding-top: 10px;
+    }
+
+    .mobile-clue-bar {
+        gap: 12px;
+        padding: 10px 12px;
+    }
+
+    .mobile-clue-bar .clue-text {
+        /* js/solver.js sizes the text against this height. */
+        height: 64px;
+        font-size: 1.25em;
+    }
+
+    .clue-nav-btn {
+        font-size: 2.2em;
+        padding: 2px 20px;
+    }
+
+    .mobile-keyboard {
+        gap: 14px;
+        padding: 16px 12px;
+    }
+
+    .kb-row {
+        gap: 10px;
+    }
+
+    .kb-key {
+        height: 66px;
+        border-radius: 12px;
+        font-size: 1.5em;
+    }
+
+    .kb-key.kb-more,
+    .kb-key.kb-rebus {
+        font-size: 1.1em;
+    }
+}
+
+/* Held sideways there is much less height to go around, so the keyboard gives
+   some back to the grid. The clue bar keeps its height, which js/solver.js
+   sizes the clue text against. */
+@media (min-width: 701px) and (orientation: landscape) {
+    .mobile-keyboard {
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    .kb-key {
+        height: 52px;
+    }
+}

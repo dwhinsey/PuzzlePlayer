@@ -1,0 +1,64 @@
+/*
+ * Durable storage. In the app this is window.AndroidBridge, which keeps small
+ * files in the app's private storage. Opened in an ordinary browser (handy for
+ * development) it falls back to localStorage.
+ */
+(function (global) {
+    'use strict';
+
+    const bridge = global.AndroidBridge || null;
+    const PREFIX = 'puzzleplayer:';
+
+    function readRaw(name) {
+        if (bridge) return bridge.read(name);
+        try {
+            return global.localStorage.getItem(PREFIX + name);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function writeRaw(name, text) {
+        if (bridge) return bridge.write(name, text);
+        try {
+            global.localStorage.setItem(PREFIX + name, text);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    const Store = {
+        isNative: !!bridge,
+
+        readJSON(name) {
+            const text = readRaw(name);
+            if (text == null || text === '') return null;
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.warn('Unreadable stored file', name, e);
+                return null;
+            }
+        },
+
+        writeJSON(name, value) {
+            const ok = writeRaw(name, JSON.stringify(value));
+            if (!ok) console.warn('Could not save', name);
+            return ok;
+        },
+
+        remove(name) {
+            if (bridge) return bridge.remove(name);
+            try {
+                global.localStorage.removeItem(PREFIX + name);
+            } catch (e) { /* ignore */ }
+            return true;
+        },
+
+        puzzleFile: (id) => 'puzzle-' + id + '.json',
+        progressFile: (id) => 'progress-' + id + '.json',
+    };
+
+    global.Store = Store;
+})(window);

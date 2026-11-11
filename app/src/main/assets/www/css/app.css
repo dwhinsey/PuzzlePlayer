@@ -1,0 +1,329 @@
+/* App shell: page setup, system-bar insets, dialogs and toasts. */
+
+:root {
+    /* Set from the Android side; see App.setInsets in js/app.js. */
+    --inset-top: 0px;
+    --inset-right: 0px;
+    --inset-bottom: 0px;
+    --inset-left: 0px;
+    --ime: 0px;
+
+    --page-bg: #e9eef4;
+    --navy: #1b3a6b;
+    --navy-light: #2f5ea8;
+    --text: #1a1a1a;
+    --muted: #66707f;
+    --line: #dde3eb;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    background: var(--page-bg);
+    color: var(--text);
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+}
+
+input,
+textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+button {
+    font-family: inherit;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.view {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding-left: var(--inset-left);
+    padding-right: var(--inset-right);
+}
+
+/* ----- Solver page ----- */
+
+.solver-view {
+    background: var(--page-bg);
+    padding-top: var(--inset-top);
+}
+
+/* The keyboard runs under the navigation bar, keeping its keys above it. */
+.solver-view .mobile-keyboard {
+    padding-bottom: calc(10px + var(--inset-bottom));
+}
+
+@media (min-width: 701px) {
+    .solver-view .mobile-keyboard {
+        padding-bottom: calc(16px + var(--inset-bottom));
+    }
+}
+
+@media (min-width: 701px) and (orientation: landscape) {
+    .solver-view .mobile-keyboard {
+        padding-bottom: calc(10px + var(--inset-bottom));
+    }
+}
+
+/* ----- Bottom sheets and dialogs ----- */
+
+.sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.45);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.sheet-backdrop.show {
+    opacity: 1;
+}
+
+.sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+    max-width: 560px;
+    margin: 0 auto;
+    max-height: calc(85vh - var(--inset-top));
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 18px 18px 0 0;
+    padding-bottom: calc(8px + max(var(--inset-bottom), var(--ime)));
+    box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.18);
+    transform: translateY(100%);
+    transition: transform 0.2s ease;
+}
+
+.sheet.show {
+    transform: translateY(0);
+}
+
+.sheet-head {
+    padding: 18px 20px 10px;
+    border-bottom: 1px solid var(--line);
+}
+
+.sheet-title {
+    font-weight: 700;
+    font-size: 1.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sheet-subtitle {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.9em;
+}
+
+.sheet-items {
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.sheet-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 52px;
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 1em;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.sheet-item:active {
+    background: #eef2f8;
+}
+
+.sheet-item:disabled {
+    color: #aab;
+}
+
+.sheet-item-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.sheet-item-sub {
+    flex-basis: 100%;
+    order: 3;
+    color: var(--muted);
+    font-size: 0.85em;
+    margin-top: 2px;
+}
+
+.sheet-item-check {
+    color: var(--navy-light);
+    font-weight: 800;
+    margin-left: 12px;
+}
+
+.sheet-item.checked .sheet-item-label {
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.sheet-item.danger {
+    color: #c62828;
+}
+
+.sheet-cancel {
+    justify-content: center;
+    font-weight: 600;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+}
+
+.dialog {
+    position: fixed;
+    z-index: 101;
+    left: 50%;
+    top: calc(var(--inset-top) + (100% - var(--inset-top) - max(var(--inset-bottom), var(--ime))) / 2);
+    width: min(400px, calc(100% - 40px));
+    box-sizing: border-box;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 22px 22px 14px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0;
+    transition: transform 0.16s ease, opacity 0.16s ease;
+}
+
+.dialog.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.dialog-title {
+    font-weight: 700;
+    font-size: 1.15em;
+    margin-bottom: 10px;
+}
+
+.dialog-message {
+    margin: 0 0 8px;
+    color: #444;
+    line-height: 1.45;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.dialog-input {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 1.05em;
+    padding: 10px 12px;
+    border: 1.5px solid #a8b4c6;
+    border-radius: 8px;
+    outline: none;
+}
+
+.dialog-input:focus {
+    border-color: var(--navy-light);
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.dialog-btn {
+    font: inherit;
+    font-weight: 700;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--navy);
+    cursor: pointer;
+}
+
+.dialog-btn:active {
+    background: #eef2f8;
+}
+
+.dialog-btn.primary {
+    background: var(--navy);
+    color: #ffffff;
+}
+
+.dialog-btn.primary:disabled {
+    background: #9aa6b8;
+}
+
+.dialog-btn.danger {
+    background: #c62828;
+    color: #ffffff;
+}
+
+/* ----- Toast ----- */
+
+.toast {
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    bottom: calc(24px + max(var(--inset-bottom), var(--ime)));
+    max-width: calc(100% - 48px);
+    box-sizing: border-box;
+    padding: 11px 18px;
+    border-radius: 999px;
+    background: #222a36;
+    color: #ffffff;
+    font-size: 0.92em;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transform: translate(-50%, 12px);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+/* In the solver the bottom of the screen is all keyboard. */
+body.solving .toast {
+    top: calc(var(--inset-top) + 64px);
+    bottom: auto;
+    transform: translate(-50%, -12px);
+}
+
+.toast.show,
+body.solving .toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
