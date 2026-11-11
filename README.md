@@ -22,7 +22,8 @@ files, using the mobile solving interface from hinseypuzzles.com.
   folder; puzzles added while inside a folder go into it.
 - Search by title or author with the magnifier in the top bar (searches every
   folder; the back arrow or Back gesture closes it).
-- Sort by date added (newest/oldest) or title (A–Z/Z–A).
+- Sort by date added (newest/oldest), title (A–Z/Z–A) or size (smallest/
+  biggest; puzzles of the same size keep the date or title order used before).
 - Every puzzle and folder has a **⋮** menu (or long-press it): move to folder,
   rename, reset progress, delete.
 

@@ -32,7 +32,20 @@
         'added-asc': 'Date added (oldest first)',
         'title-asc': 'Title (A to Z)',
         'title-desc': 'Title (Z to A)',
+        'size-asc': 'Size (smallest first)',
+        'size-desc': 'Size (biggest first)',
     };
+
+    // How the size sorts order puzzles of the same size: by the date or
+    // title sort in use before switching to size.
+    const THEN_BY = {
+        'added-desc': 'then newest first',
+        'added-asc': 'then oldest first',
+        'title-asc': 'then A to Z',
+        'title-desc': 'then Z to A',
+    };
+
+    const isSizeSort = (key) => key === 'size-asc' || key === 'size-desc';
 
     const ICONS = {
         folder: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M2.5 6.5A1.5 1.5 0 0 1 4 5h5l2.2 2.4H20a1.5 1.5 0 0 1 1.5 1.5v9.6A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5z" fill="currentColor"/></svg>',
@@ -55,9 +68,11 @@
             folders: [],
             puzzles: [],
             sort: 'added-desc',
+            sortThen: 'added-desc',
             ...(data || {}),
         };
         if (!SORTS[lib.sort]) lib.sort = 'added-desc';
+        if (!THEN_BY[lib.sortThen]) lib.sortThen = 'added-desc';
         const ids = new Set(lib.folders.map((f) => f.id));
         for (const p of lib.puzzles) if (p.folderId && !ids.has(p.folderId)) p.folderId = null;
     }
@@ -132,8 +147,14 @@
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
     }
 
+    /** The date or title order: the sort itself, or the tie-break under a size sort. */
+    function baseSort() {
+        return isSizeSort(lib.sort) ? lib.sortThen : lib.sort;
+    }
+
+    // Folders have no size, so a size sort orders them by its tie-break.
     function sortFolders(list) {
-        const s = lib.sort;
+        const s = baseSort();
         return list.slice().sort((a, b) => {
             if (s === 'title-asc') return compareText(a.name, b.name);
             if (s === 'title-desc') return compareText(b.name, a.name);
@@ -142,14 +163,19 @@
         });
     }
 
+    /** A puzzle's size: the number of squares in its grid. */
+    const sizeOf = (p) => (p.width || 0) * (p.height || 0);
+
     function sortPuzzles(list) {
-        const s = lib.sort;
-        return list.slice().sort((a, b) => {
+        const s = baseSort();
+        const byBase = (a, b) => {
             if (s === 'title-asc') return compareText(displayTitle(a), displayTitle(b)) || b.added - a.added;
             if (s === 'title-desc') return compareText(displayTitle(b), displayTitle(a)) || b.added - a.added;
             if (s === 'added-asc') return a.added - b.added;
             return b.added - a.added;
-        });
+        };
+        const sizeDir = lib.sort === 'size-asc' ? 1 : lib.sort === 'size-desc' ? -1 : 0;
+        return list.slice().sort((a, b) => (sizeDir && sizeDir * (sizeOf(a) - sizeOf(b))) || byBase(a, b));
     }
 
     function formatDate(ms) {
@@ -545,8 +571,11 @@
             title: 'Sort by',
             items: Object.keys(SORTS).map((key) => ({
                 label: SORTS[key],
+                sub: isSizeSort(key) ? THEN_BY[baseSort()] : null,
                 checked: lib.sort === key,
                 action: () => {
+                    // Leaving a date or title sort for size: it becomes the tie-break.
+                    if (isSizeSort(key) && !isSizeSort(lib.sort)) lib.sortThen = lib.sort;
                     lib.sort = key;
                     save();
                     render();
