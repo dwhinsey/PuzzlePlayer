@@ -38,6 +38,7 @@ html[data-theme="dark"] {
     --d-keyboard: #1a1a1a;
     --d-key: #3b3b3b;
     --d-key-special: #2a2a2a;
+    --d-key-special-pressed: #3c3c3c;
     --d-key-text: #f0f0f0;
 
     --page-bg: var(--d-bg);
@@ -327,10 +328,17 @@ html[data-theme="dark"] .kb-key.kb-more {
 }
 
 html[data-theme="dark"] .kb-key:active,
-html[data-theme="dark"] .kb-key.pressed,
+html[data-theme="dark"] .kb-key.pressed {
+    background: var(--d-surface-2);
+}
+
+/* The rebus and backspace keys are already darker than the letters, so
+   they brighten when pressed rather than darkening into the keyboard. */
+html[data-theme="dark"] .kb-key.kb-backspace:active,
+html[data-theme="dark"] .kb-key.kb-more:active,
 html[data-theme="dark"] .kb-key.kb-backspace.pressed,
 html[data-theme="dark"] .kb-key.kb-more.pressed {
-    background: var(--d-surface-2);
+    background: var(--d-key-special-pressed);
 }
 
 html[data-theme="dark"] .kb-key.kb-spacer {
