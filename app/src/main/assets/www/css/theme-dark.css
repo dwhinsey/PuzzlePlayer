@@ -226,15 +226,16 @@ html[data-theme="dark"] .cell.block {
     border-color: var(--d-block);
 }
 
-/* Grid lines only run between letter squares: an edge that touches a black
-   square takes the black square's colour, so blocks read as solid shapes.
-   js/solver-app.js marks the squares whose neighbour is a block. */
-html[data-theme="dark"] .cell.block-right {
-    border-right-color: var(--d-block);
+/* Every edge that touches a letter square has a grid line; an edge between
+   two black squares doesn't, so neighbouring black squares join up. A black
+   square draws its right and bottom edges, so js/solver-app.js marks the
+   ones whose neighbour there is a letter square. */
+html[data-theme="dark"] .cell.block.open-right {
+    border-right-color: var(--d-grid-line);
 }
 
-html[data-theme="dark"] .cell.block-below {
-    border-bottom-color: var(--d-block);
+html[data-theme="dark"] .cell.block.open-below {
+    border-bottom-color: var(--d-grid-line);
 }
 
 html[data-theme="dark"] .cell.void {

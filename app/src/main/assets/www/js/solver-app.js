@@ -260,15 +260,16 @@
 
         _render() {
             super._render();
-            // Mark squares whose right or lower neighbour is a black square,
-            // so dark mode can leave the grid line off that edge.
+            // Mark black squares whose right or lower neighbour is a letter
+            // square. In dark mode those edges keep their light grid line;
+            // edges between two black squares don't get one.
             const { cells, width, height } = this.puzzle;
             for (let r = 0; r < height; r++) {
                 for (let c = 0; c < width; c++) {
-                    if (!cells[r][c]) continue;
+                    if (cells[r][c]) continue;
                     const el = this.cellEls[r][c];
-                    if (c + 1 < width && !cells[r][c + 1]) el.classList.add('block-right');
-                    if (r + 1 < height && !cells[r + 1][c]) el.classList.add('block-below');
+                    if (c + 1 < width && cells[r][c + 1]) el.classList.add('open-right');
+                    if (r + 1 < height && cells[r + 1][c]) el.classList.add('open-below');
                 }
             }
         }
