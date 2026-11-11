@@ -537,11 +537,17 @@
 
     function create(rootEl, parsedPuzzle, store) {
         incomingStore = store;
+        let solver;
         try {
-            return new AppCrosswordSolver(rootEl, toSolverPuzzle(parsedPuzzle), { backUrl: '#library' });
+            solver = new AppCrosswordSolver(rootEl, toSolverPuzzle(parsedPuzzle), { backUrl: '#library' });
         } finally {
             incomingStore = null;
         }
+        // The site opens every puzzle on its Start/Resume card. A puzzle
+        // already under way goes straight to the grid, clock running (a
+        // solved one's clock stays stopped); a new one still gets the card.
+        if (solver.hasSavedProgress) solver._startTimer();
+        return solver;
     }
 
     /** Library summary of a saved progress object. */

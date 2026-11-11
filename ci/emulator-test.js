@@ -131,8 +131,10 @@ async function shot(page, name) {
         const letters = (await page.locator('.cell-letter').allInnerTexts()).filter(Boolean).join('');
         console.log('letters after relaunch:', letters);
         if (!letters.startsWith('HELLO')) fail('letters lost after relaunch');
-        const btn = await page.locator('.solver-overlay:not([hidden]) .overlay-start-btn').innerText();
-        console.log('overlay button:', btn);
+        // A puzzle under way opens straight to the grid, without the Resume card.
+        const cards = await page.locator('.solver-overlay:not([hidden]) .overlay-start-btn').count();
+        console.log('start/resume card shown:', cards > 0);
+        if (cards) fail('in-progress puzzle opened on its Resume card');
         await shot(page, 'reopened');
     }
     if (errors.length) fail('page errors: ' + errors.join(' | '));
