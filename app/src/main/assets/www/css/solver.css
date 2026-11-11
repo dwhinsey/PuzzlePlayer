@@ -1,8 +1,11 @@
 /*
- * The solver, adapted from the mobile layout of the hinseypuzzles.com solver.
- * The desktop parts (clue lists, desktop clue bar, comments, print, the rebus
- * button) are gone and the phone rules apply all the time; the tablet rules
- * apply on wide screens. App-specific additions are marked "App:".
+ * The hinseypuzzles.com solver stylesheet, as used on the site, with three
+ * changes for the app (search for "App:"):
+ *   - the phone layout's media query is "all", so it always applies;
+ *   - the tablet queries no longer test for a coarse pointer or a maximum
+ *     width, so every screen over 700px gets the tablet sizes;
+ *   - the comment section styles are gone.
+ * The matching queries in js/crossword-solver.js were changed the same way.
  */
 
 .solver {
@@ -10,22 +13,14 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    flex: 1;
-    min-height: 0;
 }
 
-/* App: the top part of the solver, which the overlays cover. The keyboard
-   sits outside it so the rebus overlay can still be typed into. */
-.solver-main {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+.mobile-clue-bar,
+.mobile-keyboard {
+    display: none;
 }
 
 .mobile-clue-bar {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
@@ -42,7 +37,6 @@
     color: #000000;
     padding: 2px 12px;
     cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-clue-bar .clue-text {
@@ -61,20 +55,14 @@
     white-space: normal;
 }
 
-/* App: the clue is wrapped in one element so it wraps as text rather than as
-   a row of flex items, and so js/solver.js can measure it. */
-.clue-inner {
-    display: block;
-    max-width: 100%;
+.desktop-clue-bar .clue-text {
+    height: 50px;
 }
 
-.mobile-clue-bar .clue-text.overflowing {
-    align-items: flex-start;
-}
-
-.clue-label {
-    font-weight: 800;
-    margin-right: 0.25em;
+.desktop-clue-bar {
+    display: flex;
+    margin-bottom: 15px;
+    border-radius: 6px;
 }
 
 .solver-btn {
@@ -93,36 +81,19 @@
     background: #f0f0f0;
 }
 
-.solver-btn:disabled {
-    color: #aaa;
-    background: #ffffff;
-}
-
 .solver-topbar {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 2px;
-    padding: 1px 8px;
-    /* App: room above and below the buttons that the page's own header gave
-       on the site. */
-    padding-top: 8px;
-    padding-bottom: 6px;
+    justify-content: space-between;
+    padding-top: 15px;
+    margin-bottom: 15px;
 }
 
 .timer-wrap {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-self: center;
-    align-self: center;
-    border-radius: 999px;
-    border: 1px solid #ccc;
-    background: #ffffff;
-    padding: 6px 16px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    order: 1;
 }
 
 .timer-display {
@@ -163,7 +134,7 @@
 }
 
 .back-btn {
-    display: flex;
+    display: none;
     text-decoration: none;
 }
 
@@ -171,31 +142,59 @@
     outline: none;
 }
 
-.timer-pause-btn {
-    border: none;
-    background: transparent;
-    width: 22px;
-    height: 22px;
-    pointer-events: none;
+@media (hover: hover) and (pointer: fine) {
+    .icon-btn:hover {
+        background: #f0f0f0;
+    }
+
+    .pencil-btn.active:hover {
+        background: #cfe8ff;
+    }
+
+    .rebus-open-btn.active:hover {
+        background: #cfe8ff;
+    }
+
+    .help-btn.active:hover {
+        background: #cfe8ff;
+    }
 }
 
 .topbar-left {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-self: start;
-    align-self: center;
+    /* On desktop the back button is hidden, so this is the comment button on
+       its own: ordered after the timer, and pulled tight against it by the
+       auto margin, which swallows the free space the topbar would otherwise
+       spread between them. */
+    order: 2;
+    margin-right: auto;
+    margin-left: 10px;
 }
 
 .topbar-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-self: end;
-    align-self: center;
+    order: 3;
+}
+
+.rebus-open-btn {
+    width: auto;
+    padding: 0 14px;
+    border-radius: 17px;
+    font-size: 0.8em;
+    font-weight: 600;
 }
 
 .pencil-btn.active {
+    background: #cfe8ff;
+    border-color: #7fb8ec;
+    color: #00458f;
+}
+
+.rebus-open-btn.active {
     background: #cfe8ff;
     border-color: #7fb8ec;
     color: #00458f;
@@ -242,18 +241,12 @@
     border-bottom: none;
 }
 
-/* App: separates the check, reveal and housekeeping groups. */
-.help-menu [data-action="reveal-square"],
-.help-menu [data-action="clear-incorrect"] {
-    border-top: 1px solid #d4d4d4;
-}
-
 .solver-overlay {
     position: absolute;
     top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: -15px;
+    left: -24px;
+    right: -24px;
     background: rgba(0, 0, 0, 0.55);
     display: flex;
     align-items: center;
@@ -299,19 +292,11 @@
     width: 100%;
     text-align: center;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    /* App: long notes scroll inside the card. */
-    box-sizing: border-box;
-    max-height: 100%;
-    overflow-y: auto;
 }
 
 .overlay-title {
     margin: 0 0 8px;
     font-size: 1.4em;
-}
-
-.overlay-title.long {
-    font-size: 1.1em;
 }
 
 .overlay-author,
@@ -320,17 +305,6 @@
     margin: 4px 0;
     color: #555;
     font-size: 0.95em;
-}
-
-.overlay-notes {
-    white-space: pre-line;
-}
-
-.overlay-title[hidden],
-.overlay-author[hidden],
-.overlay-copyright[hidden],
-.overlay-notes[hidden] {
-    display: none;
 }
 
 .overlay-paused-message {
@@ -355,10 +329,9 @@
     background: #00008b;
     color: #ffffff;
     cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
 }
 
-.overlay-start-btn:active {
+.overlay-start-btn:hover {
     background: #0000ff;
 }
 
@@ -423,29 +396,19 @@
 .solver-layout {
     display: flex;
     gap: 25px;
-    /* App: fills the space between the top bar and the clue bar, which the
-       grid is then sized to. */
-    flex: 1 1 auto;
-    min-height: 0;
-    flex-direction: column;
+    align-items: flex-start;
 }
 
 .solver-grid-wrap {
     flex: 1;
-    min-height: 0;
     min-width: 0;
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
 }
 
 .solver-grid {
     display: grid;
-    width: auto;
-    border: 1px solid #222;
+    width: min(70vh, 100%);
+    border: 2px solid #222;
     background: #ffffff;
     gap: 0;
     outline: none;
@@ -458,14 +421,13 @@
     box-sizing: border-box;
     border-right: 1px solid #222;
     border-bottom: 1px solid #222;
-    padding-top: 22%;
+    padding-top: 16%;
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
     cursor: pointer;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 .cell.edge-right {
@@ -481,11 +443,6 @@
     cursor: default;
 }
 
-/* App: squares outside an irregular grid. */
-.cell.void {
-    background: #e9eef4;
-}
-
 .cell.shaded {
     box-shadow: inset 0 0 0 999px var(--shade-color);
 }
@@ -494,7 +451,7 @@
     position: absolute;
     top: 2px;
     left: 3px;
-    font-size: calc(var(--cell-size, 24px) * 0.25);
+    font-size: 0.62em;
     font-weight: 700;
     color: #333;
     line-height: 1;
@@ -509,12 +466,10 @@
 }
 
 .cell-letter {
-    font-size: calc(var(--cell-size, 24px) * 0.54);
+    font-size: 1.4em;
     font-weight: 600;
     text-transform: uppercase;
     color: #111;
-    white-space: nowrap;
-    line-height: 1;
 }
 
 .cell.selected {
@@ -550,103 +505,276 @@
     color: #6a1b9a;
 }
 
-/* App: a corner slash marks squares that were checked wrong. */
-.cell.incorrect::after {
+.solver-clues {
+    display: flex;
+    gap: 25px;
+    flex: 1;
+    min-width: 260px;
+}
+
+.clue-list {
+    flex: 1;
+    min-width: 0;
+}
+
+.clue-list h3 {
+    margin: 0 0 8px;
+}
+
+.clue-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-color: #b0b0b0 #e9eef4;
+}
+
+.clue-list ul::-webkit-scrollbar {
+    width: 12px;
+}
+
+.clue-list ul::-webkit-scrollbar-track {
+    background: #e9eef4;
+}
+
+.clue-list ul::-webkit-scrollbar-thumb {
+    background: #b0b0b0;
+    border-radius: 6px;
+    border: 3px solid #e9eef4;
+}
+
+.clue-list li {
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.clue-list li:hover {
+    background: #f0f0f0;
+}
+
+.clue-list li.active {
+    background: #cfe8ff;
+    font-weight: 600;
+}
+
+.clue-list li.crossing {
+    position: relative;
+    padding-left: 13px;
+}
+
+.clue-list li.crossing::before {
     content: '';
     position: absolute;
     top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 calc(var(--cell-size, 24px) * 0.22) calc(var(--cell-size, 24px) * 0.22) 0;
-    border-color: transparent #c62828 transparent transparent;
+    bottom: 0;
+    left: 0;
+    width: 7px;
+    background: #cfe8ff;
 }
 
-.mobile-keyboard {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex-shrink: 0;
-    padding: 10px 6px;
-    background: #d3d6da;
+@media (max-width: 800px) {
+    .solver-layout {
+        flex-direction: column;
+    }
+
+    .solver-grid {
+        width: 100%;
+    }
 }
 
-.kb-row {
-    display: flex;
-    align-items: stretch;
-    gap: 6px;
-    justify-content: center;
-}
+/* App-like fullscreen mode: grid + active clue + on-screen keyboard, no page
+   scroll. Phones get it by width; touch tablets get it up to 1024px too, so an
+   iPad solves with the same interface rather than the pointer-driven one. A
+   narrow desktop window is left alone, hence the pointer test. */
+/* App: was (max-width: 700px), (max-width: 1366px) and (pointer: coarse) */
+@media all {
+    .solver {
+        flex: 1;
+        min-height: 0;
+        justify-content: center;
+    }
 
-.kb-key {
-    flex: 1;
-    min-width: 0;
-    height: 48px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: #ffffff;
-    color: #111;
-    border: none;
-    border-radius: 10px;
-    font: inherit;
-    font-weight: 600;
-    font-size: 1.1em;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-    /* Without this Chrome paints its own translucent blue box over a
-       tapped key, on top of the grey :active state below. */
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-}
+    .back-btn {
+        display: flex;
+    }
 
-.kb-key:active,
-.kb-key.pressed {
-    background: #e0e0e0;
-}
+    .solver-overlay {
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
 
-.kb-key.kb-backspace,
-.kb-key.kb-more {
-    flex: 1.5;
-    font-size: 1.2em;
-    background: #bcc2cc;
-}
+    .solver-clues {
+        display: none;
+    }
 
-/* App: "123" is a label, not a symbol, so it stays at the letters' size. */
-.kb-key.kb-more {
-    font-size: 0.95em;
-}
+    .rebus-open-btn {
+        display: none;
+    }
 
-/* App: the rebus key on the second keyboard layer. */
-.kb-key.kb-rebus {
-    flex: 5.5;
-    font-size: 1em;
-}
+    .print-btn {
+        display: none;
+    }
 
-.kb-key.kb-backspace:active,
-.kb-key.kb-more:active,
-.kb-key.kb-backspace.pressed,
-.kb-key.kb-more.pressed {
-    background: #a9b0bc;
-}
+    .solver-topbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        flex-shrink: 0;
+        margin-bottom: 2px;
+        padding: 1px 8px;
+    }
 
-.kb-key.kb-spacer {
-    flex: 0.5;
-    background: transparent;
-    box-shadow: none;
-    cursor: default;
-    pointer-events: none;
+    .topbar-left {
+        order: 0;
+        margin: 0;
+        justify-self: start;
+        align-self: center;
+    }
+
+    .timer-wrap {
+        justify-self: center;
+        align-self: center;
+        border-radius: 999px;
+        border: 1px solid #ccc;
+        background: #ffffff;
+        padding: 6px 16px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .timer-pause-btn {
+        border: none;
+        background: transparent;
+        width: 22px;
+        height: 22px;
+        pointer-events: none;
+    }
+
+    .topbar-right {
+        justify-self: end;
+        align-self: center;
+    }
+
+    .solver-layout {
+        flex: 0 1 auto;
+        min-height: 0;
+        flex-direction: column;
+    }
+
+    .solver-grid-wrap {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .solver-grid {
+        width: auto;
+        border-width: 1px;
+    }
+
+    .cell {
+        padding-top: 22%;
+    }
+
+    .cell-number {
+        font-size: calc(var(--cell-size, 24px) * 0.25);
+    }
+
+    .cell-letter {
+        font-size: calc(var(--cell-size, 24px) * 0.54);
+    }
+
+    .mobile-clue-bar {
+        display: flex;
+    }
+
+    .desktop-clue-bar {
+        display: none;
+    }
+
+    .mobile-keyboard {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex-shrink: 0;
+        padding: 10px 6px;
+        background: #d3d6da;
+    }
+
+    .kb-row {
+        display: flex;
+        align-items: stretch;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    .kb-key {
+        flex: 1;
+        min-width: 0;
+        height: 48px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #ffffff;
+        color: #111;
+        border: none;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 600;
+        font-size: 1.1em;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        /* Without this Chrome paints its own translucent blue box over a
+           tapped key, on top of the grey :active state below. */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .kb-key:active,
+    .kb-key.pressed {
+        background: #e0e0e0;
+    }
+
+    .kb-key.kb-backspace,
+    .kb-key.kb-more {
+        flex: 1.5;
+        font-size: 1.2em;
+        background: #bcc2cc;
+    }
+
+    .kb-key.kb-backspace:active,
+    .kb-key.kb-more:active,
+    .kb-key.kb-backspace.pressed,
+    .kb-key.kb-more.pressed {
+        background: #a9b0bc;
+    }
+
+    .kb-key.kb-spacer {
+        flex: 0.5;
+        background: transparent;
+        box-shadow: none;
+        cursor: default;
+        pointer-events: none;
+    }
 }
 
 /* The same layout on a tablet, sized for the larger screen: the phone's
    touch targets look lost at this size. */
+/* App: was (min-width: 701px) and (max-width: 1366px) and (pointer: coarse) */
 @media (min-width: 701px) {
     .icon-btn {
         width: 46px;
@@ -674,7 +802,6 @@
     .solver-topbar {
         margin-bottom: 6px;
         padding: 4px 14px;
-        padding-top: 10px;
     }
 
     .mobile-clue-bar {
@@ -685,7 +812,6 @@
     .mobile-clue-bar .clue-text {
         /* js/solver.js sizes the text against this height. */
         height: 64px;
-        font-size: 1.25em;
     }
 
     .clue-nav-btn {
@@ -707,16 +833,12 @@
         border-radius: 12px;
         font-size: 1.5em;
     }
-
-    .kb-key.kb-more,
-    .kb-key.kb-rebus {
-        font-size: 1.1em;
-    }
 }
 
 /* Held sideways there is much less height to go around, so the keyboard gives
    some back to the grid. The clue bar keeps its height, which js/solver.js
    sizes the clue text against. */
+/* App: was (min-width: 701px) and (max-width: 1366px) and (pointer: coarse) and (orientation: landscape) */
 @media (min-width: 701px) and (orientation: landscape) {
     .mobile-keyboard {
         gap: 10px;

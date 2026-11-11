@@ -7,7 +7,11 @@
     const bridge = global.AndroidBridge || null;
     const libraryView = document.getElementById('library-view');
     const solverView = document.getElementById('solver-view');
+    const solverHost = solverView.querySelector('.solver-host');
     const fileInput = document.querySelector('.file-input-fallback');
+
+    let solver = null; // the open AppCrosswordSolver
+    let openEntry = null;
 
     function setBars(view) {
         if (!bridge) return;
@@ -24,6 +28,17 @@
         Library.render();
     }
 
+    function closeSolver() {
+        if (!solver) return;
+        solver.destroy();
+        solver = null;
+        openEntry = null;
+        Library.flush();
+        solverHost.replaceChildren();
+        solverHost.className = 'solver-host';
+        showLibrary();
+    }
+
     function openPuzzle(entry) {
         const puzzle = Store.readJSON(Store.puzzleFile(entry.id));
         if (!puzzle) {
@@ -33,21 +48,27 @@
             });
             return;
         }
-        const progress = Store.readJSON(Store.progressFile(entry.id));
+        const progressFile = Store.progressFile(entry.id);
+        const store = {
+            load: () => Store.readJSON(progressFile),
+            save(data) {
+                Store.writeJSON(progressFile, data);
+                Library.updateProgress(entry.id, SolverApp.summarize(puzzle, data));
+            },
+        };
+
         libraryView.hidden = true;
         solverView.hidden = false;
         document.body.classList.add('solving');
         setBars('solver');
         try {
-            Solver.open(entry, puzzle, progress, {
-                onSave(id, snapshot, summary) {
-                    Store.writeJSON(Store.progressFile(id), snapshot);
-                    Library.updateProgress(id, summary);
-                },
-                onExit: showLibrary,
-            });
+            openEntry = entry;
+            solver = SolverApp.create(solverHost, puzzle, store);
         } catch (e) {
             console.error(e);
+            solver = null;
+            openEntry = null;
+            solverHost.replaceChildren();
             showLibrary();
             UI.alert({ title: 'Couldn’t open puzzle', message: String(e.message || e) });
         }
@@ -64,6 +85,14 @@
         for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
         return out;
     }
+
+    // The solver's back button is a link; in the app it closes the puzzle.
+    solverView.addEventListener('click', (e) => {
+        if (e.target.closest('.back-btn')) {
+            e.preventDefault();
+            closeSolver();
+        }
+    });
 
     // Browser fallback for development.
     fileInput.addEventListener('change', async () => {
@@ -90,7 +119,7 @@
                 error: it.error,
                 bytes: it.data != null ? base64ToBytes(it.data) : null,
             }));
-            Library.importFiles(files);
+            return Library.importFiles(files);
         },
 
         /** Window insets (status bar, navigation bar, keyboard) in CSS pixels. */
@@ -102,14 +131,14 @@
             root.setProperty('--inset-bottom', (insets.bottom || 0) + 'px');
             root.setProperty('--inset-left', (insets.left || 0) + 'px');
             root.setProperty('--ime', (insets.ime || 0) + 'px');
+            if (solver) solver._layout();
         },
 
         /** System back. Returns true if handled; false lets the app close. */
         handleBack() {
             if (UI.closeTop()) return true;
-            if (!solverView.hidden) {
-                if (Solver.handleBack()) return true;
-                Solver.exit();
+            if (solver) {
+                if (!solver.handleBack()) closeSolver();
                 return true;
             }
             return Library.handleBack();
@@ -117,8 +146,12 @@
 
         /** The app is going to the background: stop the clock and save. */
         onAppPause() {
-            if (Solver.isOpen()) Solver.appPaused();
+            if (solver) solver.pauseForBackground();
+            Library.flush();
         },
+
+        /** For tests: the open puzzle's id, if any. */
+        openPuzzleId: () => (openEntry ? openEntry.id : null),
     };
 
     global.App = App;

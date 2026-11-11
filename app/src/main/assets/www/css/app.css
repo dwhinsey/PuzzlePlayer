@@ -66,6 +66,20 @@ button {
     padding-top: var(--inset-top);
 }
 
+/* The site's solver fills the screen below the status bar. */
+.solver-host {
+    flex: 1;
+    min-height: 0;
+}
+
+/* On the site the solver's rows are centred together in the page. In the app
+   the grid area takes the spare height instead, so the top bar sits at the
+   top of the screen and the keyboard at the bottom, the grid resting just
+   above the clue bar as on the site. */
+.solver-view .solver-layout {
+    flex: 1 1 auto;
+}
+
 /* The keyboard runs under the navigation bar, keeping its keys above it. */
 .solver-view .mobile-keyboard {
     padding-bottom: calc(10px + var(--inset-bottom));

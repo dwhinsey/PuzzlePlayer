@@ -5,7 +5,7 @@
  *   {
  *     title, author, copyright, notes,        plain text
  *     width, height,
- *     cells: [{ block, void, solution, number, circle, shade, given }]  row-major
+ *     cells: [{ block, void, solution, number, circle, color, given }]  row-major
  *     clues: { across: [{ num, html, cells: [index...] }], down: [...] },
  *     hasSolution                             false for scrambled .puz files
  *   }
@@ -85,25 +85,19 @@
         return s === '' ? null : s;
     }
 
-    // Opaque colours would hide the selection highlight under the shading
-    // (which is drawn as an inset shadow), so shading is made translucent.
-    function translucent(color) {
+    // Shading colour as six hex digits without '#', which is what the solver
+    // expects (it adds its own transparency). White means no shading.
+    function hexColor(color) {
         if (!color) return null;
-        let c = String(color).trim();
-        if (/^[0-9a-f]{6}$/i.test(c) || /^[0-9a-f]{3}$/i.test(c)) c = '#' + c;
-        let m = /^#([0-9a-f]{3})$/i.exec(c);
-        if (m) c = '#' + m[1].split('').map((x) => x + x).join('');
-        m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(c);
-        if (m) {
-            const [r, g, b] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16));
-            if (r > 245 && g > 245 && b > 245) return null; // white: no shading
-            return 'rgba(' + r + ',' + g + ',' + b + ',0.45)';
-        }
-        return c;
+        let c = String(color).trim().replace(/^#/, '');
+        if (/^[0-9a-f]{3}$/i.test(c)) c = c.split('').map((x) => x + x).join('');
+        if (!/^[0-9a-f]{6}$/i.test(c)) return null;
+        c = c.toLowerCase();
+        return c === 'ffffff' ? null : c;
     }
 
     function blankCell() {
-        return { block: false, void: false, solution: null, number: null, circle: false, shade: null, given: null };
+        return { block: false, void: false, solution: null, number: null, circle: false, color: null, given: null };
     }
 
     // ---------- Grid geometry shared by the formats ----------
@@ -330,8 +324,8 @@
 
                 if (style) {
                     if (style.shapebg === 'circle') cell.circle = true;
-                    if (style.color) cell.shade = translucent(style.color);
-                    else if (style.highlight) cell.shade = 'rgba(0,0,0,0.15)';
+                    if (style.color) cell.color = hexColor(style.color);
+                    else if (style.highlight) cell.color = 'cccccc';
                 }
 
                 if (!cell.block && !cell.void && Array.isArray(j.solution)) {
@@ -441,7 +435,7 @@
                 if (num) cell.number = num;
                 if ((e.getAttribute('background-shape') || '').toLowerCase() === 'circle') cell.circle = true;
                 const bg = e.getAttribute('background-color');
-                if (bg) cell.shade = translucent(bg);
+                if (bg) cell.color = hexColor(bg);
                 if (e.getAttribute('hint') === 'true' && cell.solution) cell.given = cell.solution;
             }
         }

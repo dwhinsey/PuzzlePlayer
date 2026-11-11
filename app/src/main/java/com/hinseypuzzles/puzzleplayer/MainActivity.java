@@ -2,10 +2,12 @@ package com.hinseypuzzles.puzzleplayer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -57,6 +61,12 @@ public class MainActivity extends Activity {
 
         setUpEdgeToEdge();
 
+        // Debug builds can be inspected from desktop Chrome (chrome://inspect),
+        // which the emulator test in CI also uses.
+        if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
         webView = new WebView(this);
         webView.setBackgroundColor(Color.parseColor("#E9EEF4"));
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -96,6 +106,33 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 pageLoaded = true;
                 pushInsets();
+            }
+        });
+
+        // The solver asks before clearing or resetting with window.confirm(),
+        // which a WebView only shows if the app supplies the dialog.
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+                if (isFinishing()) return false;
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, (d, w) -> result.confirm())
+                        .setNegativeButton(android.R.string.cancel, (d, w) -> result.cancel())
+                        .setOnCancelListener(d -> result.cancel())
+                        .show();
+                return true;
+            }
+
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                if (isFinishing()) return false;
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, (d, w) -> result.confirm())
+                        .setOnCancelListener(d -> result.cancel())
+                        .show();
+                return true;
             }
         });
 

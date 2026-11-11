@@ -58,8 +58,11 @@
         for (const p of lib.puzzles) if (p.folderId && !ids.has(p.folderId)) p.folderId = null;
     }
 
+    let dirty = false;
+
     function save() {
         Store.writeJSON(LIBRARY_FILE, lib);
+        dirty = false;
     }
 
     // ---------- Helpers ----------
@@ -153,6 +156,12 @@
         }
     }
 
+    // Same format as the solver's timer: minutes keep counting past an hour.
+    function formatTime(ms) {
+        const total = Math.floor(ms / 1000);
+        return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+    }
+
     function plural(n, word) {
         return n + ' ' + word + (n === 1 ? '' : 's');
     }
@@ -178,11 +187,11 @@
     function statusLabel(p) {
         if (p.status === 'done') {
             return '<span class="lib-state done">Solved</span>' +
-                (p.elapsed ? '<span class="lib-state-sub">' + Solver.formatTime(p.elapsed) + '</span>' : '');
+                (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
         }
         if (p.status === 'progress') {
             return '<span class="lib-state progress">' + (p.percent || 0) + '%</span>' +
-                (p.elapsed ? '<span class="lib-state-sub">' + Solver.formatTime(p.elapsed) + '</span>' : '');
+                (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
         }
         return '<span class="lib-state new">New</span>';
     }
@@ -674,12 +683,23 @@
         puzzleById,
         displayTitle,
 
-        /** Called by the solver whenever progress is saved. */
+        /**
+         * Called whenever the solver saves (every second while the clock runs).
+         * The library file is rewritten only when the status or percentage
+         * changes; the time is written by flush().
+         */
         updateProgress(id, summary) {
             const p = puzzleById(id);
             if (!p) return;
-            Object.assign(p, summary, { lastOpened: Date.now() });
-            save();
+            const changed = p.status !== summary.status || p.percent !== summary.percent;
+            Object.assign(p, summary);
+            dirty = true;
+            if (changed) save();
+        },
+
+        /** Writes any unsaved progress summaries. */
+        flush() {
+            if (dirty) save();
         },
 
         handleBack() {
