@@ -130,14 +130,13 @@ button {
 }
 
 /* Text buttons ("Notes", and the help button labelled "Assist"): pills like
-   the site's Rebus button. They, and the pencil, match the timer: its text
-   size (the site's .timer-display, 1.3em) and its pill's height. */
+   the site's Rebus button, a little smaller than the timer beside them. */
 .solver-view .icon-btn.assist-btn,
 .solver-view .icon-btn.notes-btn {
     width: auto;
-    padding: 0 14px;
-    border-radius: 20px;
-    font-size: 1.3em;
+    padding: 0 13px;
+    border-radius: 18px;
+    font-size: 1.1em;
     font-weight: 600;
     letter-spacing: 0.01em;
 }
@@ -145,16 +144,16 @@ button {
 .solver-view .solver-topbar .pencil-btn,
 .solver-view .icon-btn.assist-btn,
 .solver-view .icon-btn.notes-btn {
-    height: 39px;
+    height: 36px;
 }
 
 .solver-view .solver-topbar .pencil-btn {
-    width: 39px;
+    width: 36px;
 }
 
 .solver-view .solver-topbar .pencil-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 /* Narrow phones: a little tighter so the row still fits. */
@@ -166,7 +165,7 @@ button {
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {
         padding: 0 10px;
-        font-size: 1.15em;
+        font-size: 1em;
     }
 
     .solver-view .timer-wrap {
@@ -178,24 +177,24 @@ button {
 @media (min-width: 701px) {
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {
-        padding: 0 20px;
-        border-radius: 27px;
-        font-size: 1.7em;
+        padding: 0 18px;
+        border-radius: 25px;
+        font-size: 1.44em;
     }
 
     .solver-view .solver-topbar .pencil-btn,
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {
-        height: 53px;
+        height: 49px;
     }
 
     .solver-view .solver-topbar .pencil-btn {
-        width: 53px;
+        width: 49px;
     }
 
     .solver-view .solver-topbar .pencil-btn svg {
-        width: 27px;
-        height: 27px;
+        width: 24px;
+        height: 24px;
     }
 }
 
