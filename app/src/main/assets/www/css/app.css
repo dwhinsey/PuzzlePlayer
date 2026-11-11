@@ -414,6 +414,19 @@ button {
     transform: translate(-50%, 0);
 }
 
+/* Keys show as pressed only while a finger is on them (the .pressed class
+   from js/solver-app.js). The browser's own :active state, which the site's
+   CSS also styles, is held for a minimum time after a quick tap, so keys
+   lingered in the pressed colour after the finger lifted. */
+.solver-view .kb-key:active:not(.pressed) {
+    background: #ffffff;
+}
+
+.solver-view .kb-key.kb-backspace:active:not(.pressed),
+.solver-view .kb-key.kb-more:active:not(.pressed) {
+    background: #bcc2cc;
+}
+
 /* No panning or zooming starts from the keyboard, so a finger that drifts
    while pressing a key isn't taken for a scroll and cancelled. */
 .solver-view .mobile-keyboard {

@@ -143,9 +143,12 @@ html[data-theme="dark"] .dialog-btn:active {
 }
 
 html[data-theme="dark"] .sheet-item.checked .sheet-item-label,
-html[data-theme="dark"] .sheet-item-check,
-html[data-theme="dark"] .dialog-btn {
+html[data-theme="dark"] .sheet-item-check {
     color: #9dbcf5;
+}
+
+html[data-theme="dark"] .dialog-btn {
+    color: var(--d-text);
 }
 
 html[data-theme="dark"] .sheet-item.danger {
@@ -162,9 +165,13 @@ html[data-theme="dark"] .dialog-input {
     border-color: var(--d-line);
 }
 
+html[data-theme="dark"] .dialog-btn.primary,
+html[data-theme="dark"] .dialog-btn.danger {
+    color: #ffffff;
+}
+
 html[data-theme="dark"] .dialog-btn.primary {
     background: var(--d-accent);
-    color: #ffffff;
 }
 
 html[data-theme="dark"] .toast {
@@ -327,15 +334,23 @@ html[data-theme="dark"] .kb-key.kb-more {
     background: var(--d-key-special);
 }
 
-html[data-theme="dark"] .kb-key:active,
 html[data-theme="dark"] .kb-key.pressed {
     background: var(--d-surface-2);
 }
 
+/* Not the browser's :active state, which lingers after a quick tap (see
+   app.css): keys look pressed only while a finger is on them. */
+html[data-theme="dark"] .solver-view .kb-key:active:not(.pressed) {
+    background: var(--d-key);
+}
+
+html[data-theme="dark"] .solver-view .kb-key.kb-backspace:active:not(.pressed),
+html[data-theme="dark"] .solver-view .kb-key.kb-more:active:not(.pressed) {
+    background: var(--d-key-special);
+}
+
 /* The rebus and backspace keys are already darker than the letters, so
    they brighten when pressed rather than darkening into the keyboard. */
-html[data-theme="dark"] .kb-key.kb-backspace:active,
-html[data-theme="dark"] .kb-key.kb-more:active,
 html[data-theme="dark"] .kb-key.kb-backspace.pressed,
 html[data-theme="dark"] .kb-key.kb-more.pressed {
     background: var(--d-key-special-pressed);
