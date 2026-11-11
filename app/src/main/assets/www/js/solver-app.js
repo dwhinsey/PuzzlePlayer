@@ -263,6 +263,51 @@
             if (this.destroyed) return;
             super._layout();
             this._centreTopbar();
+            this._centreOnGrid();
+        }
+
+        /**
+         * Pop-ups centre on the grid rather than on the whole screen: the
+         * solver's own cards (start, pause, result) by placing them within
+         * their overlay, and the app's dialogs (clear, reset) through
+         * --grid-centre-y, which css/app.css uses while solving.
+         */
+        _centreOnGrid() {
+            if (!this.gridEl || this.destroyed) return;
+            const grid = this.gridEl.getBoundingClientRect();
+            if (!grid.height) return;
+            const mid = grid.top + grid.height / 2;
+            document.documentElement.style.setProperty('--grid-centre-y', Math.round(mid) + 'px');
+            for (const overlay of this.root.querySelectorAll(':scope > .solver-overlay')) {
+                const card = overlay.querySelector('.solver-overlay-card');
+                if (!card) continue;
+                if (overlay.hidden) continue;
+                const box = overlay.getBoundingClientRect();
+                const cs = getComputedStyle(overlay);
+                // The card is placed within the overlay's padding.
+                const padTop = parseFloat(cs.paddingTop) || 0;
+                const inner = box.height - padTop - (parseFloat(cs.paddingBottom) || 0);
+                // A card taller than the space (long notes, a small screen) scrolls.
+                card.style.boxSizing = 'border-box';
+                card.style.maxHeight = Math.floor(inner) + 'px';
+                card.style.overflowY = 'auto';
+                const top = mid - box.top - padTop - card.offsetHeight / 2;
+                overlay.style.alignItems = 'flex-start';
+                card.style.marginTop = Math.round(Math.max(0, Math.min(top, inner - card.offsetHeight))) + 'px';
+            }
+        }
+
+        _watchOverlays() {
+            // The site's code shows and hides these by toggling `hidden`.
+            this.overlayWatcher = new MutationObserver(() => this._centreOnGrid());
+            // Also any change inside the card (text, parts shown or hidden)
+            // that alters its height.
+            for (const overlay of this.root.querySelectorAll(':scope > .solver-overlay')) {
+                this.overlayWatcher.observe(overlay, {
+                    attributes: true, attributeFilter: ['hidden'],
+                    childList: true, subtree: true, characterData: true,
+                });
+            }
         }
 
         /**
@@ -281,6 +326,7 @@
 
         _render() {
             super._render();
+            this._watchOverlays();
             // "?" becomes "Assist"; Clear Grid and Reset Puzzle move to the
             // Settings sheet (see puzzleSettings below).
             this.helpBtn.textContent = 'Assist';
@@ -388,7 +434,6 @@
             UI.notes({
                 title: 'Notes',
                 value: this._readNotes(),
-                placeholder: 'Jot down anything for this puzzle\u2026',
                 onInput: (text) => {
                     clearTimeout(timer);
                     timer = setTimeout(() => this._writeNotes(text), 300);
@@ -479,6 +524,8 @@
 
         destroy() {
             if (this.releaseKeys) this.releaseKeys();
+            if (this.overlayWatcher) this.overlayWatcher.disconnect();
+            document.documentElement.style.removeProperty('--grid-centre-y');
             if (this.timerInterval) {
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;
