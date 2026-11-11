@@ -43,7 +43,7 @@ files, using the mobile solving interface from hinseypuzzles.com.
   **Notes** and **Assist** on the right.
 - **Notes:** a scratch pad for each puzzle, saved as you type and kept until
   the puzzle is reset (from the solver's Settings or the library's ⋮ menu)
-  or deleted. A dot on the Notes button shows when a puzzle has notes.
+  or deleted.
 - **Settings** (the gear on the home page and in the solver) **→ Appearance:**
   Light, Dark (a neutral grey "Graphite" palette, css/theme-dark.css) or
   Match phone setting.

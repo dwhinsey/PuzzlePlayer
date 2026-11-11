@@ -175,22 +175,6 @@ button {
     }
 }
 
-/* A dot on Notes when the puzzle has notes. */
-.solver-view .notes-btn {
-    position: relative;
-}
-
-.solver-view .notes-btn.has-notes::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    right: 5px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #f0a020;
-}
-
 @media (min-width: 701px) {
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {

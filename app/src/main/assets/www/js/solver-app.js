@@ -299,7 +299,6 @@
             });
             this.topbarRightEl.insertBefore(notesBtn, this.helpBtn.closest('.help-wrap'));
             this.notesBtn = notesBtn;
-            this._showNotesDot();
             for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
                 if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
             }
@@ -368,7 +367,6 @@
             }).then((ok) => {
                 if (!ok || this.destroyed) return;
                 this._writeNotes('');
-                this._showNotesDot();
                 this._confirmed(super.resetPuzzle);
             });
         }
@@ -381,11 +379,6 @@
 
         _writeNotes(text) {
             if (this.appStore && this.appStore.notes) this.appStore.notes.write(text);
-        }
-
-        /** A dot on the Notes button when this puzzle has notes. */
-        _showNotesDot() {
-            if (this.notesBtn) this.notesBtn.classList.toggle('has-notes', !!this._readNotes().trim());
         }
 
         /** The notes pop-up. Saved as you type; kept until the puzzle is reset. */
@@ -403,7 +396,6 @@
             }).then((text) => {
                 clearTimeout(timer);
                 this._writeNotes(text);
-                this._showNotesDot();
                 if (!this.destroyed) this.gridEl.focus();
             });
         }
