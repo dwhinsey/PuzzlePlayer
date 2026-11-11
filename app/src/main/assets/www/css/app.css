@@ -130,15 +130,49 @@ button {
 }
 
 /* Text buttons ("Notes", and the help button labelled "Assist"): pills like
-   the site's Rebus button. */
+   the site's Rebus button. They, and the pencil, match the timer: its text
+   size (the site's .timer-display, 1.3em) and its pill's height. */
 .solver-view .icon-btn.assist-btn,
 .solver-view .icon-btn.notes-btn {
     width: auto;
     padding: 0 14px;
-    border-radius: 17px;
-    font-size: 0.85em;
+    border-radius: 20px;
+    font-size: 1.3em;
     font-weight: 600;
     letter-spacing: 0.01em;
+}
+
+.solver-view .solver-topbar .pencil-btn,
+.solver-view .icon-btn.assist-btn,
+.solver-view .icon-btn.notes-btn {
+    height: 39px;
+}
+
+.solver-view .solver-topbar .pencil-btn {
+    width: 39px;
+}
+
+.solver-view .solver-topbar .pencil-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Narrow phones: a little tighter so the row still fits. */
+@media (max-width: 380px) {
+    .solver-view .solver-topbar {
+        gap: 7px;
+    }
+
+    .solver-view .icon-btn.assist-btn,
+    .solver-view .icon-btn.notes-btn {
+        padding: 0 10px;
+        font-size: 1.15em;
+    }
+
+    .solver-view .timer-wrap {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
 }
 
 /* A dot on Notes when the puzzle has notes. */
@@ -161,8 +195,23 @@ button {
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {
         padding: 0 20px;
-        border-radius: 23px;
-        font-size: 1em;
+        border-radius: 27px;
+        font-size: 1.7em;
+    }
+
+    .solver-view .solver-topbar .pencil-btn,
+    .solver-view .icon-btn.assist-btn,
+    .solver-view .icon-btn.notes-btn {
+        height: 53px;
+    }
+
+    .solver-view .solver-topbar .pencil-btn {
+        width: 53px;
+    }
+
+    .solver-view .solver-topbar .pencil-btn svg {
+        width: 27px;
+        height: 27px;
     }
 }
 
