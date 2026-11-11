@@ -105,21 +105,36 @@
     });
 
     const App = {
-        /** Called by the Android side with the files chosen in the system picker. */
-        onFilesPicked(json) {
+        /**
+         * Called by the Android side with files from the system picker, or
+         * from another app ("Open with" or "Share"). In the second case,
+         * `openAfter` is true and the puzzle opens straight away.
+         */
+        async onFilesPicked(json, openAfter) {
             let items;
             try {
                 items = JSON.parse(json);
             } catch (e) {
                 items = [];
             }
-            if (!items.length) return;
+            if (!items.length) return [];
             const files = items.map((it) => ({
                 name: it.name,
                 error: it.error,
                 bytes: it.data != null ? base64ToBytes(it.data) : null,
             }));
-            return Library.importFiles(files);
+            // A file from another app lands in the library, whatever was
+            // on screen when it arrived.
+            if (openAfter) {
+                UI.closeTop();
+                closeSolver();
+            }
+            const ids = await Library.importFiles(files);
+            if (openAfter && ids.length === 1) {
+                const entry = Library.puzzleById(ids[0]);
+                if (entry) openPuzzle(entry);
+            }
+            return ids;
         },
 
         /** Window insets (status bar, navigation bar, keyboard) in CSS pixels. */

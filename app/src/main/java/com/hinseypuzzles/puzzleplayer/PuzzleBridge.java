@@ -124,8 +124,13 @@ public class PuzzleBridge {
         activity.runOnUiThread(activity::openFilePicker);
     }
 
-    /** Reads the picked files off the UI thread and hands them to the page. */
-    void deliverPickedFiles(List<Uri> uris) {
+    /**
+     * Reads the files off the UI thread and hands them to the page.
+     *
+     * @param openAfter true for a file sent by another app, which the page
+     *                  opens in the solver once it is imported
+     */
+    void deliverPickedFiles(List<Uri> uris, boolean openAfter) {
         io.execute(() -> {
             JSONArray result = new JSONArray();
             ContentResolver resolver = activity.getContentResolver();
@@ -146,7 +151,8 @@ public class PuzzleBridge {
                 }
                 result.put(item);
             }
-            String js = "window.App && App.onFilesPicked(" + JSONObject.quote(result.toString()) + ")";
+            String js = "window.App && App.onFilesPicked(" + JSONObject.quote(result.toString())
+                    + ", " + openAfter + ")";
             activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
         });
     }

@@ -59,6 +59,44 @@ check_alive || { echo "STEP FAILED: relaunch"; dump_logs; exit 1; }
 node ci/emulator-test.js phase2 || { echo "STEP FAILED: phase2"; dump_logs; exit 1; }
 if app_crashed; then echo "STEP FAILED: crash during test"; dump_logs; exit 1; fi
 
+# ----- "Open with PuzzlePlayer" -----
+
+echo "Apps offered for a generic attachment:"
+adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+  -d content://com.example.mail/attachment/1 -t application/octet-stream | tee "$OUT/open-with.txt"
+grep -q "$PKG" "$OUT/open-with.txt" || { echo "STEP FAILED: not offered for application/octet-stream"; exit 1; }
+echo "Apps offered for a .puz file by name:"
+adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+  -d content://com.example.files/root/Download/puzzle.puz -t text/plain | tee -a "$OUT/open-with.txt"
+adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+  -d content://com.example.files/root/Download/puzzle.puz -t text/plain | grep -q "$PKG" \
+  || { echo "STEP FAILED: not offered for a .puz file by name"; exit 1; }
+echo "STEP OK: offered in Open with"
+
+send_file() {
+  # $1 = fixture name. Sent as an email app would: a VIEW intent for a
+  # generic binary, limited to this app so no chooser appears.
+  adb push "ci/fixtures/$1" "/data/local/tmp/$1" > /dev/null
+  adb shell chmod 644 "/data/local/tmp/$1"
+  adb shell am start -W -a android.intent.action.VIEW -p "$PKG" \
+    -d "file:///data/local/tmp/$1" -t application/octet-stream
+  sleep 6
+}
+
+# While the app is running (it is still open from phase 2).
+send_file jolly.jpz
+check_alive || { echo "STEP FAILED: open-with (running)"; dump_logs; exit 1; }
+node ci/emulator-test.js open-with "Jolly JPZ" || { echo "STEP FAILED: open-with (running)"; dump_logs; exit 1; }
+
+# From cold: the file arrives before the page has loaded.
+adb shell am force-stop "$PKG"
+sleep 2
+send_file tiny.ipuz
+check_alive || { echo "STEP FAILED: open-with (cold start)"; dump_logs; exit 1; }
+node ci/emulator-test.js open-with "Tiny iPuz" || { echo "STEP FAILED: open-with (cold start)"; dump_logs; exit 1; }
+if app_crashed; then echo "STEP FAILED: crash during open-with"; dump_logs; exit 1; fi
+echo "STEP OK: open-with"
+
 adb exec-out screencap -p > "$OUT/final.png"
 dump_logs
 echo "EMULATOR TEST PASSED"

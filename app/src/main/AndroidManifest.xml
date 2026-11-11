@@ -20,6 +20,62 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!--
+                "Open with PuzzlePlayer" for puzzle files in other apps.
+                Email apps and file managers rarely know these file types, so
+                .puz/.ipuz/.jpz files usually arrive as application/octet-stream
+                (generic binary). Accepting that type is what makes the app
+                show up for attachments; the app checks the contents and says
+                so if a file isn't a crossword.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:mimeType="application/x-crossword" />
+                <data android:mimeType="application/x-crossword-puzzle" />
+                <data android:mimeType="application/vnd.crossword-puzzle" />
+                <data android:mimeType="application/x-ipuz" />
+                <data android:mimeType="application/x-jpz" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+
+            <!-- Files whose name is part of the address, from file managers
+                 that do: matched by extension whatever type they are given. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.puz" />
+                <data android:pathPattern=".*\\..*\\.puz" />
+                <data android:pathPattern=".*\\..*\\..*\\.puz" />
+                <data android:pathPattern=".*\\.ipuz" />
+                <data android:pathPattern=".*\\..*\\.ipuz" />
+                <data android:pathPattern=".*\\..*\\..*\\.ipuz" />
+                <data android:pathPattern=".*\\.jpz" />
+                <data android:pathPattern=".*\\..*\\.jpz" />
+                <data android:pathPattern=".*\\..*\\..*\\.jpz" />
+            </intent-filter>
+
+            <!-- "Share" to PuzzlePlayer. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/x-crossword" />
+                <data android:mimeType="application/x-crossword-puzzle" />
+                <data android:mimeType="application/vnd.crossword-puzzle" />
+                <data android:mimeType="application/x-ipuz" />
+                <data android:mimeType="application/x-jpz" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
         </activity>
     </application>
 

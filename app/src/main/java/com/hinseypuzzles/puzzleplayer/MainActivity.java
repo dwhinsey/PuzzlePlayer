@@ -47,6 +47,8 @@ public class MainActivity extends Activity {
     /** Last known insets, in CSS pixels: top, right, bottom, left, keyboard. */
     private final float[] insets = new float[5];
     private boolean pageLoaded = false;
+    /** Files handed over by another app before the page had loaded. */
+    private List<Uri> pendingIncoming = null;
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
@@ -106,6 +108,10 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 pageLoaded = true;
                 pushInsets();
+                if (pendingIncoming != null) {
+                    bridge.deliverPickedFiles(pendingIncoming, true);
+                    pendingIncoming = null;
+                }
             }
         });
 
@@ -153,6 +159,59 @@ public class MainActivity extends Activity {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT, backCallback);
         }
+
+        // Opened from another app with a file. Not when Android is recreating
+        // the activity or reopening it from Recents, which replays the
+        // original intent: that file was dealt with the first time.
+        Intent intent = getIntent();
+        if (savedInstanceState == null && intent != null
+                && (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
+            handleIncomingFiles(intent);
+        }
+    }
+
+    /** "Open with" or "Share" while the app is already running. */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIncomingFiles(intent);
+    }
+
+    /**
+     * Imports the files another app sent (a tapped email attachment, a file
+     * in a file manager, or a Share) and opens the puzzle.
+     */
+    private void handleIncomingFiles(Intent intent) {
+        List<Uri> uris = incomingUris(intent);
+        if (uris.isEmpty()) return;
+        if (pageLoaded) {
+            bridge.deliverPickedFiles(uris, true);
+        } else {
+            pendingIncoming = uris;
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static List<Uri> incomingUris(Intent intent) {
+        List<Uri> uris = new ArrayList<>();
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(action)) {
+            if (intent.getData() != null) uris.add(intent.getData());
+        } else if (Intent.ACTION_SEND.equals(action)) {
+            Uri uri = Build.VERSION.SDK_INT >= 33
+                    ? intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri.class)
+                    : intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (uri != null) uris.add(uri);
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+            List<Uri> list = Build.VERSION.SDK_INT >= 33
+                    ? intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri.class)
+                    : intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if (list != null) {
+                for (Uri uri : list) if (uri != null) uris.add(uri);
+            }
+        }
+        return uris;
     }
 
     private void setUpEdgeToEdge() {
@@ -279,7 +338,7 @@ public class MainActivity extends Activity {
         try {
             startActivityForResult(intent, REQUEST_PICK_PUZZLES);
         } catch (ActivityNotFoundException e) {
-            bridge.deliverPickedFiles(new ArrayList<>());
+            bridge.deliverPickedFiles(new ArrayList<>(), false);
         }
     }
 
@@ -300,7 +359,7 @@ public class MainActivity extends Activity {
                 uris.add(data.getData());
             }
         }
-        bridge.deliverPickedFiles(uris);
+        bridge.deliverPickedFiles(uris, false);
     }
 
     @Override

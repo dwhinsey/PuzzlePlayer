@@ -67,6 +67,24 @@ async function shot(page, name) {
         const states = await page.locator('.lib-state').allInnerTexts();
         console.log('states:', states);
         if (!states.some((s) => /%/.test(s))) fail('no puzzle shows progress');
+    } else if (phase === 'open-with') {
+        // A file sent from "another app": it should be imported and open.
+        const expected = process.argv[3];
+        await page.waitForFunction(() => window.App && App.openPuzzleId(), null, { timeout: 15000 })
+            .catch(async () => {
+                const dialog = await page.locator('.dialog').innerText().catch(() => '(no dialog)');
+                fail('no puzzle opened; dialog: ' + dialog);
+            });
+        await page.waitForTimeout(500);
+        const title = await page.locator('.solver-overlay:not([hidden]) .overlay-title').first().innerText();
+        console.log('opened from another app:', title);
+        await shot(page, 'open-with-' + expected.replace(/\W+/g, '-'));
+        if (title !== expected) fail('expected "' + expected + '", got "' + title + '"');
+        await page.evaluate(() => App.handleBack());
+        await page.waitForTimeout(300);
+        const titles = await page.locator('.lib-row-title').allInnerTexts();
+        console.log('library:', titles);
+        if (titles.length !== 3) fail('expected 3 puzzles in the library, got ' + titles.length);
     } else {
         const states = await page.locator('.lib-state').allInnerTexts();
         console.log('states after relaunch:', states);

@@ -527,7 +527,12 @@
 
     // ---------- Import ----------
 
+    /**
+     * Adds files to the library. Resolves to the ids of the puzzles they
+     * hold, in order, including ones that were already in the library.
+     */
     async function importFiles(files) {
+        const ids = [];
         let added = 0;
         let duplicates = 0;
         const failures = [];
@@ -542,6 +547,7 @@
                 const id = hashBytes(file.bytes);
                 if (puzzleById(id)) {
                     duplicates++;
+                    ids.push(id);
                     continue;
                 }
                 const puzzle = await Parsers.parse(file.bytes, name);
@@ -561,6 +567,7 @@
                     elapsed: 0,
                 };
                 lib.puzzles.push(entry);
+                ids.push(id);
                 lastAdded = entry;
                 added++;
             } catch (e) {
@@ -585,6 +592,7 @@
             const msg = parts.join('; ');
             UI.toast(msg.charAt(0).toUpperCase() + msg.slice(1));
         }
+        return ids;
     }
 
     // ---------- Events ----------

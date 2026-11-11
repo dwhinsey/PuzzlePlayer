@@ -11,6 +11,13 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - **+** in the top bar opens the phone's file picker; you can pick several
   files at once. Puzzles are copied into the app, so the originals can be moved
   or deleted afterwards. The same file added twice is spotted and skipped.
+- **Open with PuzzlePlayer**: tap a .puz, .ipuz or .jpz file in another app
+  (an email attachment, a download, a file manager) and choose PuzzlePlayer.
+  The puzzle is added to the library and opens straight away; if it's already
+  there, it just opens. **Share → PuzzlePlayer** works too. Because these
+  files usually arrive with a generic "binary file" type, PuzzlePlayer may
+  also be offered for other unrecognised files; it says so if one isn't a
+  crossword.
 - Folders (nested if you like): the folder button creates one in the current
   folder; puzzles added while inside a folder go into it.
 - Search by title or author (searches every folder).
