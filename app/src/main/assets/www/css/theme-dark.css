@@ -15,7 +15,7 @@ html[data-theme="dark"] {
     --d-text: #ececec;
     --d-muted: #9e9e9e;
     --d-line: #3a3a3a;
-    --d-header: #252b33;
+    --d-header: #2b323c;
     --d-accent: #4f7fd9;
 
     /* Grid */
@@ -34,7 +34,7 @@ html[data-theme="dark"] {
     --d-revealed: #c792ea;
 
     /* Clue bar and keyboard */
-    --d-clue-bar: #252b33;
+    --d-clue-bar: #2b323c;
     --d-keyboard: #1a1a1a;
     --d-key: #3b3b3b;
     --d-key-special: #2a2a2a;
