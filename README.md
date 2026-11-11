@@ -40,7 +40,8 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - The on-screen keyboard tracks each finger separately, so fast, overlapping
   taps don't drop letters. A key types when the finger lifts, as on Gboard
   (slide to a neighbouring key before lifting to change it), and a pop-up
-  shows the letter above the key while it is held.
+  shows the letter above the key while it is held (can be turned off in the
+  solver's Settings).
 - A header bar across the top holds the back button, the puzzle's title and
   author, and a settings button. Below it: the timer on the left; pencil,
   **Notes** and **Assist** on the right.

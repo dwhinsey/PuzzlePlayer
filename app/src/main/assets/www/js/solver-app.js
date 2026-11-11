@@ -160,7 +160,7 @@
             press.key = key;
             key.classList.add('pressed');
             const letter = letterOf(key);
-            press.preview = letter ? showPreview(key, letter) : null;
+            press.preview = letter && Settings.keyPreview() ? showPreview(key, letter) : null;
         };
 
         const finish = (pointerId, type) => {

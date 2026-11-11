@@ -88,6 +88,21 @@
             },
         ],
         onLibraryChange: (fn) => libraryListeners.push(fn),
+        /** Whether a pressed key shows its letter above it (default on). */
+        keyPreview: () => settings.keyPreview !== false,
+        /** Items for the solver's Settings sheet (not shown on the home page). */
+        solverItems: () => [
+            { section: 'Keyboard' },
+            {
+                indent: 1,
+                label: 'Letter pop-up on key press',
+                checked: settings.keyPreview !== false,
+                action: () => {
+                    settings.keyPreview = settings.keyPreview === false;
+                    Store.writeJSON(FILE, settings);
+                },
+            },
+        ],
         onChange: (fn) => listeners.push(fn),
         /** Called by the Android side when the phone's dark theme changes. */
         setSystemDark(dark) {
