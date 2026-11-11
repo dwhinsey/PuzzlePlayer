@@ -36,6 +36,15 @@
         apply();
     }
 
+    /** Home page option: leave solved puzzles out of the library list. */
+    function setHideSolved(hide) {
+        settings.hideSolved = !!hide;
+        Store.writeJSON(FILE, settings);
+        for (const fn of libraryListeners) fn();
+    }
+
+    const libraryListeners = [];
+
     /** extraItems: more sheet items, e.g. the open puzzle's Clear and Reset. */
     function open(extraItems) {
         const t = settings.theme;
@@ -67,6 +76,18 @@
     global.Settings = {
         isDark,
         open,
+        hideSolved: () => !!settings.hideSolved,
+        /** Items for the home page's Settings sheet (not shown in a puzzle). */
+        libraryItems: () => [
+            { section: 'Library' },
+            {
+                indent: 1,
+                label: 'Hide solved puzzles',
+                checked: !!settings.hideSolved,
+                action: () => setHideSolved(!settings.hideSolved),
+            },
+        ],
+        onLibraryChange: (fn) => libraryListeners.push(fn),
         onChange: (fn) => listeners.push(fn),
         /** Called by the Android side when the phone's dark theme changes. */
         setSystemDark(dark) {

@@ -314,31 +314,46 @@
         list.innerHTML = '';
         const frag = document.createDocumentFragment();
 
+        // Puzzles in three groups: in progress first, then new, then (under
+        // their own heading) solved; the chosen sort applies within each.
+        // Solved ones can be hidden from Settings.
+        const hideSolved = Settings.hideSolved();
+        const addPuzzles = (puzzles, showFolder, heading) => {
+            const sorted = sortPuzzles(puzzles);
+            const active = sorted.filter((p) => p.status === 'progress')
+                .concat(sorted.filter((p) => p.status !== 'progress' && p.status !== 'done'));
+            const solved = hideSolved ? [] : sorted.filter((p) => p.status === 'done');
+            if (active.length && heading) frag.appendChild(sectionLabel(heading(active.length)));
+            for (const p of active) frag.appendChild(puzzleRow(p, showFolder));
+            if (solved.length) {
+                frag.appendChild(sectionLabel('Completed'));
+                for (const p of solved) frag.appendChild(puzzleRow(p, showFolder));
+            }
+            return active.length + solved.length;
+        };
+
         if (query) {
             const needle = fold(query.trim());
             const folders = sortFolders(lib.folders.filter((f) => fold(f.name).includes(needle)));
-            const puzzles = sortPuzzles(lib.puzzles.filter((p) =>
-                fold(displayTitle(p)).includes(needle) || fold(p.author).includes(needle)));
-            if (!folders.length && !puzzles.length) {
-                frag.appendChild(emptyState('No matches', 'No puzzle has “' + query.trim() + '” in its title or author.', false));
-            } else {
-                if (folders.length) {
-                    frag.appendChild(sectionLabel('Folders'));
-                    for (const f of folders) frag.appendChild(folderRow(f));
-                }
-                if (puzzles.length) {
-                    frag.appendChild(sectionLabel(plural(puzzles.length, 'puzzle')));
-                    for (const p of puzzles) frag.appendChild(puzzleRow(p, true));
-                }
+            const puzzles = lib.puzzles.filter((p) =>
+                fold(displayTitle(p)).includes(needle) || fold(p.author).includes(needle));
+            if (folders.length) {
+                frag.appendChild(sectionLabel('Folders'));
+                for (const f of folders) frag.appendChild(folderRow(f));
+            }
+            const shown = addPuzzles(puzzles, true, (n) => plural(n, 'puzzle'));
+            if (!folders.length && !shown) {
+                frag.appendChild(emptyState('No matches', 'No puzzle has \u201c' + query.trim() + '\u201d in its title or author.', false));
             }
         } else {
             const folders = sortFolders(lib.folders.filter((f) => (f.parentId || null) === currentFolder));
-            const puzzles = sortPuzzles(lib.puzzles.filter((p) => (p.folderId || null) === currentFolder));
+            const puzzles = lib.puzzles.filter((p) => (p.folderId || null) === currentFolder);
             for (const f of folders) frag.appendChild(folderRow(f));
-            if (folders.length && puzzles.length) frag.appendChild(sectionLabel(plural(puzzles.length, 'puzzle')));
-            for (const p of puzzles) frag.appendChild(puzzleRow(p, false));
-            if (!folders.length && !puzzles.length) {
-                if (folder) {
+            const shown = addPuzzles(puzzles, false, folders.length ? (n) => plural(n, 'puzzle') : null);
+            if (!folders.length && !shown) {
+                if (puzzles.length) {
+                    frag.appendChild(emptyState('All solved', 'Every puzzle here is solved. Solved puzzles are hidden; you can show them again in Settings.', false));
+                } else if (folder) {
                     frag.appendChild(emptyState('This folder is empty', 'Tap + to add puzzles here, or long-press a puzzle to move it in.', true));
                 } else {
                     frag.appendChild(emptyState('No puzzles yet', 'Add .puz, .ipuz or .jpz files from your phone to start solving.', true));

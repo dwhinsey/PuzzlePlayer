@@ -97,8 +97,10 @@
     // The gear in both headers.
     for (const btn of document.querySelectorAll('.settings-btn')) {
         // In a puzzle, Settings also offers Clear grid and Reset puzzle.
-        btn.addEventListener('click', () => Settings.open(solver ? solver.puzzleSettings() : null));
+        // On the home page, Settings offers the library options instead.
+        btn.addEventListener('click', () => Settings.open(solver ? solver.puzzleSettings() : Settings.libraryItems()));
     }
+    Settings.onLibraryChange(() => Library.render());
     Settings.onChange(() => setBars());
 
     // The header's back button (and the solver's own, which the app hides)
