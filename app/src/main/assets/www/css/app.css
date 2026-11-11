@@ -119,6 +119,11 @@ button {
     gap: 10px;
     position: relative;
     z-index: 16;
+    /* Equal space above and below, so the row sits centred between the
+       header and the grid even when there is no spare room. */
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 0;
 }
 
 .solver-view .solver-topbar .topbar-left {
@@ -154,6 +159,85 @@ button {
 .solver-view .solver-topbar .pencil-btn svg {
     width: 18px;
     height: 18px;
+}
+
+/* Compact row, for tall grids that leave little room above them
+   (js/solver-app.js adds .compact-top). */
+.solver-host.compact-top .solver-topbar {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.solver-host.compact-top .timer-wrap {
+    padding: 4px 14px;
+}
+
+.solver-host.compact-top .timer-display {
+    font-size: 1.15em;
+}
+
+.solver-host.compact-top .timer-pause-btn {
+    width: 20px;
+    height: 20px;
+}
+
+.solver-host.compact-top .solver-topbar .pencil-btn,
+.solver-host.compact-top .icon-btn.assist-btn,
+.solver-host.compact-top .icon-btn.notes-btn {
+    height: 32px;
+}
+
+.solver-host.compact-top .solver-topbar .pencil-btn {
+    width: 32px;
+}
+
+.solver-host.compact-top .solver-topbar .pencil-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.solver-host.compact-top .icon-btn.assist-btn,
+.solver-host.compact-top .icon-btn.notes-btn {
+    font-size: 1em;
+    padding: 0 12px;
+    border-radius: 16px;
+}
+
+@media (min-width: 701px) {
+    .solver-host.compact-top .timer-wrap {
+        padding: 6px 20px;
+    }
+
+    .solver-host.compact-top .timer-display {
+        font-size: 1.45em;
+    }
+
+    .solver-host.compact-top .timer-pause-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    .solver-host.compact-top .solver-topbar .pencil-btn,
+    .solver-host.compact-top .icon-btn.assist-btn,
+    .solver-host.compact-top .icon-btn.notes-btn {
+        height: 42px;
+    }
+
+    .solver-host.compact-top .solver-topbar .pencil-btn {
+        width: 42px;
+    }
+
+    .solver-host.compact-top .solver-topbar .pencil-btn svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .solver-host.compact-top .icon-btn.assist-btn,
+    .solver-host.compact-top .icon-btn.notes-btn {
+        font-size: 1.25em;
+        padding: 0 16px;
+        border-radius: 21px;
+    }
 }
 
 /* Narrow phones: a little tighter so the row still fits. */
@@ -461,6 +545,19 @@ body.solving .dialog:not(.notes-dialog) {
 
 .notes-dialog {
     width: min(480px, calc(100% - 32px));
+}
+
+/* Given a fixed size (js/solver-app.js), the text box fills it. */
+.notes-dialog.placed {
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+}
+
+.notes-dialog.placed .notes-text {
+    flex: 1;
+    min-height: 0;
+    height: auto;
 }
 
 .notes-text {

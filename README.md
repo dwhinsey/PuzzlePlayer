@@ -24,8 +24,8 @@ files, using the mobile solving interface from hinseypuzzles.com.
   folder; the back arrow or Back gesture closes it).
 - Sort by date added (newest/oldest), title (A–Z/Z–A) or size (smallest/
   biggest; puzzles of the same size keep the date or title order used before).
-- Every puzzle and folder has a **⋮** menu (or long-press it): move to folder,
-  rename, reset progress, delete.
+- Long-press a puzzle or folder for its menu: move to folder, rename, reset
+  progress, delete.
 
 **Solver**
 - The hinseypuzzles.com solver, as it works on a phone: same grid, clue bar,
@@ -42,7 +42,8 @@ files, using the mobile solving interface from hinseypuzzles.com.
   author, and a settings button. Below it: the timer on the left; pencil,
   **Notes** and **Assist** on the right.
 - **Notes:** a scratch pad for each puzzle, saved as you type and kept until
-  the puzzle is reset (from the solver's Settings or the library's ⋮ menu)
+  the puzzle is reset (from the solver's Settings or by long-pressing it in
+  the library)
   or deleted.
 - **Settings** (the gear on the home page and in the solver) **→ Appearance:**
   Light, Dark (a neutral grey "Graphite" palette, css/theme-dark.css) or

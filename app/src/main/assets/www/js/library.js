@@ -242,8 +242,7 @@
             (p.author ? '<span class="lib-row-sub">' + esc(p.author) + '</span>' : '') +
             '<span class="lib-row-meta">' + esc(metaBits.join(' · ')) + '</span>' +
             '</span>' +
-            '<span class="lib-row-side">' + statusLabel(p) + '</span>' +
-            '<button type="button" class="lib-more" aria-label="More options">' + ICONS.more + '</button>';
+            '<span class="lib-row-side">' + statusLabel(p) + '</span>';
         return row;
     }
 
@@ -265,8 +264,7 @@
             '<span class="lib-row-title">' + Parsers.escapeHtml(f.name) + '</span>' +
             '<span class="lib-row-meta">' + Parsers.escapeHtml(bits.join(' · ')) + '</span>' +
             '</span>' +
-            '<span class="lib-row-side lib-chevron">' + ICONS.chevron + '</span>' +
-            '<button type="button" class="lib-more" aria-label="More options">' + ICONS.more + '</button>';
+            '<span class="lib-row-side lib-chevron">' + ICONS.chevron + '</span>';
         return row;
     }
 
@@ -341,7 +339,7 @@
             for (const p of puzzles) frag.appendChild(puzzleRow(p, false));
             if (!folders.length && !puzzles.length) {
                 if (folder) {
-                    frag.appendChild(emptyState('This folder is empty', 'Tap + to add puzzles here, or move puzzles in with their ⋮ menu.', true));
+                    frag.appendChild(emptyState('This folder is empty', 'Tap + to add puzzles here, or long-press a puzzle to move it in.', true));
                 } else {
                     frag.appendChild(emptyState('No puzzles yet', 'Add .puz, .ipuz or .jpz files from your phone to start solving.', true));
                 }
@@ -650,7 +648,7 @@
 
     // ---------- Events ----------
 
-    // Long-press opens the same menu as the ⋮ button.
+    // Long-press a puzzle or folder for its menu.
     let pressTimer = null;
     let pressStart = null;
     let longPressed = false;
@@ -664,10 +662,27 @@
         row.classList.add('pressing');
         pressTimer = setTimeout(() => {
             longPressed = true;
+            swallowNextClick = true;
             row.classList.remove('pressing');
             showRowActions(row);
         }, 520);
     });
+
+    // Lifting the finger after a long-press can produce a click on whatever
+    // is under it, which by then is the menu's backdrop, closing the menu at
+    // once. That one click is dropped.
+    let swallowNextClick = false;
+    document.addEventListener('click', (e) => {
+        if (!swallowNextClick) return;
+        swallowNextClick = false;
+        e.stopPropagation();
+        e.preventDefault();
+    }, true);
+    // That click comes straight after the finger lifts; a deliberate tap on
+    // the menu comes much later and must not be lost.
+    document.addEventListener('pointerup', () => {
+        if (swallowNextClick) setTimeout(() => { swallowNextClick = false; }, 50);
+    }, true);
 
     function cancelPress() {
         clearTimeout(pressTimer);

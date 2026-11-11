@@ -146,11 +146,19 @@
         /**
          * A dialog with a large text box. onInput gets the text as it is
          * typed; resolves with the final text when the dialog closes.
+         * centreY and height (px) fix its position and size.
          */
-        notes({ title, value, placeholder, onInput }) {
+        notes({ title, value, placeholder, onInput, centreY, height }) {
             return new Promise((resolve) => {
                 const dlg = el('div', 'dialog notes-dialog');
                 dlg.setAttribute('role', 'dialog');
+                // A fixed place and size, so the phone's keyboard coming up
+                // doesn't move it (otherwise it centres in the space left).
+                if (centreY != null && height) {
+                    dlg.classList.add('placed');
+                    dlg.style.top = Math.round(centreY) + 'px';
+                    dlg.style.height = Math.round(height) + 'px';
+                }
                 dlg.appendChild(el('div', 'dialog-title', title));
                 const area = el('textarea', 'notes-text');
                 area.value = value || '';

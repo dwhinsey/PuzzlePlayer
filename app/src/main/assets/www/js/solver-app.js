@@ -221,6 +221,14 @@
     // squares but washes out dark ones and hides their numbers.
     const DARK_SHADE_ALPHA = 0.24;
 
+    // Space (px) wanted around the timer row, above and below together,
+    // before it switches to its compact size.
+    const TOPBAR_MIN_ROOM = 24;
+
+    // Size limits for the notes pop-up (px).
+    const NOTES_MAX_HEIGHT = 340;
+    const NOTES_MIN_HEIGHT = 180;
+
     // CrosswordSolver calls _load() from its constructor, before a subclass
     // could store anything on `this`, so the store is handed over here.
     let incomingStore = null;
@@ -261,9 +269,37 @@
 
         _layout() {
             if (this.destroyed) return;
+            this._chooseTopbarSize();
             super._layout();
             this._centreTopbar();
             this._centreOnGrid();
+        }
+
+        /**
+         * A tall grid leaves little room above it. If the full-size timer row
+         * would leave less than TOPBAR_MIN_ROOM around it, use the compact
+         * one. Decided from the full-size row's height (measured while it is
+         * showing), so switching sizes can't flip the decision back.
+         */
+        _chooseTopbarSize() {
+            const root = this.root;
+            const topbar = this.topbarEl;
+            const wrap = this.gridWrapEl;
+            if (!topbar || !wrap || !root.clientHeight || !wrap.clientWidth) return;
+            if (!root.classList.contains('compact-top')) this.fullTopbarHeight = topbar.offsetHeight;
+            if (!this.fullTopbarHeight) return;
+            // Height of the other rows: clue bar and keyboard (whose padding
+            // includes the navigation bar).
+            let others = 0;
+            for (const child of root.children) {
+                if (child === topbar || child.contains(wrap)) continue;
+                const cs = getComputedStyle(child);
+                if (cs.display === 'none' || cs.position === 'absolute' || cs.position === 'fixed') continue;
+                others += child.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+            }
+            const room = root.clientHeight - others - this.fullTopbarHeight;
+            const gridHeight = wrap.clientWidth / this.puzzle.width * this.puzzle.height;
+            root.classList.toggle('compact-top', room - gridHeight < TOPBAR_MIN_ROOM);
         }
 
         /**
@@ -431,8 +467,24 @@
         openNotes() {
             this._setHelpMenuOpen(false);
             let timer = null;
+            // Centred on the grid and short enough to stay clear of the
+            // phone's keyboard, so it doesn't move when the keyboard opens.
+            const grid = this.gridEl.getBoundingClientRect();
+            const header = document.querySelector('.solver-header').getBoundingClientRect();
+            const gap = 10;
+            let centreY = grid.top + grid.height / 2;
+            const below = App.keyboardTop() - gap - centreY;
+            let height = Math.min(NOTES_MAX_HEIGHT, 2 * below);
+            if (height < NOTES_MIN_HEIGHT) {
+                // Not enough room around the grid's middle: as tall as the
+                // minimum allows, sitting just above the keyboard.
+                height = Math.min(NOTES_MIN_HEIGHT, App.keyboardTop() - gap - (header.bottom + gap));
+                centreY = App.keyboardTop() - gap - height / 2;
+            }
             UI.notes({
                 title: 'Notes',
+                centreY,
+                height,
                 value: this._readNotes(),
                 onInput: (text) => {
                     clearTimeout(timer);
@@ -449,8 +501,8 @@
         puzzleSettings() {
             return [
                 { section: 'This puzzle' },
-                { label: 'Clear grid', action: () => this.clearGrid() },
-                { label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
+                { indent: 1, label: 'Clear grid', action: () => this.clearGrid() },
+                { indent: 1, label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
             ];
         }
 

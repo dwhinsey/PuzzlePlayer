@@ -162,7 +162,24 @@
             root.setProperty('--inset-bottom', (insets.bottom || 0) + 'px');
             root.setProperty('--inset-left', (insets.left || 0) + 'px');
             root.setProperty('--ime', (insets.ime || 0) + 'px');
+            // Remember how tall the phone's keyboard is, so pop-ups can be
+            // placed clear of it before it opens (see App.keyboardTop).
+            if (insets.ime > 0) {
+                try { localStorage.setItem('keyboardHeight', String(Math.round(insets.ime))); } catch (e) { /* ignore */ }
+            }
             if (solver) solver._layout();
+        },
+
+        /**
+         * Where the top of the phone's keyboard will be when it opens: as
+         * last seen, or, before it has ever opened, a typical height (42%
+         * of the screen, navigation bar included).
+         */
+        keyboardTop() {
+            let h = 0;
+            try { h = parseInt(localStorage.getItem('keyboardHeight'), 10) || 0; } catch (e) { /* ignore */ }
+            if (!h) h = Math.round(window.innerHeight * 0.42);
+            return window.innerHeight - h;
         },
 
         /** System back. Returns true if handled; false lets the app close. */

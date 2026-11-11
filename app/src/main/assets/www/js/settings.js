@@ -43,9 +43,10 @@
             title: 'Settings',
             items: [
                 { section: 'Appearance' },
-                { label: 'Light', checked: t === 'light', action: () => setTheme('light') },
-                { label: 'Dark', checked: t === 'dark', action: () => setTheme('dark') },
+                { indent: 1, label: 'Light', checked: t === 'light', action: () => setTheme('light') },
+                { indent: 1, label: 'Dark', checked: t === 'dark', action: () => setTheme('dark') },
                 {
+                    indent: 1,
                     label: 'Match phone setting',
                     sub: 'Light or dark, following the phone’s dark theme',
                     checked: t === 'system',
