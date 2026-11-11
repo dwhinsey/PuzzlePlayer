@@ -109,15 +109,30 @@ button {
     display: none;
 }
 
-/* Keeps the Assist menu above the grid now that the row is moved down
-   (js/solver-app.js centres it in the space above the grid). */
+/* The row above the grid: the timer on the left; pencil, Notes and Assist
+   on the right. position/z-index keep the Assist menu above the grid now
+   that the row is moved down (js/solver-app.js centres it in the space
+   above the grid). */
 .solver-view .solver-topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     position: relative;
     z-index: 16;
 }
 
-/* The help button, labelled "Assist": a pill like the site's Rebus button. */
-.solver-view .icon-btn.assist-btn {
+.solver-view .solver-topbar .topbar-left {
+    display: none;
+}
+
+.solver-view .solver-topbar .timer-wrap {
+    margin-right: auto;
+}
+
+/* Text buttons ("Notes", and the help button labelled "Assist"): pills like
+   the site's Rebus button. */
+.solver-view .icon-btn.assist-btn,
+.solver-view .icon-btn.notes-btn {
     width: auto;
     padding: 0 14px;
     border-radius: 17px;
@@ -126,8 +141,25 @@ button {
     letter-spacing: 0.01em;
 }
 
+/* A dot on Notes when the puzzle has notes. */
+.solver-view .notes-btn {
+    position: relative;
+}
+
+.solver-view .notes-btn.has-notes::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f0a020;
+}
+
 @media (min-width: 701px) {
-    .solver-view .icon-btn.assist-btn {
+    .solver-view .icon-btn.assist-btn,
+    .solver-view .icon-btn.notes-btn {
         padding: 0 20px;
         border-radius: 23px;
         font-size: 1em;
@@ -385,6 +417,33 @@ button {
 .dialog-btn.danger {
     background: #c62828;
     color: #ffffff;
+}
+
+/* ----- Notes ----- */
+
+.notes-dialog {
+    width: min(480px, calc(100% - 32px));
+}
+
+.notes-text {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: min(38vh, 280px);
+    padding: 10px 12px;
+    border: 1.5px solid #a8b4c6;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-size: 1em;
+    line-height: 1.45;
+    resize: none;
+    outline: none;
+}
+
+.notes-text:focus {
+    border-color: var(--navy-light);
 }
 
 /* ----- Toast ----- */

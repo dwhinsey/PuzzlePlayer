@@ -438,6 +438,7 @@
     function removePuzzleFiles(p) {
         Store.remove(Store.puzzleFile(p.id));
         Store.remove(Store.progressFile(p.id));
+        Store.remove(Store.notesFile(p.id));
     }
 
     async function deletePuzzle(p) {
@@ -455,14 +456,17 @@
     }
 
     async function resetProgress(p) {
+        const hasNotes = !!Store.readNotes(p.id).trim();
         const ok = await UI.confirm({
             title: 'Reset progress?',
-            message: 'All your answers in “' + displayTitle(p) + '” and its timer will be cleared.',
+            message: 'All your answers in “' + displayTitle(p) + '” and its timer will be cleared' +
+                (hasNotes ? ', and your notes deleted.' : '.'),
             okLabel: 'Reset',
             danger: true,
         });
         if (!ok) return;
         Store.remove(Store.progressFile(p.id));
+        Store.remove(Store.notesFile(p.id));
         Object.assign(p, { status: 'new', percent: 0, elapsed: 0 });
         save();
         render();
@@ -517,7 +521,9 @@
             { label: 'Move to folder…', action: () => movePuzzle(p) },
             { label: 'Rename…', action: () => renamePuzzle(p) },
         ];
-        if (p.status && p.status !== 'new') items.push({ label: 'Reset progress', action: () => resetProgress(p) });
+        if ((p.status && p.status !== 'new') || Store.readNotes(p.id).trim()) {
+            items.push({ label: 'Reset progress', action: () => resetProgress(p) });
+        }
         items.push({ label: 'Delete', danger: true, action: () => deletePuzzle(p) });
         UI.sheet({ title: displayTitle(p), subtitle: p.author || null, items });
     }

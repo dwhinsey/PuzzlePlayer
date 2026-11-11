@@ -57,6 +57,10 @@
                 Store.writeJSON(progressFile, data);
                 Library.updateProgress(entry.id, SolverApp.summarize(puzzle, data));
             },
+            notes: {
+                read: () => Store.readNotes(entry.id),
+                write: (text) => Store.writeNotes(entry.id, text),
+            },
         };
 
         headerTitle.textContent = puzzle.title || Library.displayTitle(entry);

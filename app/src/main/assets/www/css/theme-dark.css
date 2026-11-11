@@ -165,6 +165,16 @@ html[data-theme="dark"] .dialog-input {
     border-color: var(--d-line);
 }
 
+html[data-theme="dark"] .notes-text {
+    background: var(--d-surface-2);
+    color: var(--d-text);
+    border-color: var(--d-line);
+}
+
+html[data-theme="dark"] .notes-text::placeholder {
+    color: var(--d-muted);
+}
+
 html[data-theme="dark"] .dialog-btn.primary,
 html[data-theme="dark"] .dialog-btn.danger {
     color: #ffffff;

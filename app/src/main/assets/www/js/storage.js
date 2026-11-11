@@ -58,6 +58,18 @@
 
         puzzleFile: (id) => 'puzzle-' + id + '.json',
         progressFile: (id) => 'progress-' + id + '.json',
+        notesFile: (id) => 'notes-' + id + '.json',
+
+        /** The solver's free-text notes for a puzzle ('' if none). */
+        readNotes(id) {
+            const data = Store.readJSON(Store.notesFile(id));
+            return data && typeof data.text === 'string' ? data.text : '';
+        },
+
+        writeNotes(id, text) {
+            if (text.trim()) Store.writeJSON(Store.notesFile(id), { text, updated: Date.now() });
+            else Store.remove(Store.notesFile(id));
+        },
     };
 
     global.Store = Store;

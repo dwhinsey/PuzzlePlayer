@@ -285,6 +285,21 @@
             // Settings sheet (see puzzleSettings below).
             this.helpBtn.textContent = 'Assist';
             this.helpBtn.classList.add('assist-btn');
+
+            // Notes: between the pencil and Assist.
+            const notesBtn = document.createElement('button');
+            notesBtn.type = 'button';
+            notesBtn.className = 'icon-btn notes-btn';
+            notesBtn.textContent = 'Notes';
+            notesBtn.setAttribute('aria-label', 'Notes');
+            notesBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notesBtn.blur();
+                this.openNotes();
+            });
+            this.topbarRightEl.insertBefore(notesBtn, this.helpBtn.closest('.help-wrap'));
+            this.notesBtn = notesBtn;
+            this._showNotesDot();
             for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
                 if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
             }
@@ -342,12 +357,55 @@
         }
 
         resetPuzzle() {
+            const hasNotes = !!this._readNotes().trim();
             UI.confirm({
                 title: 'Reset the puzzle?',
-                message: 'All letters are removed and the timer goes back to zero.',
+                message: hasNotes
+                    ? 'All letters are removed, the timer goes back to zero, and your notes are deleted.'
+                    : 'All letters are removed and the timer goes back to zero.',
                 okLabel: 'Reset',
                 danger: true,
-            }).then((ok) => { if (ok && !this.destroyed) this._confirmed(super.resetPuzzle); });
+            }).then((ok) => {
+                if (!ok || this.destroyed) return;
+                this._writeNotes('');
+                this._showNotesDot();
+                this._confirmed(super.resetPuzzle);
+            });
+        }
+
+        // ----- Notes -----
+
+        _readNotes() {
+            return this.appStore && this.appStore.notes ? this.appStore.notes.read() : '';
+        }
+
+        _writeNotes(text) {
+            if (this.appStore && this.appStore.notes) this.appStore.notes.write(text);
+        }
+
+        /** A dot on the Notes button when this puzzle has notes. */
+        _showNotesDot() {
+            if (this.notesBtn) this.notesBtn.classList.toggle('has-notes', !!this._readNotes().trim());
+        }
+
+        /** The notes pop-up. Saved as you type; kept until the puzzle is reset. */
+        openNotes() {
+            this._setHelpMenuOpen(false);
+            let timer = null;
+            UI.notes({
+                title: 'Notes',
+                value: this._readNotes(),
+                placeholder: 'Jot down anything for this puzzle\u2026',
+                onInput: (text) => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => this._writeNotes(text), 300);
+                },
+            }).then((text) => {
+                clearTimeout(timer);
+                this._writeNotes(text);
+                this._showNotesDot();
+                if (!this.destroyed) this.gridEl.focus();
+            });
         }
 
         /** Items for the Settings sheet while this puzzle is open. */

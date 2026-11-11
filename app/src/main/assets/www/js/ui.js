@@ -143,6 +143,43 @@
             });
         },
 
+        /**
+         * A dialog with a large text box. onInput gets the text as it is
+         * typed; resolves with the final text when the dialog closes.
+         */
+        notes({ title, value, placeholder, onInput }) {
+            return new Promise((resolve) => {
+                const dlg = el('div', 'dialog notes-dialog');
+                dlg.setAttribute('role', 'dialog');
+                dlg.appendChild(el('div', 'dialog-title', title));
+                const area = el('textarea', 'notes-text');
+                area.value = value || '';
+                area.placeholder = placeholder || '';
+                area.setAttribute('autocapitalize', 'sentences');
+                dlg.appendChild(area);
+                const actions = el('div', 'dialog-actions');
+                const done = el('button', 'dialog-btn primary', 'Done');
+                done.type = 'button';
+                actions.appendChild(done);
+                dlg.appendChild(actions);
+                let entry;
+                const finish = () => {
+                    area.blur();
+                    close(entry);
+                    resolve(area.value);
+                };
+                area.addEventListener('input', () => onInput && onInput(area.value));
+                done.addEventListener('click', finish);
+                entry = open(dlg, finish);
+                // Ready to type, at the end of what's there.
+                setTimeout(() => {
+                    area.focus();
+                    area.setSelectionRange(area.value.length, area.value.length);
+                    area.scrollTop = area.scrollHeight;
+                }, 60);
+            });
+        },
+
         /** A message with a single OK button. */
         alert({ title, message }) {
             return UI.confirm({ title, message, okLabel: 'OK', alertOnly: true });
