@@ -157,6 +157,18 @@ public class PuzzleBridge {
         return activity.insetsJson();
     }
 
+    /** Whether the phone is using its dark theme. */
+    @JavascriptInterface
+    public boolean isNightMode() {
+        return activity.isSystemNight();
+    }
+
+    /** The page switched between light and dark: match the window behind it. */
+    @JavascriptInterface
+    public void setThemeDark(boolean dark) {
+        activity.runOnUiThread(() -> activity.applyBackground(dark));
+    }
+
     @JavascriptInterface
     public void setBarStyle(boolean darkStatusIcons, boolean darkNavIcons) {
         activity.runOnUiThread(() -> activity.setBarAppearance(darkStatusIcons, darkNavIcons));

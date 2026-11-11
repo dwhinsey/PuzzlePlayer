@@ -57,7 +57,8 @@
 
         /**
          * Bottom sheet of choices.
-         * items: [{ label, sub?, checked?, danger?, disabled?, action }]
+         * items: [{ label, sub?, checked?, danger?, disabled?, action }],
+         *        or { section } for a group heading
          */
         sheet({ title, subtitle, items }) {
             const sheet = el('div', 'sheet');
@@ -71,6 +72,10 @@
             const list = el('div', 'sheet-items');
             let entry;
             for (const item of items) {
+                if (item.section) {
+                    list.appendChild(el('div', 'sheet-section', item.section));
+                    continue;
+                }
                 const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') + (item.checked ? ' checked' : ''));
                 b.type = 'button';
                 b.disabled = !!item.disabled;

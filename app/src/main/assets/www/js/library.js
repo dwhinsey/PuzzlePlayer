@@ -57,9 +57,7 @@
             sort: 'added-desc',
             ...(data || {}),
         };
-        // Every launch starts with the newest puzzles first; a different
-        // order chosen from the sort menu lasts until the app is closed.
-        lib.sort = 'added-desc';
+        if (!SORTS[lib.sort]) lib.sort = 'added-desc';
         const ids = new Set(lib.folders.map((f) => f.id));
         for (const p of lib.puzzles) if (p.folderId && !ids.has(p.folderId)) p.folderId = null;
     }

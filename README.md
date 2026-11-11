@@ -34,6 +34,10 @@ files, using the mobile solving interface from hinseypuzzles.com.
   taps don't drop letters. A key types when the finger lifts, as on Gboard
   (slide to a neighbouring key before lifting to change it), and a pop-up
   shows the letter above the key while it is held.
+- A header bar across the top holds the back button, the puzzle's title and
+  author, and a settings button.
+- **Settings → Appearance:** Light, Dark (a neutral grey "Graphite" palette,
+  css/theme-dark.css) or Match phone setting.
 - Progress (letters, pencil marks, reveals and time) is saved as you go and
   survives closing the app. The timer pauses when you leave the app.
 - Scrambled .puz files can be solved but not checked; the app says so.
@@ -52,6 +56,8 @@ WebView. The library and solver are HTML/CSS/JS in
 | `js/parsers.js` | .puz / .ipuz / .jpz (including zipped .jpz) readers |
 | `js/library.js` | Home page: list, folders, search, sort, import |
 | `js/storage.js` | Saving, via the Android bridge |
+| `js/settings.js` | Settings (appearance) and the Settings sheet |
+| `css/theme-dark.css` | Dark mode colours |
 | `js/app.js` | Wiring, back button, system bars |
 
 To bring a change from the website across, copy the site's `js/solver.js`

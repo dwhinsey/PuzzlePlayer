@@ -17,8 +17,9 @@
 
     function setBars(view) {
         if (!bridge) return;
-        // White status bar icons on the navy headers of both pages.
-        bridge.setBarStyle(false, true);
+        // White status bar icons on the headers of both pages; navigation bar
+        // icons to suit the page underneath them.
+        bridge.setBarStyle(false, !Settings.isDark());
     }
 
     function showLibrary() {
@@ -88,6 +89,9 @@
         for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
         return out;
     }
+
+    solverView.querySelector('.settings-btn').addEventListener('click', () => Settings.open());
+    Settings.onChange(() => setBars());
 
     // The header's back button (and the solver's own, which the app hides)
     // closes the puzzle.

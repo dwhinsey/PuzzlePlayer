@@ -8,6 +8,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,8 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private static final String START_URL = "file:///android_asset/www/index.html";
+    private static final int LIGHT_BACKGROUND = 0xFFE9EEF4;
+    private static final int DARK_BACKGROUND = 0xFF121212;
     static final int REQUEST_PICK_PUZZLES = 41;
 
     private WebView webView;
@@ -70,7 +73,6 @@ public class MainActivity extends Activity {
         }
 
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.parseColor("#E9EEF4"));
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         webView.setHapticFeedbackEnabled(false);
 
@@ -88,6 +90,9 @@ public class MainActivity extends Activity {
 
         bridge = new PuzzleBridge(this, webView);
         webView.addJavascriptInterface(bridge, "AndroidBridge");
+        // Paint the right background before the page has loaded, so a
+        // dark-mode launch doesn't flash light.
+        applyBackground(savedThemeIsDark());
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -212,6 +217,37 @@ public class MainActivity extends Activity {
             }
         }
         return uris;
+    }
+
+    boolean isSystemNight() {
+        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    /** The appearance setting saved by the page (js/settings.js). */
+    private boolean savedThemeIsDark() {
+        try {
+            String json = bridge.read("settings.json");
+            String theme = json == null ? "light" : new JSONObject(json).optString("theme", "light");
+            return "dark".equals(theme) || ("system".equals(theme) && isSystemNight());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    void applyBackground(boolean dark) {
+        int color = dark ? DARK_BACKGROUND : LIGHT_BACKGROUND;
+        getWindow().getDecorView().setBackgroundColor(color);
+        if (webView != null) webView.setBackgroundColor(color);
+    }
+
+    /** The phone switched between light and dark while the app was open. */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (webView != null && pageLoaded) {
+            webView.evaluateJavascript("window.Settings && Settings.setSystemDark(" + isSystemNight() + ")", null);
+        }
     }
 
     private void setUpEdgeToEdge() {

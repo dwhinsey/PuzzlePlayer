@@ -215,8 +215,6 @@
         };
     }
 
-    const KEY_GROWTH_MAX = 14; // px added to each keyboard row at most
-
     // CrosswordSolver calls _load() from its constructor, before a subclass
     // could store anything on `this`, so the store is handed over here.
     let incomingStore = null;
@@ -258,28 +256,6 @@
         _layout() {
             if (this.destroyed) return;
             super._layout();
-            this._fitKeyboard();
-        }
-
-        /**
-         * When the grid doesn't need all the height it is offered (it is
-         * usually limited by the screen's width), the spare height goes to
-         * taller keyboard keys, up to KEY_GROWTH_MAX each row.
-         */
-        _fitKeyboard() {
-            const keyboard = this.root.querySelector('.mobile-keyboard');
-            if (!keyboard || !this.gridWrapEl || !this.gridEl) return;
-            const rows = keyboard.querySelectorAll('.kb-row').length || 3;
-            const current = parseFloat(keyboard.style.getPropertyValue('--kb-extra')) || 0;
-            const gridHeight = this.gridEl.getBoundingClientRect().height;
-            if (!gridHeight) return;
-            // The spare height there would be with no extra key height.
-            const spare = this.gridWrapEl.clientHeight - gridHeight + current * rows;
-            const extra = Math.max(0, Math.min(KEY_GROWTH_MAX, Math.floor(spare / rows)));
-            if (extra !== current) {
-                keyboard.style.setProperty('--kb-extra', extra + 'px');
-                super._layout();
-            }
         }
 
         _buildMobileKeyboard() {
