@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Runs inside reactivecircus/android-emulator-runner once the emulator is up.
 # Installs the APK, checks the app starts without crashing, then drives it
-# through the WebView's DevTools connection (see emulator-test.js).
+# through its WebView with Playwright's Android support (see emulator-test.js).
 set -u
 PKG=com.hinseypuzzles.puzzleplayer
 APK=${APK:-apk/app-debug.apk}
@@ -34,15 +34,6 @@ dump_logs() {
   grep -a -E "AndroidRuntime|FATAL|$PKG|chromium|Console|PuzzlePlayer" "$OUT/logcat.txt" | grep -a -v -E "AppsFilter|dns_config|ShortcutService" | tail -80
 }
 
-forward_devtools() {
-  local sock
-  sock=$(adb shell cat /proc/net/unix | grep -a -o "webview_devtools_remote_[0-9]*" | head -1)
-  echo "DevTools socket: $sock"
-  [ -n "$sock" ] || return 1
-  adb forward --remove-all
-  adb forward tcp:9222 "localabstract:$sock"
-}
-
 app_crashed() {
   # The crash buffer holds every app's crashes; only ours count.
   adb logcat -d -b crash | grep -a -q "Process: $PKG"
@@ -57,7 +48,6 @@ if ! check_alive || app_crashed; then
 fi
 echo "STEP OK: launch"
 
-forward_devtools || { echo "STEP FAILED: devtools"; dump_logs; exit 1; }
 node ci/emulator-test.js phase1 || { echo "STEP FAILED: phase1"; dump_logs; exit 1; }
 
 # Kill the app outright, as Android does to apps in the background, and
@@ -66,7 +56,6 @@ adb shell am force-stop "$PKG"
 sleep 2
 launch
 check_alive || { echo "STEP FAILED: relaunch"; dump_logs; exit 1; }
-forward_devtools || { echo "STEP FAILED: devtools after relaunch"; dump_logs; exit 1; }
 node ci/emulator-test.js phase2 || { echo "STEP FAILED: phase2"; dump_logs; exit 1; }
 if app_crashed; then echo "STEP FAILED: crash during test"; dump_logs; exit 1; fi
 

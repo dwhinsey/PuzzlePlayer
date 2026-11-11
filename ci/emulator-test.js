@@ -1,7 +1,7 @@
 // Drives the app's WebView on the emulator over Chrome DevTools.
 // phase1: import puzzles, solve part of one, go back to the library.
 // phase2: after the app was killed and relaunched, check everything is still there.
-const { chromium } = require('playwright-core');
+const { _android } = require('playwright-core');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,8 +19,11 @@ async function shot(page, name) {
 }
 
 (async () => {
-    const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
-    const page = browser.contexts()[0].pages()[0];
+    // Playwright's Android support finds the app's WebView through adb.
+    const [device] = await _android.devices({ omitDriverInstall: true });
+    if (!device) fail('no Android device');
+    const webview = await device.webView({ pkg: 'com.hinseypuzzles.puzzleplayer' }, { timeout: 30000 });
+    const page = await webview.page();
     if (!page) fail('no WebView page');
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -80,6 +83,6 @@ async function shot(page, name) {
     }
     if (errors.length) fail('page errors: ' + errors.join(' | '));
     console.log(phase + ' OK');
-    await browser.close().catch(() => {});
+    await device.close().catch(() => {});
     process.exit(0);
 })().catch((e) => fail(e.stack || String(e)));
