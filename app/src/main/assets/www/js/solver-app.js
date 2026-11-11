@@ -154,18 +154,10 @@
             return letter ? () => solver._enterLetter(letter) : null;
         };
 
-        // A key stays shaded briefly after a quick tap, so the press shows.
-        const unpress = (key, delay) => {
-            clearTimeout(key.unpressTimer);
-            if (delay) key.unpressTimer = setTimeout(() => key.classList.remove('pressed'), delay);
-            else key.classList.remove('pressed');
-        };
-
         const highlight = (press, key) => {
-            if (press.key) unpress(press.key, 0);
+            if (press.key) press.key.classList.remove('pressed');
             if (press.preview) press.preview.remove();
             press.key = key;
-            clearTimeout(key.unpressTimer);
             key.classList.add('pressed');
             const letter = letterOf(key);
             press.preview = letter ? showPreview(key, letter) : null;
@@ -175,7 +167,7 @@
             const press = held.get(pointerId);
             if (!press) return;
             held.delete(pointerId);
-            unpress(press.key, PREVIEW_LINGER_MS);
+            press.key.classList.remove('pressed');
             if (press.preview) {
                 const preview = press.preview;
                 setTimeout(() => preview.remove(), PREVIEW_LINGER_MS);
