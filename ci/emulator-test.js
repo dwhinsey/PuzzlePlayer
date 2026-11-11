@@ -14,14 +14,8 @@ function fail(msg) {
 }
 
 async function shot(page, name) {
-    // A small JPEG, printed into the log as base64 so it can be viewed
-    // without downloading artifacts.
-    const buf = await page.screenshot({ type: 'jpeg', quality: 55 });
-    fs.writeFileSync(path.join(OUT, name + '.jpg'), buf);
-    const b64 = buf.toString('base64');
-    console.log(`SCREENSHOT-BEGIN ${name}`);
-    for (let i = 0; i < b64.length; i += 2000) console.log('SS ' + b64.slice(i, i + 2000));
-    console.log(`SCREENSHOT-END ${name}`);
+    // Saved for the emulator-output artifact.
+    fs.writeFileSync(path.join(OUT, name + '.png'), await page.screenshot());
 }
 
 (async () => {

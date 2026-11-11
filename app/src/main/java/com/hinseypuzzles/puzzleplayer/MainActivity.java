@@ -143,6 +143,9 @@ public class MainActivity extends Activity {
         });
 
         setContentView(webView);
+        // Only once the window has its content: before that it has no decor
+        // view, and the insets controller call below crashes on Android 11+.
+        setBarAppearance(false, true);
         webView.loadUrl(START_URL);
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -168,7 +171,6 @@ public class MainActivity extends Activity {
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-        setBarAppearance(false, true);
     }
 
     /**
@@ -178,6 +180,7 @@ public class MainActivity extends Activity {
     @SuppressWarnings("deprecation")
     void setBarAppearance(boolean darkStatusIcons, boolean darkNavIcons) {
         Window window = getWindow();
+        if (window.peekDecorView() == null) return;
         if (Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller == null) return;
