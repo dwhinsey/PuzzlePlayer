@@ -19,16 +19,12 @@ files, using the mobile solving interface from hinseypuzzles.com.
   rename, reset progress, delete.
 
 **Solver**
-- Grid, clue bar and on-screen keyboard, styled from the hinseypuzzles.com
-  mobile solver. Tap a square to select it; tap it again (or the clue) to
-  switch direction; ‹ › step through clues.
-- Timer with pause (tap the timer). It pauses itself when you leave the app.
-- Pencil mode, rebus entry (**123 → Rebus**), and check/reveal by square, word
-  or puzzle, plus clear incorrect, reset and puzzle info/notes.
-- Circles, shaded squares, rebus answers, italic clues and cross-references
-  ("see 17-Across" highlights 17-Across in yellow).
-- Progress is saved as you go and survives closing the app.
-- Works with a hardware keyboard too (letters, arrows, Tab, Space, Backspace).
+- The hinseypuzzles.com solver, as it works on a phone: same grid, clue bar,
+  keyboard, timer, pencil, rebus (the **...** key), check/reveal, Clear Grid
+  and Reset Puzzle. The comment section is left out.
+- Progress (letters, pencil marks, reveals and time) is saved as you go and
+  survives closing the app. The timer pauses when you leave the app.
+- Scrambled .puz files can be solved but not checked; the app says so.
 
 ## How it's built
 
@@ -38,12 +34,17 @@ WebView. The library and solver are HTML/CSS/JS in
 
 | File | Purpose |
 | --- | --- |
-| `css/solver.css` | The site's solver CSS, mobile parts only |
+| `js/crossword-solver.js` | The site's `js/solver.js`, unchanged apart from two layout queries marked `App:` |
+| `css/solver.css` | The site's solver CSS: touch layout always on, comment styles removed |
+| `js/solver-app.js` | Runs the site's solver in the app: puzzle conversion, saving, back button, pause |
 | `js/parsers.js` | .puz / .ipuz / .jpz (including zipped .jpz) readers |
-| `js/solver.js` | Solving interface |
 | `js/library.js` | Home page: list, folders, search, sort, import |
 | `js/storage.js` | Saving, via the Android bridge |
 | `js/app.js` | Wiring, back button, system bars |
+
+To bring a change from the website across, copy the site's `js/solver.js`
+over `js/crossword-solver.js` and its `css/solver.css` over `css/solver.css`,
+then redo the few `App:` edits described at the top of each file.
 
 The Java side (`MainActivity`, `PuzzleBridge`) provides the system file picker,
 storage in the app's private files directory (written atomically), window
@@ -57,6 +58,9 @@ You can also open `app/src/main/assets/www/index.html` in a desktop browser
 
 - **GitHub Actions:** every push builds a debug APK. Open the run under the
   repository's *Actions* tab and download the `PuzzlePlayer-debug-apk` artifact.
+  The same run installs it on Android 15 and 16 emulators, checks that it
+  starts, and runs a short import / solve / force-close / reopen test
+  (`ci/`); screenshots from it are in the `emulator-output-*` artifacts.
 - **Android Studio:** open the project folder and press Run.
 - **Command line:** with the Android SDK installed (`ANDROID_HOME` set),
   run `./gradlew assembleDebug`. The APK is written to
