@@ -58,7 +58,16 @@ async function shot(page, name) {
         for (const k of 'HELLO') await key(k);
         await page.waitForTimeout(1000);
 
-        // Real taps on the screen, through Android's own touch input.
+        // Real taps on the screen, through Android's own touch input. A slow
+        // CI emulator sometimes has a system "not responding" dialog up,
+        // which would take the taps; close it first.
+        for (let i = 0; i < 5; i++) {
+            const focus = String(await device.shell('dumpsys window | grep mCurrentFocus'));
+            if (!/Not Responding|Application Error/.test(focus)) break;
+            console.log('closing system dialog:', focus.trim());
+            await device.shell('am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS');
+            await page.waitForTimeout(2000);
+        }
         const filled = async () => (await page.locator('.solver-grid .cell-letter').allInnerTexts()).filter(Boolean).length;
         const before = await filled();
         const dpr = await page.evaluate(() => devicePixelRatio);
