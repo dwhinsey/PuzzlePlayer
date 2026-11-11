@@ -63,7 +63,68 @@ button {
 
 .solver-view {
     background: var(--page-bg);
-    padding-top: var(--inset-top);
+}
+
+/* The app's header, in the place the browser's address bar takes on the
+   site: back button, title and author. It replaces the solver's own back
+   button, so the timer row keeps only the timer and tools. */
+.solver-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    min-height: 56px;
+    padding: var(--inset-top) 14px 0 4px;
+    background: var(--navy);
+    color: #ffffff;
+}
+
+.solver-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.solver-header-title {
+    font-weight: 700;
+    font-size: 1.05em;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.solver-header-sub {
+    font-size: 0.8em;
+    opacity: 0.78;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.solver-header-sub:empty {
+    display: none;
+}
+
+.solver-view .solver-topbar .back-btn {
+    display: none;
+}
+
+/* Spare height goes to the keys (see _fitKeyboard in js/solver-app.js),
+   on top of the site's key heights for phone, tablet and tablet landscape. */
+.solver-view .kb-key {
+    height: calc(48px + var(--kb-extra, 0px));
+}
+
+@media (min-width: 701px) {
+    .solver-view .kb-key {
+        height: calc(66px + var(--kb-extra, 0px));
+    }
+}
+
+@media (min-width: 701px) and (orientation: landscape) {
+    .solver-view .kb-key {
+        height: calc(52px + var(--kb-extra, 0px));
+    }
 }
 
 /* The site's solver fills the screen below the status bar. */
@@ -331,7 +392,7 @@ button {
 
 /* In the solver the bottom of the screen is all keyboard. */
 body.solving .toast {
-    top: calc(var(--inset-top) + 64px);
+    top: calc(var(--inset-top) + 120px);
     bottom: auto;
     transform: translate(-50%, -12px);
 }

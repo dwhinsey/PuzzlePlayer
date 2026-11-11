@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/library.css">
     <link rel="stylesheet" href="css/solver.css">
+    <link rel="stylesheet" href="css/theme-dark.css">
 </head>
 <body>
     <!-- Library: the home page -->
@@ -47,6 +48,15 @@
 
     <!-- Solver: js/crossword-solver.js builds the interface inside .solver-host -->
     <section id="solver-view" class="view solver-view" hidden>
+        <header class="solver-header">
+            <button type="button" class="lib-icon-btn solver-header-back" aria-label="Back to puzzles">
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15.5 4.5 8 12l7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="solver-header-text">
+                <div class="solver-header-title"></div>
+                <div class="solver-header-sub"></div>
+            </div>
+        </header>
         <div class="solver-host"></div>
     </section>
 

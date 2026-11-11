@@ -1,0 +1,350 @@
+/*
+ * Dark mode. Applies when <html data-theme="dark">; js/app.js sets that from
+ * the appearance setting. Every colour comes from the variables below, so a
+ * different palette is only a matter of changing their values.
+ */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    /* Page and surfaces */
+    --d-bg: #0e1520;
+    --d-surface: #182230;
+    --d-surface-2: #223044;
+    --d-text: #e8edf4;
+    --d-muted: #93a0b3;
+    --d-line: #2c3a4f;
+    --d-header: #0a1a33;
+    --d-accent: #3f6fc4;
+
+    /* Grid */
+    --d-cell: #1a2433;
+    --d-block: #05080e;
+    --d-grid-line: #3b4a60;
+    --d-number: #aab6c7;
+    --d-letter: #f2f5f9;
+    --d-selected: #e2b23d;
+    --d-selected-text: #111111;
+    --d-word: #1f4a77;
+    --d-referenced: #4d4520;
+    --d-pencil: #8e9aab;
+    --d-correct: #6cc070;
+    --d-incorrect: #ff6b6b;
+    --d-revealed: #c792ea;
+
+    /* Clue bar and keyboard */
+    --d-clue-bar: #1f4a77;
+    --d-keyboard: #121a26;
+    --d-key: #2a3749;
+    --d-key-special: #1e2938;
+    --d-key-text: #eef2f7;
+
+    --page-bg: var(--d-bg);
+    --navy: var(--d-header);
+    --text: var(--d-text);
+    --muted: var(--d-muted);
+    --line: var(--d-line);
+}
+
+html[data-theme="dark"] body {
+    background: var(--d-bg);
+    color: var(--d-text);
+}
+
+/* ----- Library ----- */
+
+html[data-theme="dark"] .lib-topbar,
+html[data-theme="dark"] .solver-header {
+    background: var(--d-header);
+}
+
+html[data-theme="dark"] .lib-row {
+    background: var(--d-surface);
+    box-shadow: none;
+}
+
+html[data-theme="dark"] .lib-row:active,
+html[data-theme="dark"] .lib-row.pressing {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .lib-row-sub {
+    color: var(--d-text);
+    opacity: 0.85;
+}
+
+html[data-theme="dark"] .lib-more {
+    color: var(--d-muted);
+}
+
+html[data-theme="dark"] .lib-more:active {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .lib-state.new {
+    background: rgba(91, 141, 239, 0.18);
+    color: #9dbcf5;
+}
+
+html[data-theme="dark"] .lib-state.progress {
+    background: rgba(240, 193, 75, 0.16);
+    color: #f0c977;
+}
+
+html[data-theme="dark"] .lib-state.done {
+    background: rgba(108, 192, 112, 0.16);
+    color: #8fd492;
+}
+
+html[data-theme="dark"] .lib-status .ring-track {
+    stroke: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .lib-status .ring-new {
+    fill: var(--d-surface);
+    stroke: var(--d-muted);
+}
+
+html[data-theme="dark"] .lib-search {
+    background: var(--d-surface-2);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .lib-search::placeholder {
+    color: var(--d-muted);
+}
+
+html[data-theme="dark"] .lib-empty-art rect,
+html[data-theme="dark"] .lib-empty-art path {
+    opacity: 0.55;
+}
+
+html[data-theme="dark"] .lib-empty-btn {
+    background: var(--d-accent);
+}
+
+/* ----- Sheets, dialogs, toasts ----- */
+
+html[data-theme="dark"] .sheet,
+html[data-theme="dark"] .dialog {
+    background: var(--d-surface);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .sheet-item {
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .sheet-item:active,
+html[data-theme="dark"] .dialog-btn:active {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .sheet-item.checked .sheet-item-label,
+html[data-theme="dark"] .sheet-item-check,
+html[data-theme="dark"] .dialog-btn {
+    color: #9dbcf5;
+}
+
+html[data-theme="dark"] .sheet-item.danger {
+    color: #ff8a80;
+}
+
+html[data-theme="dark"] .dialog-message {
+    color: var(--d-muted);
+}
+
+html[data-theme="dark"] .dialog-input {
+    background: var(--d-surface-2);
+    color: var(--d-text);
+    border-color: var(--d-line);
+}
+
+html[data-theme="dark"] .dialog-btn.primary {
+    background: var(--d-accent);
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .toast {
+    background: #e8edf4;
+    color: #111111;
+}
+
+/* ----- Solver ----- */
+
+html[data-theme="dark"] .solver-view,
+html[data-theme="dark"] .landscape-blocker {
+    background: var(--d-bg);
+}
+
+html[data-theme="dark"] .icon-btn,
+html[data-theme="dark"] .timer-wrap {
+    background: var(--d-surface-2);
+    border-color: var(--d-line);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .timer-pause-btn {
+    background: transparent;
+}
+
+html[data-theme="dark"] .pencil-btn.active,
+html[data-theme="dark"] .help-btn.active {
+    background: var(--d-word);
+    border-color: var(--d-accent);
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .help-menu {
+    background: var(--d-surface);
+    border-color: var(--d-line);
+}
+
+html[data-theme="dark"] .help-menu .solver-btn {
+    background: var(--d-surface);
+    color: var(--d-text);
+    border-bottom-color: var(--d-line);
+}
+
+html[data-theme="dark"] .help-menu .solver-btn:hover {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .solver-grid {
+    background: var(--d-cell);
+    border-color: var(--d-grid-line);
+}
+
+html[data-theme="dark"] .cell {
+    background: var(--d-cell);
+    border-color: var(--d-grid-line);
+}
+
+html[data-theme="dark"] .cell.block {
+    background: var(--d-block);
+}
+
+html[data-theme="dark"] .cell.void {
+    background: var(--d-bg);
+}
+
+html[data-theme="dark"] .cell-number {
+    color: var(--d-number);
+}
+
+html[data-theme="dark"] .cell-letter {
+    color: var(--d-letter);
+}
+
+html[data-theme="dark"] .cell-circle {
+    border-color: var(--d-number);
+}
+
+html[data-theme="dark"] .cell.active-word:not(.selected) {
+    background: var(--d-word);
+}
+
+html[data-theme="dark"] .cell.referenced {
+    background: var(--d-referenced);
+}
+
+html[data-theme="dark"] .cell.selected {
+    background: var(--d-selected);
+}
+
+html[data-theme="dark"] .cell.selected .cell-letter,
+html[data-theme="dark"] .cell.selected .cell-number {
+    color: var(--d-selected-text);
+}
+
+html[data-theme="dark"] .cell.selected .cell-circle {
+    border-color: var(--d-selected-text);
+}
+
+html[data-theme="dark"] .cell.rebus-editing {
+    background: var(--d-cell);
+    box-shadow: inset 0 0 0 3px var(--d-selected);
+}
+
+html[data-theme="dark"] .cell.pencil .cell-letter {
+    color: var(--d-pencil);
+}
+
+html[data-theme="dark"] .cell.correct .cell-letter {
+    color: var(--d-correct);
+}
+
+html[data-theme="dark"] .cell.incorrect .cell-letter {
+    color: var(--d-incorrect);
+}
+
+html[data-theme="dark"] .cell.revealed .cell-letter {
+    color: var(--d-revealed);
+}
+
+html[data-theme="dark"] .mobile-clue-bar {
+    background: var(--d-clue-bar);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .clue-nav-btn {
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .mobile-keyboard {
+    background: var(--d-keyboard);
+}
+
+html[data-theme="dark"] .kb-key {
+    background: var(--d-key);
+    color: var(--d-key-text);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .kb-key.kb-backspace,
+html[data-theme="dark"] .kb-key.kb-more {
+    background: var(--d-key-special);
+}
+
+html[data-theme="dark"] .kb-key:active,
+html[data-theme="dark"] .kb-key.pressed,
+html[data-theme="dark"] .kb-key.kb-backspace.pressed,
+html[data-theme="dark"] .kb-key.kb-more.pressed {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .kb-key.kb-spacer {
+    background: transparent;
+    box-shadow: none;
+}
+
+html[data-theme="dark"] .kb-preview {
+    background: var(--d-key);
+    color: var(--d-key-text);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .solver-overlay-card {
+    background: var(--d-surface);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .overlay-author,
+html[data-theme="dark"] .overlay-copyright,
+html[data-theme="dark"] .overlay-notes {
+    color: var(--d-muted);
+}
+
+html[data-theme="dark"] .overlay-paused-message,
+html[data-theme="dark"] .landscape-blocker p {
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .overlay-start-btn {
+    background: var(--d-accent);
+}
+
+html[data-theme="dark"] .rebus-display {
+    border-color: var(--d-selected);
+    color: var(--d-text);
+}

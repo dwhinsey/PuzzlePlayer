@@ -8,6 +8,8 @@
     const libraryView = document.getElementById('library-view');
     const solverView = document.getElementById('solver-view');
     const solverHost = solverView.querySelector('.solver-host');
+    const headerTitle = solverView.querySelector('.solver-header-title');
+    const headerSub = solverView.querySelector('.solver-header-sub');
     const fileInput = document.querySelector('.file-input-fallback');
 
     let solver = null; // the open AppCrosswordSolver
@@ -15,9 +17,8 @@
 
     function setBars(view) {
         if (!bridge) return;
-        // Library: white icons on the navy header. Solver: dark icons on light grey.
-        if (view === 'solver') bridge.setBarStyle(true, true);
-        else bridge.setBarStyle(false, true);
+        // White status bar icons on the navy headers of both pages.
+        bridge.setBarStyle(false, true);
     }
 
     function showLibrary() {
@@ -57,6 +58,8 @@
             },
         };
 
+        headerTitle.textContent = puzzle.title || Library.displayTitle(entry);
+        headerSub.textContent = puzzle.author || '';
         libraryView.hidden = true;
         solverView.hidden = false;
         document.body.classList.add('solving');
@@ -86,9 +89,10 @@
         return out;
     }
 
-    // The solver's back button is a link; in the app it closes the puzzle.
+    // The header's back button (and the solver's own, which the app hides)
+    // closes the puzzle.
     solverView.addEventListener('click', (e) => {
-        if (e.target.closest('.back-btn')) {
+        if (e.target.closest('.back-btn, .solver-header-back')) {
             e.preventDefault();
             closeSolver();
         }

@@ -57,7 +57,9 @@
             sort: 'added-desc',
             ...(data || {}),
         };
-        if (!SORTS[lib.sort]) lib.sort = 'added-desc';
+        // Every launch starts with the newest puzzles first; a different
+        // order chosen from the sort menu lasts until the app is closed.
+        lib.sort = 'added-desc';
         const ids = new Set(lib.folders.map((f) => f.id));
         for (const p of lib.puzzles) if (p.folderId && !ids.has(p.folderId)) p.folderId = null;
     }
@@ -181,11 +183,11 @@
             const pct = Math.max(4, Math.min(100, p.percent || 0));
             const dash = (pct / 100) * circumference;
             return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true">' +
-                '<circle cx="18" cy="18" r="14" fill="none" stroke="#d5dde8" stroke-width="4.5"/>' +
+                '<circle class="ring-track" cx="18" cy="18" r="14" fill="none" stroke="#d5dde8" stroke-width="4.5"/>' +
                 '<circle cx="18" cy="18" r="14" fill="none" stroke="#2f5ea8" stroke-width="4.5" stroke-linecap="round" ' +
                 'stroke-dasharray="' + dash.toFixed(1) + ' 100" transform="rotate(-90 18 18)"/></svg>';
         }
-        return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><circle cx="18" cy="18" r="14" fill="#fff" stroke="#b9c3d1" stroke-width="2.5"/><circle cx="18" cy="18" r="4.5" fill="#2f5ea8"/></svg>';
+        return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><circle class="ring-new" cx="18" cy="18" r="14" fill="#fff" stroke="#b9c3d1" stroke-width="2.5"/><circle cx="18" cy="18" r="4.5" fill="#2f5ea8"/></svg>';
     }
 
     function statusLabel(p) {
