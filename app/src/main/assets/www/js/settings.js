@@ -150,7 +150,7 @@
             {
                 indent: 1,
                 label: 'Colorblind Mode',
-                sub: 'Wrong letters get a dot, revealed squares a corner mark',
+                sub: 'Wrong letters get a dot, revealed get a corner mark',
                 checked: !!settings.colorblind,
                 action: () => {
                     settings.colorblind = !settings.colorblind;
