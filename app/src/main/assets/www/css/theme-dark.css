@@ -9,7 +9,7 @@ html[data-theme="dark"] {
     color-scheme: dark;
 
     /* Page and surfaces */
-    --d-bg: #121212;
+    --d-bg: #1c2027;
     --d-surface: #1e1e1e;
     --d-surface-2: #2c2c2c;
     --d-text: #dadada;
@@ -48,10 +48,11 @@ html[data-theme="dark"] {
     --line: var(--d-line);
 }
 
-/* While solving, the background behind the timer and grid has a slight
-   slate tint, a step up from the black squares. */
-html[data-theme="dark"] .solver-view {
-    --d-bg: #1c2027;
+/* Home screen tiles: a step lighter than the page, in the same slate tint.
+   (Settings and pop-ups keep the neutral graphite surfaces.) */
+html[data-theme="dark"] .library-view {
+    --d-surface: #262b33;
+    --d-surface-2: #303641;
 }
 
 html[data-theme="dark"] body {

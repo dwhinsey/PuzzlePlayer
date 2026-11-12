@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 
     private static final String START_URL = "file:///android_asset/www/index.html";
     private static final int LIGHT_BACKGROUND = 0xFFE9EEF4;
-    private static final int DARK_BACKGROUND = 0xFF121212;
+    private static final int DARK_BACKGROUND = 0xFF1C2027;
     static final int REQUEST_PICK_PUZZLES = 41;
 
     private WebView webView;
