@@ -24,7 +24,11 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - Folders (nested if you like): the folder button creates one in the current
   folder; puzzles added while inside a folder go into it.
 - Search by title or author with the magnifier in the top bar (searches every
-  folder; the back arrow or Back gesture closes it).
+  folder; the back arrow or Back gesture closes it). Search by size too:
+  **mini** (4x4 to 6x6), **midi** (7x7 to 12x12), **weekday** (13x13 to
+  18x18), **Sunday** (19x19 and up), going by the larger side; or a grid
+  size such as **14x15**, which also finds 15x14. Words combine, e.g.
+  "weekday hinsey".
 - Sort by date added (newest/oldest), title (A–Z/Z–A) or size (smallest/
   biggest; puzzles of the same size keep the date or title order used before).
 - Long-press a puzzle or folder for its menu: move to folder, rename, reset

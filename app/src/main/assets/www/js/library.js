@@ -100,6 +100,51 @@
 
     const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+    // ----- Search -----
+
+    // Size words: a puzzle's class goes by its larger side.
+    const SIZE_CLASSES = {
+        mini: [4, 6],
+        midi: [7, 12],
+        weekday: [13, 18],
+        sunday: [19, Infinity],
+    };
+    // "15x15", "15 x 15", "15×15", "15X15", "15*15", "15 by 15".
+    const DIMS = /(\d+)\s*(?:x|×|\*|by)\s*(\d+)/g;
+
+    function sizeClassMatches(word, p) {
+        const range = SIZE_CLASSES[word] || SIZE_CLASSES[word.replace(/s$/, '')];
+        if (!range || !p.width || !p.height) return false;
+        const side = Math.max(p.width, p.height);
+        return side >= range[0] && side <= range[1];
+    }
+
+    /**
+     * Whether a puzzle matches the search. The whole query found in the
+     * title or author matches, as before. Otherwise every word has to match:
+     * in the title or author, or as a size word (mini, midi, weekday,
+     * sunday), and any grid size (e.g. 14x15, either way round) has to be
+     * the puzzle's.
+     */
+    function puzzleMatches(p, rawQuery) {
+        const title = fold(displayTitle(p));
+        const author = fold(p.author);
+        const needle = fold(rawQuery.trim());
+        if (!needle) return true;
+        if (title.includes(needle) || author.includes(needle)) return true;
+        const dims = [];
+        const rest = needle.replace(DIMS, (m, a, b) => {
+            dims.push([+a, +b]);
+            return ' ';
+        });
+        for (const [a, b] of dims) {
+            if (!((p.width === a && p.height === b) || (p.width === b && p.height === a))) return false;
+        }
+        const words = rest.split(/\s+/).filter(Boolean);
+        if (!words.length) return dims.length > 0;
+        return words.every((w) => title.includes(w) || author.includes(w) || sizeClassMatches(w, p));
+    }
+
     const folderById = (id) => lib.folders.find((f) => f.id === id) || null;
     const puzzleById = (id) => lib.puzzles.find((p) => p.id === id) || null;
 
@@ -319,15 +364,14 @@
         if (query) {
             const needle = fold(query.trim());
             const folders = sortFolders(lib.folders.filter((f) => fold(f.name).includes(needle)));
-            const puzzles = lib.puzzles.filter((p) =>
-                fold(displayTitle(p)).includes(needle) || fold(p.author).includes(needle));
+            const puzzles = lib.puzzles.filter((p) => puzzleMatches(p, query));
             if (folders.length) {
                 frag.appendChild(sectionLabel('Folders'));
                 for (const f of folders) frag.appendChild(folderRow(f));
             }
             const shown = addPuzzles(puzzles, true, (n) => plural(n, 'puzzle'));
             if (!folders.length && !shown) {
-                frag.appendChild(emptyState('No matches', 'No puzzle has \u201c' + query.trim() + '\u201d in its title or author.', false));
+                frag.appendChild(emptyState('No matches', 'No puzzle matches \u201c' + query.trim() + '\u201d by title, author or size.', false));
             }
         } else {
             const folders = sortFolders(lib.folders.filter((f) => (f.parentId || null) === currentFolder));
