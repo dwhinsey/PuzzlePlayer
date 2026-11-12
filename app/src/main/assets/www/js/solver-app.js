@@ -381,6 +381,21 @@
             });
             this.topbarRightEl.insertBefore(notesBtn, this.helpBtn.closest('.help-wrap'));
             this.notesBtn = notesBtn;
+            // With the timer turned off (Settings > Miscellaneous), an "Info"
+            // button takes the timer's place: it opens the pause card, with
+            // the title, author and Resume. CSS shows one or the other.
+            const infoBtn = document.createElement('button');
+            infoBtn.type = 'button';
+            infoBtn.className = 'icon-btn notes-btn info-btn';
+            infoBtn.textContent = 'Info';
+            infoBtn.setAttribute('aria-label', 'Puzzle info');
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                infoBtn.blur();
+                this._pauseTimer();
+            });
+            const timerWrap = this.topbarEl.querySelector('.timer-wrap');
+            this.topbarEl.insertBefore(infoBtn, timerWrap);
             for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
                 if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
             }
@@ -513,6 +528,12 @@
                 { indent: 1, label: 'Clear grid', action: () => this.clearGrid() },
                 { indent: 1, label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
             ];
+        }
+
+        // With the timer turned off, the win message leaves out the time.
+        _showSuccessPopup() {
+            super._showSuccessPopup();
+            if (!Settings.showTimer()) this.resultMessageEl.textContent = 'You solved the puzzle!';
         }
 
         // ----- Solving settings: Skip filled squares, Auto-advance -----

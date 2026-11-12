@@ -128,6 +128,21 @@ button {
     display: none;
 }
 
+/* Timer turned off (Settings > Miscellaneous): the "Info" button takes the
+   timer's place on the left (js/solver-app.js). */
+.solver-view .solver-topbar .info-btn {
+    display: none;
+    margin-right: auto;
+}
+
+html.timer-hidden .solver-view .solver-topbar .timer-wrap {
+    display: none;
+}
+
+html.timer-hidden .solver-view .solver-topbar .info-btn {
+    display: flex;
+}
+
 /* Colorblind Mode (Settings > Accessibility): marks that don't rely on
    colour. A wrong letter (from a check, or Error Check Mode) gets a dot in
    the square's top-right corner; a revealed square, a folded corner there.

@@ -28,6 +28,8 @@
         document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
         // Colorblind Mode: shapes as well as colours (css/app.css).
         document.documentElement.classList.toggle('colorblind', !!settings.colorblind);
+        // Timer turned off: no times in the solver or on the home page.
+        document.documentElement.classList.toggle('timer-hidden', settings.showTimer === false);
         if (bridge && bridge.setThemeDark) bridge.setThemeDark(dark);
         for (const fn of listeners) fn(dark);
     }
@@ -99,12 +101,26 @@
         skipFilled: () => settings.skipFilled !== false,
         /** The end of an answer moves on to the next clue (default on). */
         autoAdvance: () => settings.autoAdvance !== false,
+        /** Whether times are shown, in the solver and on the home page (default on). */
+        showTimer: () => settings.showTimer !== false,
         /** Error Check Mode: wrong letters show red as they're typed. */
         errorCheck: () => !!settings.errorCheck,
         onSolverChange: (fn) => solverListeners.push(fn),
         /** Items for the solver's Settings sheet (not shown on the home page). */
         solverItems: () => [
             { section: 'Miscellaneous' },
+            {
+                indent: 1,
+                label: 'Show timer',
+                sub: 'Off: no times here or on the home page',
+                checked: settings.showTimer !== false,
+                action: () => {
+                    settings.showTimer = settings.showTimer === false;
+                    Store.writeJSON(FILE, settings);
+                    document.documentElement.classList.toggle('timer-hidden', !settings.showTimer);
+                    for (const fn of libraryListeners) fn();
+                },
+            },
             {
                 indent: 1,
                 label: 'Letter pop-up on key press',

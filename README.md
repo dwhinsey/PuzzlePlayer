@@ -50,6 +50,11 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - A header bar across the top holds the back button, the puzzle's title and
   author, and a settings button. Below it: the timer on the left; pencil,
   **Notes** and **Assist** on the right.
+- **Show timer** (solver's Settings, under Miscellaneous; on by default):
+  turned off, the solver shows an **Info** button where the timer was (it
+  opens the pause card: title, author, Resume), the home page shows no
+  times, and the win message leaves out the time. The time is still kept,
+  so turning the timer back on shows it as before.
 - **Solving** (solver's Settings, both on by default): **Skip filled
   squares** (typing jumps over squares that already have a letter) and
   **Auto-advance to next clue** (the end of an answer moves on to the next

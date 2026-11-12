@@ -253,6 +253,7 @@
 
     // The time so far (or the solving time), with a small clock.
     function timeLabel(p) {
+        if (!Settings.showTimer()) return '';
         return p.elapsed ? '<span class="lib-state-sub">' + ICONS.clock + formatTime(p.elapsed) + '</span>' : '';
     }
 
