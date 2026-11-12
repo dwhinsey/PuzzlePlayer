@@ -84,6 +84,7 @@ WebView. The library and solver are HTML/CSS/JS in
 | `js/storage.js` | Saving, via the Android bridge |
 | `js/settings.js` | Settings (appearance) and the Settings sheet |
 | `css/theme-dark.css` | Dark mode colours |
+| `fonts/` | Public Sans (regular and italic), the app's font, with its licence (SIL Open Font License) |
 | `js/app.js` | Wiring, back button, system bars |
 
 To bring a change from the website across, copy the site's `js/solver.js`
