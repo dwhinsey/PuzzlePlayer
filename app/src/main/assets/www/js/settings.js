@@ -33,6 +33,8 @@
     function setTheme(theme) {
         settings.theme = theme;
         Store.writeJSON(FILE, settings);
+        // Android's launch screen, shown before the page loads, follows too.
+        if (bridge && bridge.setThemeMode) bridge.setThemeMode(theme);
         apply();
     }
 

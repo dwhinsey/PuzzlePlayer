@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
         // Paint the right background before the page has loaded, so a
         // dark-mode launch doesn't flash light.
         applyBackground(savedThemeIsDark());
+        applySplashTheme(savedTheme());
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -225,14 +226,37 @@ public class MainActivity extends Activity {
     }
 
     /** The appearance setting saved by the page (js/settings.js). */
-    private boolean savedThemeIsDark() {
+    /** The appearance setting: "light", "dark" or "system". */
+    private String savedTheme() {
         try {
             String json = bridge.read("settings.json");
             // Matches js/settings.js: no choice yet means follow the phone.
-            String theme = json == null ? "system" : new JSONObject(json).optString("theme", "system");
-            return "dark".equals(theme) || ("system".equals(theme) && isSystemNight());
+            return json == null ? "system" : new JSONObject(json).optString("theme", "system");
         } catch (Exception e) {
-            return isSystemNight();
+            return "system";
+        }
+    }
+
+    private boolean savedThemeIsDark() {
+        String theme = savedTheme();
+        return "dark".equals(theme) || ("system".equals(theme) && isSystemNight());
+    }
+
+    /**
+     * Android draws its launch screen before the app runs, from a theme. On
+     * Android 13+ the app can say which theme to use next time, so a light or
+     * dark choice made in Settings applies there too. "system" (and older
+     * Android versions) use AppTheme, which follows the phone's dark mode.
+     */
+    void applySplashTheme(String theme) {
+        if (Build.VERSION.SDK_INT < 33) return;
+        int style = "dark".equals(theme) ? R.style.SplashDark
+                : "light".equals(theme) ? R.style.SplashLight
+                : android.content.res.Resources.ID_NULL;
+        try {
+            getSplashScreen().setSplashScreenTheme(style);
+        } catch (Exception ignored) {
+            // Cosmetic only.
         }
     }
 

@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Light or dark with the phone (see values-night/colors.xml). This
+             is also the background of Android's launch screen. -->
         <item name="android:windowBackground">@color/page_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Launch screens for an appearance chosen in the app's Settings, set
+         with SplashScreen.setSplashScreenTheme (Android 13+) by MainActivity.
+         "Match phone setting" uses AppTheme itself. -->
+    <style name="SplashLight" parent="AppTheme">
+        <item name="android:windowBackground">@color/light_background</item>
+    </style>
+
+    <style name="SplashDark" parent="AppTheme">
+        <item name="android:windowBackground">@color/dark_background</item>
     </style>
 </resources>

@@ -169,6 +169,12 @@ public class PuzzleBridge {
         activity.runOnUiThread(() -> activity.applyBackground(dark));
     }
 
+    /** The appearance setting changed ("light", "dark" or "system"). */
+    @JavascriptInterface
+    public void setThemeMode(String theme) {
+        activity.runOnUiThread(() -> activity.applySplashTheme(theme));
+    }
+
     @JavascriptInterface
     public void setBarStyle(boolean darkStatusIcons, boolean darkNavIcons) {
         activity.runOnUiThread(() -> activity.setBarAppearance(darkStatusIcons, darkNavIcons));

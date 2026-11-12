@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- The window behind the page, and Android's launch screen. Has a dark
+         twin in values-night, used when the phone is in dark mode. -->
     <color name="page_background">#E9EEF4</color>
+    <color name="light_background">#E9EEF4</color>
+    <color name="dark_background">#121212</color>
     <color name="ic_launcher_background">#1B3A6B</color>
 </resources>

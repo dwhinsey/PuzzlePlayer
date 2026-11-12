@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode's page colour (the d-bg variable in css/theme-dark.css). -->
+    <color name="page_background">#121212</color>
+</resources>
