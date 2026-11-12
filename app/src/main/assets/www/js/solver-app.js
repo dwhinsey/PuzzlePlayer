@@ -530,6 +530,13 @@
             ];
         }
 
+        // With the timer turned off there's no pause button: the card comes
+        // from Info (or from leaving the app), so it doesn't say "Game Paused".
+        _pauseTimer() {
+            super._pauseTimer();
+            if (!Settings.showTimer()) this.overlayPausedMsgEl.hidden = true;
+        }
+
         // With the timer turned off, the win message leaves out the time.
         _showSuccessPopup() {
             super._showSuccessPopup();
