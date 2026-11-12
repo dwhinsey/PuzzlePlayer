@@ -109,6 +109,11 @@ button {
     display: none;
 }
 
+/* Error Check Mode: a wrong letter is red as soon as it's typed. */
+.solver-view .cell.error-check-wrong .cell-letter {
+    color: #c62828;
+}
+
 /* Grid numbers. The site sizes them at a quarter of a square; Android's
    WebView used to round anything under 8px up to 8px, which is what squares
    of 32px and less showed. Squares of 27px and more (a 15x15 grid on a

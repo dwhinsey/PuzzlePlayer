@@ -46,6 +46,7 @@
     }
 
     const libraryListeners = [];
+    const solverListeners = [];
 
     /** extraItems: more sheet items, e.g. the open puzzle's Clear and Reset. */
     function open(extraItems) {
@@ -92,6 +93,9 @@
         onLibraryChange: (fn) => libraryListeners.push(fn),
         /** Whether a pressed key shows its letter above it (default on). */
         keyPreview: () => settings.keyPreview !== false,
+        /** Error Check Mode: wrong letters show red as they're typed. */
+        errorCheck: () => !!settings.errorCheck,
+        onSolverChange: (fn) => solverListeners.push(fn),
         /** Items for the solver's Settings sheet (not shown on the home page). */
         solverItems: () => [
             { section: 'Keyboard' },
@@ -102,6 +106,18 @@
                 action: () => {
                     settings.keyPreview = settings.keyPreview === false;
                     Store.writeJSON(FILE, settings);
+                },
+            },
+            { section: 'Checking' },
+            {
+                indent: 1,
+                label: 'Error Check Mode',
+                sub: 'Wrong letters turn red as you type them',
+                checked: !!settings.errorCheck,
+                action: () => {
+                    settings.errorCheck = !settings.errorCheck;
+                    Store.writeJSON(FILE, settings);
+                    for (const fn of solverListeners) fn();
                 },
             },
         ],

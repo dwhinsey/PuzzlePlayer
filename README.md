@@ -7,7 +7,7 @@ files, using the mobile solving interface from hinseypuzzles.com.
 
 **Library (home page)**
 - Lists every puzzle you've added, showing whether each is new, in progress
-  (with % filled and time) or solved. Puzzles in progress come first, then
+  (with its time) or solved. Puzzles in progress come first, then
   new ones, then solved ones under a "Completed" heading.
 - **Settings → Hide solved puzzles** (on the home page) leaves solved puzzles
   out of the list and search.
@@ -45,7 +45,10 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - A header bar across the top holds the back button, the puzzle's title and
   author, and a settings button. Below it: the timer on the left; pencil,
   **Notes** and **Assist** on the right.
-- **Notes:** a scratch pad for each puzzle, saved as you type and kept until
+- **Error Check Mode** (solver's Settings): wrong letters turn red as they
+  are typed.
+- **Notes:** a scratch pad for each puzzle (the timer pauses while it's
+  open), saved as you type and kept until
   the puzzle is reset (from the solver's Settings or by long-pressing it in
   the library)
   or deleted.

@@ -193,29 +193,13 @@
 
     // ---------- Rendering ----------
 
-    function statusIcon(p) {
-        if (p.status === 'done') {
-            return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="#2e7d32"/><path d="m11 18.5 4.6 4.6L25.5 13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        }
-        if (p.status === 'progress') {
-            const circumference = 2 * Math.PI * 14;
-            const pct = Math.max(4, Math.min(100, p.percent || 0));
-            const dash = (pct / 100) * circumference;
-            return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true">' +
-                '<circle class="ring-track" cx="18" cy="18" r="14" fill="none" stroke="#d5dde8" stroke-width="4.5"/>' +
-                '<circle cx="18" cy="18" r="14" fill="none" stroke="#2f5ea8" stroke-width="4.5" stroke-linecap="round" ' +
-                'stroke-dasharray="' + dash.toFixed(1) + ' 100" transform="rotate(-90 18 18)"/></svg>';
-        }
-        return '<svg viewBox="0 0 36 36" width="34" height="34" aria-hidden="true"><circle class="ring-new" cx="18" cy="18" r="14" fill="#fff" stroke="#b9c3d1" stroke-width="2.5"/><circle cx="18" cy="18" r="4.5" fill="#2f5ea8"/></svg>';
-    }
-
     function statusLabel(p) {
         if (p.status === 'done') {
             return '<span class="lib-state done">Solved</span>' +
                 (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
         }
         if (p.status === 'progress') {
-            return '<span class="lib-state progress">' + (p.percent || 0) + '%</span>' +
+            return '<span class="lib-state progress">In Progress</span>' +
                 (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
         }
         return '<span class="lib-state new">New</span>';
@@ -236,7 +220,7 @@
         metaBits.push('Added ' + formatDate(p.added));
         if (p.width && p.height) metaBits.push(p.width + '×' + p.height);
         row.innerHTML =
-            '<span class="lib-status">' + statusIcon(p) + '</span>' +
+
             '<span class="lib-row-body">' +
             '<span class="lib-row-title">' + esc(displayTitle(p)) + '</span>' +
             (p.author ? '<span class="lib-row-sub">' + esc(p.author) + '</span>' : '') +

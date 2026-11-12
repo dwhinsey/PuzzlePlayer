@@ -466,6 +466,13 @@
         /** The notes pop-up. Saved as you type; kept until the puzzle is reset. */
         openNotes() {
             this._setHelpMenuOpen(false);
+            // The clock stops while the notes are open and restarts after.
+            const wasRunning = !!this.timerInterval;
+            if (wasRunning) {
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+                this._save();
+            }
             let timer = null;
             // Centred on the grid and short enough to stay clear of the
             // phone's keyboard, so it doesn't move when the keyboard opens.
@@ -493,7 +500,9 @@
             }).then((text) => {
                 clearTimeout(timer);
                 this._writeNotes(text);
-                if (!this.destroyed) this.gridEl.focus();
+                if (this.destroyed) return;
+                if (wasRunning) this._startInterval();
+                this.gridEl.focus();
             });
         }
 
@@ -504,6 +513,31 @@
                 { indent: 1, label: 'Clear grid', action: () => this.clearGrid() },
                 { indent: 1, label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
             ];
+        }
+
+        // ----- Error Check Mode -----
+
+        // With the setting on, a letter that doesn't match the answer shows
+        // red as soon as it's in the grid; right ones keep their usual colour.
+        _updateUI() {
+            super._updateUI();
+            this._showErrors();
+        }
+
+        _showErrors() {
+            if (!this.cellEls || !this.cellEls.length) return;
+            const on = this.puzzle.hasKey && Settings.errorCheck();
+            const { cells, width, height } = this.puzzle;
+            for (let r = 0; r < height; r++) {
+                for (let c = 0; c < width; c++) {
+                    const cell = cells[r][c];
+                    if (!cell) continue;
+                    const entry = this.userGrid[r][c];
+                    const wrong = on && !!entry && !!cell.solution &&
+                        entry.toUpperCase() !== cell.solution.toUpperCase();
+                    this.cellEls[r][c].classList.toggle('error-check-wrong', wrong);
+                }
+            }
         }
 
         // ----- Reveal -----

@@ -98,15 +98,6 @@ html[data-theme="dark"] .lib-state.done {
     color: #8fd492;
 }
 
-html[data-theme="dark"] .lib-status .ring-track {
-    stroke: var(--d-surface-2);
-}
-
-html[data-theme="dark"] .lib-status .ring-new {
-    fill: var(--d-surface);
-    stroke: var(--d-muted);
-}
-
 html[data-theme="dark"] .lib-search {
     background: var(--d-surface-2);
     color: var(--d-text);
@@ -318,6 +309,10 @@ html[data-theme="dark"] .cell.incorrect .cell-letter {
 
 html[data-theme="dark"] .cell.revealed .cell-letter {
     color: var(--d-revealed);
+}
+
+html[data-theme="dark"] .solver-view .cell.error-check-wrong .cell-letter {
+    color: var(--d-incorrect);
 }
 
 html[data-theme="dark"] .mobile-clue-bar {

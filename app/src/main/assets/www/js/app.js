@@ -103,6 +103,7 @@
             : Settings.libraryItems()));
     }
     Settings.onLibraryChange(() => Library.render());
+    Settings.onSolverChange(() => { if (solver) solver._showErrors(); });
     Settings.onChange(() => setBars());
 
     // The header's back button (and the solver's own, which the app hides)
