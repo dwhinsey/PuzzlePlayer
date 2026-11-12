@@ -48,11 +48,13 @@ html[data-theme="dark"] {
     --line: var(--d-line);
 }
 
-/* Home screen tiles: a step lighter than the page, in the same slate tint.
-   (Settings and pop-ups keep the neutral graphite surfaces.) */
+/* Home screen tiles: a little lighter than the page, in the same slate
+   tint, with a thin lighter edge. (Settings and pop-ups keep the neutral
+   graphite surfaces.) */
 html[data-theme="dark"] .library-view {
-    --d-surface: #262b33;
-    --d-surface-2: #303641;
+    --d-surface: #282e37;
+    --d-surface-2: #323944;
+    --d-tile-edge: #3b4350;
 }
 
 html[data-theme="dark"] body {
@@ -70,7 +72,7 @@ html[data-theme="dark"] .solver-header {
 
 html[data-theme="dark"] .lib-row {
     background: var(--d-surface);
-    box-shadow: none;
+    box-shadow: inset 0 0 0 1px var(--d-tile-edge);
 }
 
 html[data-theme="dark"] .lib-row:active,
