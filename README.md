@@ -56,6 +56,10 @@ files, using the mobile solving interface from hinseypuzzles.com.
   clue).
 - **Error Check Mode** (solver's Settings, under Accessibility): wrong
   letters turn red as they are typed.
+- **Colorblind Mode** (solver's Settings, under Accessibility): marks that
+  don't rely on colour. A wrong letter (after a check, or in Error Check
+  Mode) gets a dot in the square's top-right corner; a revealed square gets
+  a folded corner there.
 - **Notes:** a scratch pad for each puzzle (the timer pauses while it's
   open), saved as you type and kept until
   the puzzle is reset (from the solver's Settings or by long-pressing it in

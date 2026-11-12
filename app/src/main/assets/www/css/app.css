@@ -128,6 +128,36 @@ button {
     display: none;
 }
 
+/* Colorblind Mode (Settings > Accessibility): marks that don't rely on
+   colour. A wrong letter (from a check, or Error Check Mode) gets a dot in
+   the square's top-right corner; a revealed square, a folded corner there.
+   A square is never both, so the two never meet. */
+html.colorblind .solver-view .cell.incorrect::after,
+html.colorblind .solver-view .cell.error-check-wrong::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: max(5px, calc(var(--cell-size, 24px) * 0.17));
+    height: max(5px, calc(var(--cell-size, 24px) * 0.17));
+    border-radius: 50%;
+    background: #c62828;
+    pointer-events: none;
+}
+
+html.colorblind .solver-view .cell.revealed::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 calc(var(--cell-size, 24px) * 0.3) calc(var(--cell-size, 24px) * 0.3) 0;
+    border-color: transparent #6a1b9a transparent transparent;
+    pointer-events: none;
+}
+
 /* Error Check Mode: a wrong letter is red as soon as it's typed. */
 .solver-view .cell.error-check-wrong .cell-letter {
     color: #c62828;

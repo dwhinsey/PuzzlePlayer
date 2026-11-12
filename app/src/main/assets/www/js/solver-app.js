@@ -592,6 +592,9 @@
                 return;
             }
             super._revealCell(r, c);
+            // A revealed letter is right: drop any "wrong" mark from an
+            // earlier check (it showed as a dot in Colorblind Mode).
+            this.cellEls[r][c].classList.remove('correct', 'incorrect');
         }
 
         // ----- Puzzles without an answer key -----

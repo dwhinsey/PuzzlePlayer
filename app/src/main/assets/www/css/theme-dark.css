@@ -408,3 +408,13 @@ html[data-theme="dark"] .rebus-display {
     border-color: var(--d-selected);
     color: var(--d-text);
 }
+
+/* Colorblind Mode marks (css/app.css) in the dark palette. */
+html.colorblind[data-theme="dark"] .solver-view .cell.incorrect::after,
+html.colorblind[data-theme="dark"] .solver-view .cell.error-check-wrong::after {
+    background: var(--d-incorrect);
+}
+
+html.colorblind[data-theme="dark"] .solver-view .cell.revealed::before {
+    border-right-color: var(--d-revealed);
+}

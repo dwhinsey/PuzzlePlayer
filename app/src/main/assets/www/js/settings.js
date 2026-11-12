@@ -26,6 +26,8 @@
     function apply() {
         const dark = isDark();
         document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        // Colorblind Mode: shapes as well as colours (css/app.css).
+        document.documentElement.classList.toggle('colorblind', !!settings.colorblind);
         if (bridge && bridge.setThemeDark) bridge.setThemeDark(dark);
         for (const fn of listeners) fn(dark);
     }
@@ -143,6 +145,17 @@
                     settings.errorCheck = !settings.errorCheck;
                     Store.writeJSON(FILE, settings);
                     for (const fn of solverListeners) fn();
+                },
+            },
+            {
+                indent: 1,
+                label: 'Colorblind Mode',
+                sub: 'Wrong letters get a dot, revealed squares a corner mark',
+                checked: !!settings.colorblind,
+                action: () => {
+                    settings.colorblind = !settings.colorblind;
+                    Store.writeJSON(FILE, settings);
+                    document.documentElement.classList.toggle('colorblind', settings.colorblind);
                 },
             },
         ],
