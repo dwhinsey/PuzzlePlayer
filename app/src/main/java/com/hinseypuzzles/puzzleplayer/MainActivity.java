@@ -85,6 +85,11 @@ public class MainActivity extends Activity {
         // The solver lays itself out to the screen; system font scaling would
         // only push the keyboard off the bottom.
         settings.setTextZoom(100);
+        // The WebView otherwise draws no text below 8px, which blew grid
+        // numbers up on small squares (a 21x21 grid on a phone) until they
+        // crowded the letters. Sizes are left to the CSS (css/app.css).
+        settings.setMinimumFontSize(1);
+        settings.setMinimumLogicalFontSize(1);
         settings.setAllowContentAccess(false);
         settings.setMediaPlaybackRequiresUserGesture(true);
 

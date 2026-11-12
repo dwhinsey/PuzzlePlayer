@@ -109,6 +109,15 @@ button {
     display: none;
 }
 
+/* Grid numbers. The site sizes them at a quarter of a square; Android's
+   WebView used to round anything under 8px up to 8px, which is what squares
+   of 32px and less showed. Squares of 27px and more (a 15x15 grid on a
+   phone, and up) keep exactly that look; smaller squares (21x21 on a
+   phone) get numbers at 30% of the square instead of a forced 8px. */
+.solver-view .cell-number {
+    font-size: max(min(8px, calc(var(--cell-size, 24px) * 0.3)), calc(var(--cell-size, 24px) * 0.25));
+}
+
 /* The row above the grid: the timer on the left; pencil, Notes and Assist
    on the right. position/z-index keep the Assist menu above the grid now
    that the row is moved down (js/solver-app.js centres it in the space
