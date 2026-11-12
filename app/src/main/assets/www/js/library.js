@@ -111,6 +111,8 @@
     };
     // "15x15", "15 x 15", "15×15", "15X15", "15*15", "15 by 15".
     const DIMS = /(\d+)\s*(?:x|×|\*|by)\s*(\d+)/g;
+    // Half a size, "15x" or "x15": either side 15.
+    const HALF_DIMS = /(\d+)\s*[x×*](?![a-z])|(?<![a-z\d])[x×*]\s*(\d+)/g;
 
     function sizeClassMatches(word, p) {
         const range = SIZE_CLASSES[word] || SIZE_CLASSES[word.replace(/s$/, '')];
@@ -123,8 +125,9 @@
      * Whether a puzzle matches the search. The whole query found in the
      * title or author matches, as before. Otherwise every word has to match:
      * in the title or author, or as a size word (mini, midi, weekday,
-     * sunday), and any grid size (e.g. 14x15, either way round) has to be
-     * the puzzle's.
+     * sunday), or as a number one of the grid's sides has (15); and any
+     * grid size (14x15, either way round, or 15x for either side 15) has
+     * to be the puzzle's.
      */
     function puzzleMatches(p, rawQuery) {
         const title = fold(displayTitle(p));
@@ -133,16 +136,25 @@
         if (!needle) return true;
         if (title.includes(needle) || author.includes(needle)) return true;
         const dims = [];
-        const rest = needle.replace(DIMS, (m, a, b) => {
-            dims.push([+a, +b]);
-            return ' ';
-        });
+        const sides = [];
+        const rest = needle
+            .replace(DIMS, (m, a, b) => {
+                dims.push([+a, +b]);
+                return ' ';
+            })
+            .replace(HALF_DIMS, (m, a, b) => {
+                sides.push(+(a || b));
+                return ' ';
+            });
         for (const [a, b] of dims) {
             if (!((p.width === a && p.height === b) || (p.width === b && p.height === a))) return false;
         }
+        const hasSide = (n) => p.width === n || p.height === n;
+        if (!sides.every(hasSide)) return false;
         const words = rest.split(/\s+/).filter(Boolean);
-        if (!words.length) return dims.length > 0;
-        return words.every((w) => title.includes(w) || author.includes(w) || sizeClassMatches(w, p));
+        if (!words.length) return dims.length + sides.length > 0;
+        return words.every((w) => title.includes(w) || author.includes(w) ||
+            sizeClassMatches(w, p) || (/^\d+$/.test(w) && hasSide(+w)));
     }
 
     const folderById = (id) => lib.folders.find((f) => f.id === id) || null;
