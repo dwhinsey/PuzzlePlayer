@@ -104,7 +104,7 @@
         onSolverChange: (fn) => solverListeners.push(fn),
         /** Items for the solver's Settings sheet (not shown on the home page). */
         solverItems: () => [
-            { section: 'Keyboard' },
+            { section: 'Miscellaneous' },
             {
                 indent: 1,
                 label: 'Letter pop-up on key press',
