@@ -12,7 +12,7 @@ html[data-theme="dark"] {
     --d-bg: #121212;
     --d-surface: #1e1e1e;
     --d-surface-2: #2c2c2c;
-    --d-text: #ececec;
+    --d-text: #dadada;
     --d-muted: #9e9e9e;
     --d-line: #3a3a3a;
     --d-header: #2b323c;
@@ -23,7 +23,7 @@ html[data-theme="dark"] {
     --d-block: #000000;
     --d-grid-line: #000000;
     --d-number: #b0b0b0;
-    --d-letter: #f5f5f5;
+    --d-letter: #dedede;
     --d-selected: #c4a24f;
     --d-selected-text: #111111;
     --d-word: #2e4459;
@@ -39,7 +39,7 @@ html[data-theme="dark"] {
     --d-key: #3b3b3b;
     --d-key-special: #2a2a2a;
     --d-key-special-pressed: #3c3c3c;
-    --d-key-text: #f0f0f0;
+    --d-key-text: #dedede;
 
     --page-bg: var(--d-bg);
     --navy: var(--d-header);
@@ -48,14 +48,10 @@ html[data-theme="dark"] {
     --line: var(--d-line);
 }
 
-/* While solving, text is a softer light grey than elsewhere, and the
-   background behind the timer and grid has a slight slate tint, a step up
-   from the black squares. */
+/* While solving, the background behind the timer and grid has a slight
+   slate tint, a step up from the black squares. */
 html[data-theme="dark"] .solver-view {
     --d-bg: #1c2027;
-    --d-letter: #dedede;
-    --d-text: #dadada;
-    --d-key-text: #dedede;
 }
 
 html[data-theme="dark"] body {
@@ -68,6 +64,7 @@ html[data-theme="dark"] body {
 html[data-theme="dark"] .lib-topbar,
 html[data-theme="dark"] .solver-header {
     background: var(--d-header);
+    color: var(--d-text);
 }
 
 html[data-theme="dark"] .lib-row {
@@ -124,6 +121,7 @@ html[data-theme="dark"] .lib-empty-art path {
 
 html[data-theme="dark"] .lib-empty-btn {
     background: var(--d-accent);
+    color: var(--d-text);
 }
 
 /* ----- Sheets, dialogs, toasts ----- */
@@ -178,7 +176,7 @@ html[data-theme="dark"] .notes-text::placeholder {
 
 html[data-theme="dark"] .dialog-btn.primary,
 html[data-theme="dark"] .dialog-btn.danger {
-    color: #ffffff;
+    color: var(--d-text);
 }
 
 html[data-theme="dark"] .dialog-btn.primary {
@@ -212,7 +210,7 @@ html[data-theme="dark"] .pencil-btn.active,
 html[data-theme="dark"] .help-btn.active {
     background: var(--d-word);
     border-color: var(--d-accent);
-    color: #ffffff;
+    color: var(--d-text);
 }
 
 html[data-theme="dark"] .help-menu {
@@ -400,6 +398,7 @@ html[data-theme="dark"] .landscape-blocker p {
 
 html[data-theme="dark"] .overlay-start-btn {
     background: var(--d-accent);
+    color: var(--d-text);
 }
 
 html[data-theme="dark"] .rebus-display {
