@@ -52,12 +52,16 @@
     const libraryListeners = [];
     const solverListeners = [];
 
-    /** extraItems: more sheet items, e.g. the open puzzle's Clear and Reset. */
+    /**
+     * extraItems: more sheet items (or a function returning them), e.g. the
+     * open puzzle's options, Clear and Reset. Ticking a setting keeps the
+     * sheet open; Clear and Reset close it.
+     */
     function open(extraItems) {
-        const t = settings.theme;
-        UI.sheet({
-            title: 'Settings',
-            items: [
+        const items = () => {
+            const t = settings.theme;
+            const extra = typeof extraItems === 'function' ? extraItems() : (extraItems || []);
+            return [
                 { section: 'Appearance' },
                 { indent: 1, label: 'Light', checked: t === 'light', action: () => setTheme('light') },
                 { indent: 1, label: 'Dark', checked: t === 'dark', action: () => setTheme('dark') },
@@ -68,9 +72,10 @@
                     checked: t === 'system',
                     action: () => setTheme('system'),
                 },
-                ...(extraItems || []),
-            ],
-        });
+                ...extra,
+            ].map((item) => ('checked' in item ? { keepOpen: true, ...item } : item));
+        };
+        UI.sheet({ title: 'Settings', items, closeLabel: 'Close' });
     }
 
     if (!bridge && media && media.addEventListener) {

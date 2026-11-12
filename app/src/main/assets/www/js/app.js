@@ -98,9 +98,9 @@
     for (const btn of document.querySelectorAll('.settings-btn')) {
         // In a puzzle, Settings also offers the keyboard option, Clear grid
         // and Reset puzzle; on the home page, the library options.
-        btn.addEventListener('click', () => Settings.open(solver
+        btn.addEventListener('click', () => Settings.open(() => (solver
             ? Settings.solverItems().concat(solver.puzzleSettings())
-            : Settings.libraryItems()));
+            : Settings.libraryItems())));
     }
     Settings.onLibraryChange(() => Library.render());
     Settings.onSolverChange(() => { if (solver) solver._showErrors(); });

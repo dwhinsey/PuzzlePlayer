@@ -60,7 +60,14 @@
          * items: [{ label, sub?, checked?, danger?, disabled?, action }],
          *        or { section } for a group heading
          */
-        sheet({ title, subtitle, items }) {
+        /**
+         * A bottom sheet of items. `items` is an array, or a function that
+         * returns one: then an item with `keepOpen` (a setting) runs its
+         * action and the list is rebuilt in place, so its tick updates and
+         * the sheet stays open. Other items close the sheet first.
+         * `closeLabel` names the bottom button (default "Cancel").
+         */
+        sheet({ title, subtitle, items, closeLabel }) {
             const sheet = el('div', 'sheet');
             sheet.setAttribute('role', 'dialog');
             if (title) {
@@ -71,27 +78,38 @@
             }
             const list = el('div', 'sheet-items');
             let entry;
-            for (const item of items) {
-                if (item.section) {
-                    list.appendChild(el('div', 'sheet-section', item.section));
-                    continue;
+            const render = () => {
+                const scroll = list.scrollTop;
+                list.replaceChildren();
+                for (const item of (typeof items === 'function' ? items() : items)) {
+                    if (item.section) {
+                        list.appendChild(el('div', 'sheet-section', item.section));
+                        continue;
+                    }
+                    const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') + (item.checked ? ' checked' : ''));
+                    b.type = 'button';
+                    b.disabled = !!item.disabled;
+                    if (item.indent) b.style.paddingLeft = (20 + item.indent * 18) + 'px';
+                    const label = el('span', 'sheet-item-label', item.label);
+                    b.appendChild(label);
+                    if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
+                    if (item.checked) b.appendChild(el('span', 'sheet-item-check', '✓'));
+                    b.addEventListener('click', () => {
+                        if (item.keepOpen && typeof items === 'function') {
+                            if (item.action) item.action();
+                            render();
+                            return;
+                        }
+                        close(entry);
+                        if (item.action) item.action();
+                    });
+                    list.appendChild(b);
                 }
-                const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') + (item.checked ? ' checked' : ''));
-                b.type = 'button';
-                b.disabled = !!item.disabled;
-                if (item.indent) b.style.paddingLeft = (20 + item.indent * 18) + 'px';
-                const label = el('span', 'sheet-item-label', item.label);
-                b.appendChild(label);
-                if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
-                if (item.checked) b.appendChild(el('span', 'sheet-item-check', '✓'));
-                b.addEventListener('click', () => {
-                    close(entry);
-                    if (item.action) item.action();
-                });
-                list.appendChild(b);
-            }
+                list.scrollTop = scroll;
+            };
+            render();
             sheet.appendChild(list);
-            const cancel = el('button', 'sheet-item sheet-cancel', 'Cancel');
+            const cancel = el('button', 'sheet-item sheet-cancel', closeLabel || 'Cancel');
             cancel.type = 'button';
             cancel.addEventListener('click', () => close(entry));
             sheet.appendChild(cancel);

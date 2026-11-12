@@ -446,7 +446,7 @@
         clearGrid() {
             UI.confirm({
                 title: 'Clear the grid?',
-                message: 'All letters are removed. The timer keeps running.',
+                message: Settings.showTimer() ? 'All letters are removed. The timer keeps running.' : 'All letters are removed.',
                 okLabel: 'Clear',
                 danger: true,
             }).then((ok) => { if (ok && !this.destroyed) this._confirmed(super.clearGrid); });
@@ -456,9 +456,11 @@
             const hasNotes = !!this._readNotes().trim();
             UI.confirm({
                 title: 'Reset the puzzle?',
-                message: hasNotes
-                    ? 'All letters are removed, the timer goes back to zero, and your notes are deleted.'
-                    : 'All letters are removed and the timer goes back to zero.',
+                message: Settings.showTimer()
+                    ? (hasNotes
+                        ? 'All letters are removed, the timer goes back to zero, and your notes are deleted.'
+                        : 'All letters are removed and the timer goes back to zero.')
+                    : (hasNotes ? 'All letters and your notes are removed.' : 'All letters are removed.'),
                 okLabel: 'Reset',
                 danger: true,
             }).then((ok) => {
@@ -526,7 +528,7 @@
             return [
                 { section: 'This puzzle' },
                 { indent: 1, label: 'Clear grid', action: () => this.clearGrid() },
-                { indent: 1, label: 'Reset puzzle', sub: 'Clears the grid and the timer', danger: true, action: () => this.resetPuzzle() },
+                { indent: 1, label: 'Reset puzzle', sub: Settings.showTimer() ? 'Clears the grid and the timer' : 'Clears the grid', danger: true, action: () => this.resetPuzzle() },
             ];
         }
 
