@@ -102,7 +102,7 @@ async function shot(page, name) {
         await page.waitForTimeout(500);
         const states = await page.locator('.lib-state').allInnerTexts();
         console.log('states:', states);
-        if (!states.some((s) => /%/.test(s))) fail('no puzzle shows progress');
+        if (!states.some((s) => /in progress/i.test(s))) fail('no puzzle shows progress');
     } else if (phase === 'open-with') {
         // A file sent from "another app": it should be imported and open.
         const expected = process.argv[3];
@@ -125,7 +125,7 @@ async function shot(page, name) {
         const states = await page.locator('.lib-state').allInnerTexts();
         console.log('states after relaunch:', states);
         await shot(page, 'library-after-relaunch');
-        if (!states.some((s) => /%/.test(s))) fail('progress lost after relaunch');
+        if (!states.some((s) => /in progress/i.test(s))) fail('progress lost after relaunch');
         await page.locator('.lib-row', { hasText: 'Big Grid' }).click();
         await page.waitForTimeout(800);
         const letters = (await page.locator('.cell-letter').allInnerTexts()).filter(Boolean).join('');
