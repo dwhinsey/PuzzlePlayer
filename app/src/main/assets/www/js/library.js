@@ -45,6 +45,7 @@
     const ICONS = {
         folder: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M2.5 6.5A1.5 1.5 0 0 1 4 5h5l2.2 2.4H20a1.5 1.5 0 0 1 1.5 1.5v9.6A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5z" fill="currentColor"/></svg>',
         more: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="5.5" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="18.5" r="1.9" fill="currentColor"/></svg>',
+        clock: '<svg class="lib-time-icon" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
         chevron: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     };
 
@@ -250,15 +251,14 @@
 
     // ---------- Rendering ----------
 
+    // The time so far (or the solving time), with a small clock.
+    function timeLabel(p) {
+        return p.elapsed ? '<span class="lib-state-sub">' + ICONS.clock + formatTime(p.elapsed) + '</span>' : '';
+    }
+
     function statusLabel(p) {
-        if (p.status === 'done') {
-            return '<span class="lib-state done">Solved</span>' +
-                (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
-        }
-        if (p.status === 'progress') {
-            return '<span class="lib-state progress">In Progress</span>' +
-                (p.elapsed ? '<span class="lib-state-sub">' + formatTime(p.elapsed) + '</span>' : '');
-        }
+        if (p.status === 'done') return '<span class="lib-state done">Solved</span>' + timeLabel(p);
+        if (p.status === 'progress') return '<span class="lib-state progress">In Progress</span>' + timeLabel(p);
         return '<span class="lib-state new">New</span>';
     }
 

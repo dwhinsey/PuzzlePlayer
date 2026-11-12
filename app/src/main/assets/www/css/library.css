@@ -251,9 +251,17 @@
 }
 
 .lib-state-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 0.78em;
     color: var(--muted);
     font-variant-numeric: tabular-nums;
+}
+
+.lib-time-icon {
+    flex-shrink: 0;
+    opacity: 0.8;
 }
 
 .lib-more {
