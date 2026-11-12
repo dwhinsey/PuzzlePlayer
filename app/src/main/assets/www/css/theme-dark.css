@@ -24,9 +24,9 @@ html[data-theme="dark"] {
     --d-grid-line: #000000;
     --d-number: #b0b0b0;
     --d-letter: #f5f5f5;
-    --d-selected: #f0c14b;
+    --d-selected: #c4a24f;
     --d-selected-text: #111111;
-    --d-word: #35526e;
+    --d-word: #2e4459;
     --d-referenced: #4a4426;
     --d-pencil: #8a8a8a;
     --d-correct: #6cc070;
@@ -46,6 +46,13 @@ html[data-theme="dark"] {
     --text: var(--d-text);
     --muted: var(--d-muted);
     --line: var(--d-line);
+}
+
+/* While solving, text is a softer light grey than elsewhere. */
+html[data-theme="dark"] .solver-view {
+    --d-letter: #dedede;
+    --d-text: #dadada;
+    --d-key-text: #dedede;
 }
 
 html[data-theme="dark"] body {
