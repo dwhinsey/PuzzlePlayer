@@ -93,6 +93,10 @@
         onLibraryChange: (fn) => libraryListeners.push(fn),
         /** Whether a pressed key shows its letter above it (default on). */
         keyPreview: () => settings.keyPreview !== false,
+        /** Typing skips squares that are already filled (default on). */
+        skipFilled: () => settings.skipFilled !== false,
+        /** The end of an answer moves on to the next clue (default on). */
+        autoAdvance: () => settings.autoAdvance !== false,
         /** Error Check Mode: wrong letters show red as they're typed. */
         errorCheck: () => !!settings.errorCheck,
         onSolverChange: (fn) => solverListeners.push(fn),
@@ -108,7 +112,28 @@
                     Store.writeJSON(FILE, settings);
                 },
             },
-            { section: 'Checking' },
+            { section: 'Solving' },
+            {
+                indent: 1,
+                label: 'Skip filled squares',
+                sub: 'Typing jumps over squares that already have a letter',
+                checked: settings.skipFilled !== false,
+                action: () => {
+                    settings.skipFilled = settings.skipFilled === false;
+                    Store.writeJSON(FILE, settings);
+                },
+            },
+            {
+                indent: 1,
+                label: 'Auto-advance to next clue',
+                sub: 'At the end of an answer, move on to the next clue',
+                checked: settings.autoAdvance !== false,
+                action: () => {
+                    settings.autoAdvance = settings.autoAdvance === false;
+                    Store.writeJSON(FILE, settings);
+                },
+            },
+            { section: 'Accessibility' },
             {
                 indent: 1,
                 label: 'Error Check Mode',

@@ -45,8 +45,12 @@ files, using the mobile solving interface from hinseypuzzles.com.
 - A header bar across the top holds the back button, the puzzle's title and
   author, and a settings button. Below it: the timer on the left; pencil,
   **Notes** and **Assist** on the right.
-- **Error Check Mode** (solver's Settings): wrong letters turn red as they
-  are typed.
+- **Solving** (solver's Settings, both on by default): **Skip filled
+  squares** (typing jumps over squares that already have a letter) and
+  **Auto-advance to next clue** (the end of an answer moves on to the next
+  clue).
+- **Error Check Mode** (solver's Settings, under Accessibility): wrong
+  letters turn red as they are typed.
 - **Notes:** a scratch pad for each puzzle (the timer pauses while it's
   open), saved as you type and kept until
   the puzzle is reset (from the solver's Settings or by long-pressing it in

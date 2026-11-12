@@ -515,6 +515,45 @@
             ];
         }
 
+        // ----- Solving settings: Skip filled squares, Auto-advance -----
+
+        // The site's behaviour is both on: typing into an empty square jumps
+        // to the answer's next empty square, and on to the next clue with an
+        // empty square at the end; typing over a letter moves one square on.
+        _commitCellEntry(value) {
+            if (Settings.skipFilled() && Settings.autoAdvance()) {
+                super._commitCellEntry(value);
+                return;
+            }
+            if (!this.selected) return;
+            const { row, col } = this.selected;
+            if (this.userGrid[row][col]) this.overwriteMode = true;
+            this._setLetter(row, col, value);
+            const clue = this._currentClue();
+            if (!clue) return;
+            const cells = clue.cells;
+            const idx = cells.findIndex(([r, c]) => r === row && c === col);
+            if (idx < 0) return;
+            if (Settings.skipFilled() && !this.overwriteMode) {
+                for (let i = idx + 1; i < cells.length; i++) {
+                    const [r, c] = cells[i];
+                    if (!this.userGrid[r][c]) {
+                        this._selectCell(r, c);
+                        return;
+                    }
+                }
+                // Nothing empty after this square: the next clue (with an
+                // empty square) if auto-advance is on; otherwise stay put.
+                if (Settings.autoAdvance()) this._advanceToNextUnfilledClue();
+                return;
+            }
+            if (idx < cells.length - 1) {
+                this._selectCell(cells[idx + 1][0], cells[idx + 1][1]);
+            } else if (Settings.autoAdvance()) {
+                this._jumpClue(1);
+            }
+        }
+
         // ----- Error Check Mode -----
 
         // With the setting on, a letter that doesn't match the answer shows
