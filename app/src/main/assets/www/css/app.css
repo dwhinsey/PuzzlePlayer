@@ -117,9 +117,11 @@ button {
 /* Grid numbers: 24% of a square, which puts them at about 0.44 of the
    letters' height on 15x15 and 21x21 grids, as in the NYT app (0.41-0.43).
    The site uses 25%, but Android's WebView used to round anything under 8px
-   up to 8px (MainActivity lifts that floor), so phones showed bigger ones. */
+   up to 8px (MainActivity lifts that floor), so phones showed bigger ones.
+   Regular weight, as in the NYT app (the site's are bold). */
 .solver-view .cell-number {
     font-size: calc(var(--cell-size, 24px) * 0.24);
+    font-weight: 400;
 }
 
 /* The row above the grid: the timer on the left; pencil, Notes and Assist
