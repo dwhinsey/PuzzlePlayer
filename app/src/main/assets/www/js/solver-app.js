@@ -547,6 +547,22 @@
 
         // ----- Solving settings: Skip filled squares, Auto-advance -----
 
+        // Moving to another clue (the clue bar's arrows, Tab, or the end of
+        // an answer when typing over letters) lands on its first empty
+        // square, with Skip filled squares on; on its first square if it's
+        // full or the setting is off. Backspacing into the previous clue
+        // (toEnd) still lands on its last square.
+        _jumpClue(delta, toEnd = false) {
+            super._jumpClue(delta, toEnd);
+            if (toEnd || !Settings.skipFilled()) return;
+            const clue = this._currentClue();
+            if (!clue) return;
+            const empty = clue.cells.find(([r, c]) => !this.userGrid[r][c]);
+            if (empty && (empty[0] !== this.selected.row || empty[1] !== this.selected.col)) {
+                this._selectCell(empty[0], empty[1]);
+            }
+        }
+
         // The site's behaviour is both on: typing into an empty square jumps
         // to the answer's next empty square, and on to the next clue with an
         // empty square at the end; typing over a letter moves one square on.
