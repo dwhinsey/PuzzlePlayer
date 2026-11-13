@@ -7,8 +7,9 @@ files, using the mobile solving interface from hinseypuzzles.com.
 
 **Library (home page)**
 - Lists every puzzle you've added, showing whether each is new, in progress
-  (with its time) or solved. Puzzles in progress come first, then
-  new ones, then solved ones under a "Completed" heading.
+  (with its time) or solved. Puzzles in progress come first (the most
+  recently opened at the top), then new ones, then solved ones under a
+  "Completed" heading.
 - **Settings → Hide solved puzzles** (on the home page) leaves solved puzzles
   out of the list and search.
 - **+** in the top bar opens the phone's file picker; you can pick several

@@ -362,7 +362,12 @@
         const hideSolved = Settings.hideSolved();
         const addPuzzles = (puzzles, showFolder, heading) => {
             const sorted = sortPuzzles(puzzles);
-            const active = sorted.filter((p) => p.status === 'progress')
+            // In progress: the most recently opened first (puzzles opened
+            // before this was recorded follow, in the chosen sort order).
+            const inProgress = sorted.filter((p) => p.status === 'progress');
+            const byOpened = inProgress.map((p, i) => [p, i]).sort((a, b) =>
+                ((b[0].opened || 0) - (a[0].opened || 0)) || (a[1] - b[1])).map(([p]) => p);
+            const active = byOpened
                 .concat(sorted.filter((p) => p.status !== 'progress' && p.status !== 'done'));
             const solved = hideSolved ? [] : sorted.filter((p) => p.status === 'done');
             if (active.length && heading) frag.appendChild(sectionLabel(heading(active.length)));
@@ -831,6 +836,14 @@
             Object.assign(p, summary);
             dirty = true;
             if (changed) save();
+        },
+
+        /** Called when a puzzle is opened: in-progress puzzles list most recent first. */
+        markOpened(id) {
+            const p = puzzleById(id);
+            if (!p) return;
+            p.opened = Date.now();
+            save();
         },
 
         /** Writes any unsaved progress summaries. */

@@ -63,6 +63,7 @@
             },
         };
 
+        Library.markOpened(entry.id);
         headerTitle.textContent = puzzle.title || Library.displayTitle(entry);
         headerSub.textContent = puzzle.author || '';
         libraryView.hidden = true;
