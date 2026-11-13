@@ -39,13 +39,15 @@
                 So any application/* or binary/* file is accepted: the app
                 appears in "Open with" for those, and says so if a file
                 isn't a crossword.
+                No scheme is listed on purpose: a type-only filter still
+                takes content: and file: addresses, and it also answers apps
+                that ask "who opens this type?" without an address (Samsung's
+                My Files does), which a filter with schemes never matches.
             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="content" />
-                <data android:scheme="file" />
                 <data android:mimeType="application/x-crossword" />
                 <data android:mimeType="application/x-crossword-puzzle" />
                 <data android:mimeType="application/vnd.crossword-puzzle" />

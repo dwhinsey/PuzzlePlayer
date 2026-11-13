@@ -73,6 +73,11 @@ for t in application/zip application/x-zip-compressed application/xml text/xml a
     -d content://media/external/file/1234 -t "$t" | grep -q "$PKG" \
     || { echo "STEP FAILED: not offered for $t"; exit 1; }
 done
+# Apps that ask by type alone, with no address (Samsung's My Files).
+for t in application/octet-stream binary/octet-stream; do
+  adb shell cmd package query-activities --brief -a android.intent.action.VIEW -t "$t" | grep -q "$PKG" \
+    || { echo "STEP FAILED: not offered for type-only $t"; exit 1; }
+done
 # A file manager that sends no type at all: matched by the name.
 for f in puzzle.jpz puzzle.puz puzzle.ipuz; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
