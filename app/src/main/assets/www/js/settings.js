@@ -34,12 +34,23 @@
         for (const fn of listeners) fn(dark);
     }
 
+    // Switching between light and dark: a short cross-fade (where the
+    // WebView supports view transitions) rather than an instant flip.
+    function applySmoothly() {
+        const wasDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (wasDark === isDark() || !document.startViewTransition) {
+            apply();
+            return;
+        }
+        document.startViewTransition(apply);
+    }
+
     function setTheme(theme) {
         settings.theme = theme;
         Store.writeJSON(FILE, settings);
         // Android's launch screen, shown before the page loads, follows too.
         if (bridge && bridge.setThemeMode) bridge.setThemeMode(theme);
-        apply();
+        applySmoothly();
     }
 
     /** Home page option: leave solved puzzles out of the library list. */
@@ -81,7 +92,7 @@
     if (!bridge && media && media.addEventListener) {
         media.addEventListener('change', (e) => {
             systemDark = e.matches;
-            apply();
+            applySmoothly();
         });
     }
 
@@ -113,28 +124,6 @@
         onSolverChange: (fn) => solverListeners.push(fn),
         /** Items for the solver's Settings sheet (not shown on the home page). */
         solverItems: () => [
-            { section: 'Miscellaneous' },
-            {
-                indent: 1,
-                label: 'Show timer',
-                sub: 'Off: no times here or on the home page',
-                checked: settings.showTimer !== false,
-                action: () => {
-                    settings.showTimer = settings.showTimer === false;
-                    Store.writeJSON(FILE, settings);
-                    document.documentElement.classList.toggle('timer-hidden', !settings.showTimer);
-                    for (const fn of libraryListeners) fn();
-                },
-            },
-            {
-                indent: 1,
-                label: 'Letter pop-up on key press',
-                checked: settings.keyPreview !== false,
-                action: () => {
-                    settings.keyPreview = settings.keyPreview === false;
-                    Store.writeJSON(FILE, settings);
-                },
-            },
             { section: 'Solving' },
             {
                 indent: 1,
@@ -179,12 +168,34 @@
                     document.documentElement.classList.toggle('colorblind', settings.colorblind);
                 },
             },
+            { section: 'Miscellaneous' },
+            {
+                indent: 1,
+                label: 'Show timer',
+                sub: 'Off: no times here or on the home page',
+                checked: settings.showTimer !== false,
+                action: () => {
+                    settings.showTimer = settings.showTimer === false;
+                    Store.writeJSON(FILE, settings);
+                    document.documentElement.classList.toggle('timer-hidden', !settings.showTimer);
+                    for (const fn of libraryListeners) fn();
+                },
+            },
+            {
+                indent: 1,
+                label: 'Letter pop-up on key press',
+                checked: settings.keyPreview !== false,
+                action: () => {
+                    settings.keyPreview = settings.keyPreview === false;
+                    Store.writeJSON(FILE, settings);
+                },
+            },
         ],
         onChange: (fn) => listeners.push(fn),
         /** Called by the Android side when the phone's dark theme changes. */
         setSystemDark(dark) {
             systemDark = !!dark;
-            if (settings.theme === 'system') apply();
+            if (settings.theme === 'system') applySmoothly();
         },
     };
 

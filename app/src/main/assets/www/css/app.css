@@ -727,3 +727,10 @@ body.solving .dialog:not(.notes-dialog) {
     line-height: 1;
     pointer-events: none;
 }
+
+/* Light/dark switch (js/settings.js): a short cross-fade of the whole page. */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.28s;
+    animation-timing-function: ease-in-out;
+}
