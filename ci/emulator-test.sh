@@ -78,6 +78,10 @@ for t in application/octet-stream binary/octet-stream; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW -t "$t" | grep -q "$PKG" \
     || { echo "STEP FAILED: not offered for type-only $t"; exit 1; }
 done
+# Samsung's My Files for files it doesn't recognise: a catch-all type.
+adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+  -d content://com.sec.android.app.myfiles.FileProvider/document/123 -t '*/*' | grep -q "$PKG" \
+  || { echo "STEP FAILED: not offered for */*"; exit 1; }
 # A file manager that sends no type at all: matched by the name.
 for f in puzzle.jpz puzzle.puz puzzle.ipuz; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
