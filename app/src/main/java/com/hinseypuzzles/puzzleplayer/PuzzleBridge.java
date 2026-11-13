@@ -201,6 +201,12 @@ public class PuzzleBridge {
                 JSONObject item = new JSONObject();
                 try {
                     item.put("name", displayName(resolver, uri));
+                    // Temporary diagnostic: the type the system gives this
+                    // file, i.e. what "Open with" has to match.
+                    String type = null;
+                    try { type = resolver.getType(uri); } catch (Exception ignored) { }
+                    item.put("type", type == null ? "(none)" : type);
+                    item.put("uri", uri.toString());
                     try (InputStream in = resolver.openInputStream(uri)) {
                         if (in == null) throw new IOException("Could not open file");
                         byte[] bytes = readAll(in, MAX_PUZZLE_BYTES);
