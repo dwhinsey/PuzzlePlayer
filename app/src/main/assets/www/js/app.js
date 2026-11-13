@@ -152,14 +152,6 @@
                 closeSolver();
             }
             const ids = await Library.importFiles(files);
-            // Temporary diagnostic (finding why "Open with" isn't offered):
-            // show the type the system gives each file picked with +.
-            if (!openAfter && items.some((it) => it.type)) {
-                UI.alert({
-                    title: 'File type (diagnostic)',
-                    message: items.map((it) => it.name + '\n' + it.type + '\n' + it.uri).join('\n\n'),
-                });
-            }
             if (openAfter && ids.length === 1) {
                 const entry = Library.puzzleById(ids[0]);
                 if (entry) openPuzzle(entry);

@@ -103,17 +103,6 @@
                 <data android:pathPattern=".*\\..*\\..*\\.jpz" />
             </intent-filter>
 
-            <!-- Samsung's My Files sends an empty type, and an address with
-                 no file name, for any file it doesn't recognise (.puz,
-                 .jpz), so only a catch-all type matches it. The app then
-                 shows in "Open with" for any file; it reads the contents
-                 and says so if a file isn't a crossword. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="*/*" />
-            </intent-filter>
-
             <!-- "Share" to PuzzlePlayer. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
