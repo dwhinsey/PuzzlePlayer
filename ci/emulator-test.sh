@@ -65,6 +65,26 @@ echo "Apps offered for a generic attachment:"
 adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
   -d content://com.example.mail/attachment/1 -t application/octet-stream | tee "$OUT/open-with.txt"
 grep -q "$PKG" "$OUT/open-with.txt" || { echo "STEP FAILED: not offered for application/octet-stream"; exit 1; }
+# Downloads opened by their media-library address (no file name), with the
+# type the website gave them: .jpz as zip or XML, .ipuz as JSON.
+for t in application/zip application/x-zip-compressed application/xml text/xml application/json; do
+  adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+    -d content://media/external/file/1234 -t "$t" | grep -q "$PKG" \
+    || { echo "STEP FAILED: not offered for $t"; exit 1; }
+done
+# A file manager that sends no type at all: matched by the name.
+for f in puzzle.jpz puzzle.puz puzzle.ipuz; do
+  adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+    -d "content://com.example.files/root/Download/$f" | grep -q "$PKG" \
+    || { echo "STEP FAILED: not offered for untyped $f"; exit 1; }
+done
+# For the record: the type Android's media library gives each extension.
+for f in tiny.ipuz jolly.jpz big-sample.puz; do adb push "ci/fixtures/$f" "/sdcard/Download/$f" >/dev/null; done
+adb shell content call --uri content://media --method scan_volume --arg external_primary >/dev/null 2>&1 || true
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Download/jolly.jpz >/dev/null 2>&1 || true
+sleep 3
+adb shell content query --uri content://media/external/file --projection _display_name:mime_type \
+  --where "_display_name LIKE '%puz' OR _display_name LIKE '%jpz'" | tee -a "$OUT/open-with.txt" || true
 echo "Apps offered for a .puz file by name:"
 adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
   -d content://com.example.files/root/Download/puzzle.puz -t text/plain | tee -a "$OUT/open-with.txt"

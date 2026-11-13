@@ -28,6 +28,12 @@
                 (generic binary). Accepting that type is what makes the app
                 show up for attachments; the app checks the contents and says
                 so if a file isn't a crossword.
+                A downloaded file keeps the type its website or email gave it,
+                and file managers often open it by a media-library address
+                with no file name in it, so the type is all there is to go
+                on. .jpz files are zip archives or XML inside and are often
+                labelled as such; .ipuz files are JSON. Those types are
+                accepted too.
             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -41,6 +47,11 @@
                 <data android:mimeType="application/x-ipuz" />
                 <data android:mimeType="application/x-jpz" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-zip-compressed" />
+                <data android:mimeType="application/xml" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="application/json" />
             </intent-filter>
 
             <!-- Files whose name is part of the address, from file managers
@@ -64,6 +75,25 @@
                 <data android:pathPattern=".*\\..*\\..*\\.jpz" />
             </intent-filter>
 
+            <!-- The same, for apps that give no type at all. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.puz" />
+                <data android:pathPattern=".*\\..*\\.puz" />
+                <data android:pathPattern=".*\\..*\\..*\\.puz" />
+                <data android:pathPattern=".*\\.ipuz" />
+                <data android:pathPattern=".*\\..*\\.ipuz" />
+                <data android:pathPattern=".*\\..*\\..*\\.ipuz" />
+                <data android:pathPattern=".*\\.jpz" />
+                <data android:pathPattern=".*\\..*\\.jpz" />
+                <data android:pathPattern=".*\\..*\\..*\\.jpz" />
+            </intent-filter>
+
             <!-- "Share" to PuzzlePlayer. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -75,6 +105,11 @@
                 <data android:mimeType="application/x-ipuz" />
                 <data android:mimeType="application/x-jpz" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-zip-compressed" />
+                <data android:mimeType="application/xml" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="application/json" />
             </intent-filter>
         </activity>
     </application>
