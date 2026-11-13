@@ -273,6 +273,65 @@
             super._layout();
             this._centreTopbar();
             this._centreOnGrid();
+            this._drawGridLines();
+        }
+
+        /**
+         * Light mode's grid lines: one screen pixel each, the thinnest a
+         * screen can show. CSS borders can't do that (the WebView rounds any
+         * border under 1px up to a whole CSS pixel, 2 or 3 screen pixels on
+         * most phones), so the lines are drawn on a layer over the grid, each
+         * on the last screen pixel of a square, at its right or bottom edge. css/app.css drops the squares' own lines in light mode and
+         * hides this layer in dark mode, which keeps its border lines.
+         */
+        _drawGridLines() {
+            const grid = this.gridEl;
+            const wrap = this.gridWrapEl;
+            if (!grid || !wrap || this.destroyed || !this.cellEls || !this.cellEls.length) return;
+            const NS = 'http://www.w3.org/2000/svg';
+            if (!this.gridLinesEl) {
+                const svg = document.createElementNS(NS, 'svg');
+                svg.setAttribute('class', 'grid-lines');
+                svg.setAttribute('aria-hidden', 'true');
+                const path = document.createElementNS(NS, 'path');
+                path.setAttribute('shape-rendering', 'crispEdges');
+                path.setAttribute('fill', 'none');
+                svg.appendChild(path);
+                wrap.appendChild(svg);
+                this.gridLinesEl = svg;
+                this.gridLinesPath = path;
+                // Redraw whenever the grid changes size (rotation, keyboard,
+                // a different top row).
+                if (window.ResizeObserver) {
+                    this.gridLinesObserver = new ResizeObserver(() => this._drawGridLines());
+                    this.gridLinesObserver.observe(grid);
+                }
+            }
+            const dpr = window.devicePixelRatio || 1;
+            const wr = wrap.getBoundingClientRect();
+            const gr = grid.getBoundingClientRect();
+            if (!gr.width) return;
+            const cs = getComputedStyle(grid);
+            const snap = (v) => Math.round(v * dpr) / dpr;
+            const left = snap(gr.left + parseFloat(cs.borderLeftWidth)) - wr.left;
+            const top = snap(gr.top + parseFloat(cs.borderTopWidth)) - wr.top;
+            const right = snap(gr.right - parseFloat(cs.borderRightWidth)) - wr.left;
+            const bottom = snap(gr.bottom - parseFloat(cs.borderBottomWidth)) - wr.top;
+            // The centre of the last screen pixel before an edge (the WebView
+            // draws squares from whole screen pixel to whole screen pixel).
+            const line = (edge) => (Math.round(edge * dpr) - 0.5) / dpr;
+            const { width, height } = this.puzzle;
+            let d = '';
+            for (let c = 0; c < width - 1; c++) {
+                const x = line(this.cellEls[0][c].getBoundingClientRect().right) - wr.left;
+                d += 'M' + x.toFixed(3) + ' ' + top.toFixed(3) + 'V' + bottom.toFixed(3);
+            }
+            for (let r = 0; r < height - 1; r++) {
+                const y = line(this.cellEls[r][0].getBoundingClientRect().bottom) - wr.top;
+                d += 'M' + left.toFixed(3) + ' ' + y.toFixed(3) + 'H' + right.toFixed(3);
+            }
+            this.gridLinesPath.setAttribute('d', d);
+            this.gridLinesPath.setAttribute('stroke-width', String(1 / dpr));
         }
 
         /**
@@ -699,6 +758,7 @@
         destroy() {
             if (this.releaseKeys) this.releaseKeys();
             if (this.overlayWatcher) this.overlayWatcher.disconnect();
+            if (this.gridLinesObserver) this.gridLinesObserver.disconnect();
             document.documentElement.style.removeProperty('--grid-centre-y');
             if (this.timerInterval) {
                 clearInterval(this.timerInterval);

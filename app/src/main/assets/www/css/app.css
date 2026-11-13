@@ -128,6 +128,30 @@ button {
     display: none;
 }
 
+/* Light mode's grid lines are hairlines, one screen pixel, drawn on a layer
+   over the grid (js/solver-app.js, _drawGridLines); the squares' own right
+   and bottom borders go. Dark mode keeps its border lines and no layer. */
+.solver-view .grid-lines {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 1;
+    stroke: #222222;
+}
+
+html:not([data-theme="dark"]) .solver-view .cell {
+    border-right-width: 0;
+    border-bottom-width: 0;
+}
+
+html[data-theme="dark"] .solver-view .grid-lines {
+    display: none;
+}
+
 /* Timer turned off (Settings > Miscellaneous): the "Info" button takes the
    timer's place on the left (js/solver-app.js). */
 .solver-view .solver-topbar .info-btn {
