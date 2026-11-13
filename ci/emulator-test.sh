@@ -67,7 +67,8 @@ adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
 grep -q "$PKG" "$OUT/open-with.txt" || { echo "STEP FAILED: not offered for application/octet-stream"; exit 1; }
 # Downloads opened by their media-library address (no file name), with the
 # type the website gave them: .jpz as zip or XML, .ipuz as JSON.
-for t in application/zip application/x-zip-compressed application/xml text/xml application/json; do
+for t in application/zip application/x-zip-compressed application/xml text/xml application/json \
+    binary/octet-stream application/unknown application/force-download; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
     -d content://media/external/file/1234 -t "$t" | grep -q "$PKG" \
     || { echo "STEP FAILED: not offered for $t"; exit 1; }

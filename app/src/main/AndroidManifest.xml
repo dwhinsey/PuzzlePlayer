@@ -32,8 +32,13 @@
                 and file managers often open it by a media-library address
                 with no file name in it, so the type is all there is to go
                 on. .jpz files are zip archives or XML inside and are often
-                labelled as such; .ipuz files are JSON. Those types are
-                accepted too.
+                labelled as such; .ipuz files are JSON. And sites such as
+                AVCX send them with whatever label their server uses for an
+                unknown file (often "binary/octet-stream", Amazon S3's
+                default), which apps like Firefox and the Files app pass on.
+                So any application/* or binary/* file is accepted: the app
+                appears in "Open with" for those, and says so if a file
+                isn't a crossword.
             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -52,6 +57,8 @@
                 <data android:mimeType="application/xml" />
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="application/json" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="binary/*" />
             </intent-filter>
 
             <!-- Files whose name is part of the address, from file managers
@@ -110,6 +117,8 @@
                 <data android:mimeType="application/xml" />
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="application/json" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="binary/*" />
             </intent-filter>
         </activity>
     </application>
