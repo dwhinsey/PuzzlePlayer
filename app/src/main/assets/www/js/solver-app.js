@@ -277,11 +277,12 @@
         }
 
         /**
-         * Light mode's grid lines: one screen pixel each, the thinnest a
-         * screen can show. CSS borders can't do that (the WebView rounds any
-         * border under 1px up to a whole CSS pixel, 2 or 3 screen pixels on
-         * most phones), so the lines are drawn on a layer over the grid, each
-         * on the last screen pixel of a square, at its right or bottom edge. css/app.css drops the squares' own lines in light mode and
+         * Light mode's grid lines: an exact number of screen pixels each (2,
+         * in grey, like the NYT app; css/app.css), the same everywhere. CSS
+         * borders can't do that (the WebView rounds a border to a whole CSS
+         * pixel, 2 or 3 screen pixels on most phones), so the lines are
+         * drawn on a layer over the grid. There is no line between two black
+         * squares side by side, so neighbouring black squares join up. css/app.css drops the squares' own lines in light mode and
          * hides this layer in dark mode, which keeps its border lines.
          */
         _drawGridLines() {
@@ -323,14 +324,46 @@
             const px = Math.max(1, Math.round(parseFloat(getComputedStyle(this.gridLinesEl).getPropertyValue('--grid-line-px')) || 1));
             const line = (edge) => (Math.round(edge * dpr) - (px % 2) * 0.5) / dpr;
             const { width, height } = this.puzzle;
+            const xs = [left];
+            for (let c = 0; c < width - 1; c++) xs.push(this.cellEls[0][c].getBoundingClientRect().right);
+            xs.push(right + wr.left);
+            const ys = [top];
+            for (let r = 0; r < height - 1; r++) ys.push(this.cellEls[r][0].getBoundingClientRect().bottom);
+            ys.push(bottom + wr.top);
+            // Square edges in layer coordinates, snapped to screen pixels.
+            const ex = xs.map((x, i) => (i === 0 ? left : i === xs.length - 1 ? right : snap(x) - wr.left));
+            const ey = ys.map((y, i) => (i === 0 ? top : i === ys.length - 1 ? bottom : snap(y) - wr.top));
+            const block = (r, c) => !this.puzzle.cells[r][c];
+            // Each segment runs half a line width past its square, so lines
+            // meet without notches at the corners.
+            const over = px / 2 / dpr;
             let d = '';
+            // Vertical lines, one run per stretch of squares that isn't a
+            // pair of black squares side by side.
             for (let c = 0; c < width - 1; c++) {
-                const x = line(this.cellEls[0][c].getBoundingClientRect().right) - wr.left;
-                d += 'M' + x.toFixed(3) + ' ' + top.toFixed(3) + 'V' + bottom.toFixed(3);
+                const x = (line(xs[c + 1]) - wr.left).toFixed(3);
+                let start = -1;
+                for (let r = 0; r <= height; r++) {
+                    const draw = r < height && !(block(r, c) && block(r, c + 1));
+                    if (draw && start < 0) start = r;
+                    if (!draw && start >= 0) {
+                        d += 'M' + x + ' ' + (ey[start] - over).toFixed(3) + 'V' + (ey[r] + over).toFixed(3);
+                        start = -1;
+                    }
+                }
             }
+            // Horizontal lines, likewise for squares one above the other.
             for (let r = 0; r < height - 1; r++) {
-                const y = line(this.cellEls[r][0].getBoundingClientRect().bottom) - wr.top;
-                d += 'M' + left.toFixed(3) + ' ' + y.toFixed(3) + 'H' + right.toFixed(3);
+                const y = (line(ys[r + 1]) - wr.top).toFixed(3);
+                let start = -1;
+                for (let c = 0; c <= width; c++) {
+                    const draw = c < width && !(block(r, c) && block(r + 1, c));
+                    if (draw && start < 0) start = c;
+                    if (!draw && start >= 0) {
+                        d += 'M' + (ex[start] - over).toFixed(3) + ' ' + y + 'H' + (ex[c] + over).toFixed(3);
+                        start = -1;
+                    }
+                }
             }
             this.gridLinesPath.setAttribute('d', d);
             this.gridLinesPath.setAttribute('stroke-width', String(px / dpr));

@@ -128,9 +128,9 @@ button {
     display: none;
 }
 
-/* Light mode's grid lines are hairlines, one screen pixel, drawn on a layer
-   over the grid (js/solver-app.js, _drawGridLines); the squares' own right
-   and bottom borders go. Dark mode keeps its border lines and no layer. */
+/* Light mode's grid lines are drawn on a layer over the grid, an exact
+   number of screen pixels wide (js/solver-app.js, _drawGridLines); the
+   squares' own right and bottom borders go. Dark mode keeps its border lines and no layer. */
 .solver-view .grid-lines {
     position: absolute;
     left: 0;
@@ -140,8 +140,10 @@ button {
     overflow: visible;
     pointer-events: none;
     z-index: 1;
-    stroke: #222222;
-    --grid-line-px: 1;
+    /* Two screen pixels of grey, as in the NYT app: even on OLED screens,
+       where a one-pixel black line can look heavier in some places. */
+    stroke: #797983;
+    --grid-line-px: 2;
 }
 
 html:not([data-theme="dark"]) .solver-view .cell {

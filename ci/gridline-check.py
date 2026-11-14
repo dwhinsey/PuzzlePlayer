@@ -25,11 +25,11 @@ def runs(vals):
     found = []
     i = 0
     while i < len(vals):
-        if vals[i] < 120:
+        if vals[i] < 200:
             j = i
-            while j < len(vals) and vals[j] < 120:
+            while j < len(vals) and vals[j] < 200:
                 j += 1
-            fringe = sum(1 for k in (i - 1, j) if 0 <= k < len(vals) and 120 <= vals[k] < 236)
+            fringe = sum(1 for k in (i - 1, j) if 0 <= k < len(vals) and 200 <= vals[k] < 245)
             found.append((i, j - i, fringe))
             i = j
         else:
