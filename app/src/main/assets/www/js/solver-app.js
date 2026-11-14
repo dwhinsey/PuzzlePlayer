@@ -317,9 +317,11 @@
             const top = snap(gr.top + parseFloat(cs.borderTopWidth)) - wr.top;
             const right = snap(gr.right - parseFloat(cs.borderRightWidth)) - wr.left;
             const bottom = snap(gr.bottom - parseFloat(cs.borderBottomWidth)) - wr.top;
-            // The centre of the last screen pixel before an edge (the WebView
-            // draws squares from whole screen pixel to whole screen pixel).
-            const line = (edge) => (Math.round(edge * dpr) - 0.5) / dpr;
+            // Line width in screen pixels (css/app.css, --grid-line-px). The
+            // WebView draws squares from whole screen pixel to whole screen
+            // pixel; an even width straddles the edge, an odd one ends at it.
+            const px = Math.max(1, Math.round(parseFloat(getComputedStyle(this.gridLinesEl).getPropertyValue('--grid-line-px')) || 1));
+            const line = (edge) => (Math.round(edge * dpr) - (px % 2) * 0.5) / dpr;
             const { width, height } = this.puzzle;
             let d = '';
             for (let c = 0; c < width - 1; c++) {
@@ -331,7 +333,7 @@
                 d += 'M' + left.toFixed(3) + ' ' + y.toFixed(3) + 'H' + right.toFixed(3);
             }
             this.gridLinesPath.setAttribute('d', d);
-            this.gridLinesPath.setAttribute('stroke-width', String(1 / dpr));
+            this.gridLinesPath.setAttribute('stroke-width', String(px / dpr));
         }
 
         /**

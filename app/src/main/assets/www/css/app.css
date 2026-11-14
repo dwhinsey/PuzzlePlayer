@@ -141,6 +141,7 @@ button {
     pointer-events: none;
     z-index: 1;
     stroke: #222222;
+    --grid-line-px: 1;
 }
 
 html:not([data-theme="dark"]) .solver-view .cell {
