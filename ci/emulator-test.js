@@ -103,6 +103,30 @@ async function shot(page, name) {
         const states = await page.locator('.lib-state').allInnerTexts();
         console.log('states:', states);
         if (!states.some((s) => /in progress/i.test(s))) fail('no puzzle shows progress');
+    } else if (phase === 'gridlines') {
+        // Diagnostic: open a 15x15 puzzle in light mode and save the grid's
+        // square positions, for ci/gridline-check.py to measure the lines
+        // in a real screenshot.
+        await page.evaluate(() => { Store.writeJSON('settings.json', Object.assign(Store.readJSON('settings.json') || {}, { theme: 'light' })); });
+        await page.reload();
+        await page.waitForFunction(() => window.App && window.Library, null, { timeout: 15000 });
+        await page.locator('.lib-row', { hasText: 'Big Grid' }).first().click();
+        await page.waitForTimeout(800);
+        const start = page.locator('.solver-overlay:not([hidden]) .overlay-start-btn');
+        if (await start.count()) await start.click();
+        await page.waitForTimeout(3500);
+        const info = await page.evaluate(() => {
+            const g = document.querySelector('.solver-grid');
+            const r = g.getBoundingClientRect();
+            return {
+                dpr: devicePixelRatio, w: innerWidth, h: innerHeight,
+                grid: [r.left, r.top, r.right, r.bottom], frame: parseFloat(getComputedStyle(g).borderLeftWidth),
+                cells: [...g.querySelectorAll('.cell')].map((c) => { const q = c.getBoundingClientRect(); return [q.left, q.top, q.right, q.bottom, c.classList.contains('block') ? 1 : 0]; }),
+                path: (document.querySelector('.grid-lines path') || { getAttribute: () => '' }).getAttribute('d').slice(0, 200),
+            };
+        });
+        fs.writeFileSync(path.join(OUT, 'gridlines.json'), JSON.stringify(info));
+        console.log('gridlines: dpr', info.dpr, 'viewport', info.w + 'x' + info.h, 'grid', JSON.stringify(info.grid));
     } else if (phase === 'open-with') {
         // A file sent from "another app": it should be imported and open.
         const expected = process.argv[3];

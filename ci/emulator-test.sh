@@ -124,5 +124,17 @@ if app_crashed; then echo "STEP FAILED: crash during open-with"; dump_logs; exit
 echo "STEP OK: open-with"
 
 adb exec-out screencap -p > "$OUT/final.png"
+
+# ----- Diagnostic: grid line widths at a 2.625 pixel ratio (a Galaxy S24
+# Ultra at its default resolution). Reports only; never fails the run.
+adb shell wm density 420
+adb shell am force-stop "$PKG"
+launch
+if node ci/emulator-test.js gridlines; then
+  adb exec-out screencap -p > "$OUT/gridlines.png"
+  python3 -m pip install --quiet pillow >/dev/null 2>&1 || true
+  python3 ci/gridline-check.py "$OUT" || true
+fi
+adb shell wm density reset
 dump_logs
 echo "EMULATOR TEST PASSED"
