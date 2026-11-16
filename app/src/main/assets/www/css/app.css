@@ -173,8 +173,10 @@ html[data-theme="dark"] .solver-view .grid-lines {
        (the site places it 2px down, 3px in). */
     top: 0;
     left: 0;
-    padding: 2px 0 0 3px;
-    border-bottom-right-radius: 1px;
+    padding: 2px 0.4px 0 3px;
+    /* A text box keeps room below the digits for descenders; trim most of
+       it so the circle stops as close below the number as beside it. */
+    clip-path: inset(0 0 0.13em 0);
 }
 
 .solver-view .cell.shaded .cell-number {
