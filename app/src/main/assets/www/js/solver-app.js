@@ -478,9 +478,16 @@
          * between the header and the grid. Move the timer row down to the
          * middle of that band. A transform, so the solver's own measurements
          * of the layout are untouched.
+         *
+         * A grid wider than it is tall (11x9, say) leaves a much bigger band:
+         * it's centred in its space instead, the spare height split above and
+         * below it, and the timer row goes in the middle of the part above.
+         * Square and tall grids (15x15, 21x21, 14x15) keep the layout above.
          */
         _centreTopbar() {
             if (!this.topbarEl || !this.gridEl || !this.gridWrapEl) return;
+            const wide = this.puzzle.width > this.puzzle.height;
+            this.gridWrapEl.style.alignItems = wide ? 'center' : '';
             const gridTop = this.gridEl.getBoundingClientRect().top;
             const wrapTop = this.gridWrapEl.getBoundingClientRect().top;
             const spare = Math.max(0, Math.round(gridTop - wrapTop));
