@@ -276,6 +276,39 @@
             this._drawGridLines();
         }
 
+        // ----- Long clues -----
+
+        /**
+         * A clue too long for the bar even at its smallest size scrolls: it
+         * starts at the top (css/app.css keeps it from spilling out above
+         * the bar), and the edge with more text fades out. Clues are also
+         * re-fitted once the app's font has loaded: fitted before then, with
+         * the narrower stand-in font, a long clue could end up too big.
+         */
+        _setUpClueScroll() {
+            for (const el of this.clueTextEls || []) {
+                el.addEventListener('scroll', () => this._markClueOverflow(el), { passive: true });
+            }
+            if (document.fonts && document.fonts.ready) {
+                const refit = () => { if (!this.destroyed) this._fitClueText(); };
+                document.fonts.ready.then(refit);
+                // And whenever a font finishes loading later (italic, say).
+                this.fontsLoaded = refit;
+                document.fonts.addEventListener('loadingdone', refit);
+            }
+        }
+
+        _fitClueText() {
+            super._fitClueText();
+            for (const el of this.clueTextEls || []) this._markClueOverflow(el);
+        }
+
+        _markClueOverflow(el) {
+            const more = el.scrollHeight - el.clientHeight;
+            el.classList.toggle('more-above', more > 1 && el.scrollTop > 1);
+            el.classList.toggle('more-below', more > 1 && el.scrollTop < more - 1);
+        }
+
         /**
          * Light mode's grid lines: an exact number of screen pixels each (2,
          * in grey, like the NYT app; css/app.css), the same everywhere. CSS
@@ -457,6 +490,7 @@
         _render() {
             super._render();
             this._watchOverlays();
+            this._setUpClueScroll();
             // "?" becomes "Assist"; Clear Grid and Reset Puzzle move to the
             // Settings sheet (see puzzleSettings below).
             this.helpBtn.textContent = 'Assist';
@@ -794,6 +828,7 @@
             if (this.releaseKeys) this.releaseKeys();
             if (this.overlayWatcher) this.overlayWatcher.disconnect();
             if (this.gridLinesObserver) this.gridLinesObserver.disconnect();
+            if (this.fontsLoaded && document.fonts) document.fonts.removeEventListener('loadingdone', this.fontsLoaded);
             document.documentElement.style.removeProperty('--grid-centre-y');
             if (this.timerInterval) {
                 clearInterval(this.timerInterval);

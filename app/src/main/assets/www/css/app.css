@@ -155,6 +155,30 @@ html[data-theme="dark"] .solver-view .grid-lines {
     display: none;
 }
 
+/* Long clues (js/solver-app.js, _markClueOverflow). The clue is centred
+   with auto margins rather than align-items, so one taller than the bar
+   starts at its top instead of spilling out above it, out of reach; the
+   edge with more text to scroll to fades out. */
+.solver-view .mobile-clue-bar .clue-text > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.solver-view .mobile-clue-bar .clue-text.more-below {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent);
+}
+
+.solver-view .mobile-clue-bar .clue-text.more-above {
+    -webkit-mask-image: linear-gradient(to top, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to top, #000 calc(100% - 16px), transparent);
+}
+
+.solver-view .mobile-clue-bar .clue-text.more-above.more-below {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+}
+
 /* Timer turned off (Settings > Miscellaneous): the "Info" button takes the
    timer's place on the left (js/solver-app.js). */
 .solver-view .solver-topbar .info-btn {
