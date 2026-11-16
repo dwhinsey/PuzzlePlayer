@@ -173,8 +173,8 @@ html[data-theme="dark"] .solver-view .grid-lines {
        (the site places it 2px down, 3px in). */
     top: 0;
     left: 0;
-    padding: 2px 3px 3px 3px;
-    border-bottom-right-radius: 3px;
+    padding: 2px 1.5px 1.5px 3px;
+    border-bottom-right-radius: 2px;
 }
 
 .solver-view .cell.shaded .cell-number {
