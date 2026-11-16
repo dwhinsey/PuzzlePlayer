@@ -271,7 +271,7 @@ html[data-theme="dark"] .cell-letter {
 }
 
 html[data-theme="dark"] .cell-circle {
-    border-color: var(--d-number);
+    border-color: #858585;
 }
 
 /* Shaded squares: the puzzle's shade colour at 24% (set per square by
