@@ -161,7 +161,7 @@ html[data-theme="dark"] .solver-view .grid-lines {
    square's own background (colour, highlight or shading), with a little
    room around it, over the circle. */
 .solver-view .cell-circle {
-    inset: max(1px, 3%);
+    inset: max(0.5px, 1.5%);
     border: 0.9px solid #797983;
 }
 
