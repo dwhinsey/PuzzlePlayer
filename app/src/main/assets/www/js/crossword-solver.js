@@ -1,7 +1,7 @@
 /*
- * The hinseypuzzles.com solver (js/solver.js on the site). Kept as close to
- * the site's copy as possible so changes can be brought across: the only
- * edits are the two layout queries below, marked "App:". Everything the app
+ * The base crossword solver, shared with the web version. Kept as close to
+ * that copy as possible so changes can be brought across: the only edits
+ * are the two layout queries below, marked "App:". Everything the app
  * needs on top (saving to the app's storage, the back button, pausing when
  * the app is put away) lives in js/solver-app.js, which extends this class.
  * The comment section is unused: the app never passes a commentSlug.

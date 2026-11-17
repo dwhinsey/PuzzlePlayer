@@ -1,5 +1,5 @@
 /*
- * The hinseypuzzles.com solver stylesheet, as used on the site, with three
+ * The base solver's stylesheet, as used by the web version, with three
  * changes for the app (search for "App:"):
  *   - the phone layout's media query is "all", so it always applies;
  *   - the tablet queries no longer test for a coarse pointer or a maximum
