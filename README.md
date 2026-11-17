@@ -1,7 +1,7 @@
 # PuzzlePlayer
 
 An Android app for solving crosswords from local **.puz**, **.ipuz** and **.jpz**
-files, using the mobile solving interface from hinseypuzzles.com.
+files.
 
 ## Features
 
@@ -30,16 +30,15 @@ files, using the mobile solving interface from hinseypuzzles.com.
   18x18), **Sunday** (19x19 and up), going by the larger side; or a grid
   size such as **14x15**, which also finds 15x14; or one side, **15** or
   **15x**, for every grid with a side of 15. Words combine, e.g.
-  "weekday hinsey".
+  "weekday jones".
 - Sort by date added (newest/oldest), title (A–Z/Z–A) or size (smallest/
   biggest; puzzles of the same size keep the date or title order used before).
 - Long-press a puzzle or folder for its menu: move to folder, rename, reset
   progress, delete.
 
 **Solver**
-- The hinseypuzzles.com solver, as it works on a phone: same grid, clue bar,
-  keyboard, timer, pencil, rebus (the **...** key) and check/reveal (the
-  **Assist** menu). The comment section is left out. Clear grid and Reset
+- A touch-first solver: grid, clue bar, keyboard, timer, pencil, rebus (the
+  **...** key) and check/reveal (the **Assist** menu). Clear grid and Reset
   puzzle are in the solver's Settings sheet, under "This puzzle". Revealing
   only turns the letters it supplies purple; correct entries keep their
   colour.
