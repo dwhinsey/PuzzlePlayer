@@ -241,8 +241,12 @@
     class AppCrosswordSolver extends CrosswordSolver {
         _load() {
             this.appStore = incomingStore;
+            // Whether any help was used (see _markAssisted). A puzzle started
+            // before this was recorded is "unknown" (null): it gets no star.
+            this.assisted = false;
             const saved = this.appStore ? this.appStore.load() : null;
             if (!saved || typeof saved !== 'object') return;
+            this.assisted = typeof saved.assisted === 'boolean' ? saved.assisted : null;
             const { height, width } = this.puzzle;
             if (isGrid(saved.grid, height, width, (v) => typeof v === 'string')) this.userGrid = saved.grid;
             if (isGrid(saved.pencilGrid, height, width, (v) => typeof v === 'boolean')) this.pencilGrid = saved.pencilGrid;
@@ -258,7 +262,19 @@
                 revealedGrid: this.revealedGrid,
                 seconds: this.elapsedSeconds,
                 solved: !!this.puzzleSolved,
+                assisted: this.assisted,
             });
+        }
+
+        // ----- Gold star -----
+
+        // A puzzle solved without help gets a gold star on the home page.
+        // Any check or reveal from Assist, or Error Check Mode being on while
+        // letters are in the grid, rules it out (until Reset puzzle).
+        _markAssisted() {
+            if (this.puzzleSolved || this.assisted === true) return;
+            this.assisted = true;
+            this._save();
         }
 
         // A solved puzzle's clock stays stopped, even after "Resume".
@@ -697,6 +713,7 @@
             }).then((ok) => {
                 if (!ok || this.destroyed) return;
                 this._writeNotes('');
+                this.assisted = false;
                 this._confirmed(super.resetPuzzle);
             });
         }
@@ -872,6 +889,7 @@
             if (!this.cellEls || !this.cellEls.length) return;
             const on = this.puzzle.hasKey && Settings.errorCheck();
             const { cells, width, height } = this.puzzle;
+            if (on && this.userGrid.some((row) => row.some((v) => v))) this._markAssisted();
             for (let r = 0; r < height; r++) {
                 for (let c = 0; c < width; c++) {
                     const cell = cells[r][c];
@@ -912,12 +930,20 @@
             });
         }
 
-        checkSquare() { if (this.puzzle.hasKey) super.checkSquare(); else this._noKey(); }
-        checkWord() { if (this.puzzle.hasKey) super.checkWord(); else this._noKey(); }
-        checkPuzzle() { if (this.puzzle.hasKey) super.checkPuzzle(); else this._noKey(); }
-        revealSquare() { if (this.puzzle.hasKey) super.revealSquare(); else this._noKey(); }
-        revealWord() { if (this.puzzle.hasKey) super.revealWord(); else this._noKey(); }
-        revealPuzzle() { if (this.puzzle.hasKey) super.revealPuzzle(); else this._noKey(); }
+        // Each of these also costs the gold star (see _markAssisted); marked
+        // before a reveal, so the save that finishes a revealed puzzle has it.
+        _assist(run) {
+            if (!this.puzzle.hasKey) { this._noKey(); return; }
+            this._markAssisted();
+            run();
+        }
+
+        checkSquare() { this._assist(() => super.checkSquare()); }
+        checkWord() { this._assist(() => super.checkWord()); }
+        checkPuzzle() { this._assist(() => super.checkPuzzle()); }
+        revealSquare() { this._assist(() => super.revealSquare()); }
+        revealWord() { this._assist(() => super.revealWord()); }
+        revealPuzzle() { this._assist(() => super.revealPuzzle()); }
 
         _checkWin() {
             if (this.puzzle.hasKey) {
@@ -1001,8 +1027,11 @@
         let status = 'new';
         if (saved && saved.solved) status = 'done';
         else if (filled || seconds > 0) status = 'progress';
+        // Solved with no help at all: a gold star on the home page.
+        const star = status === 'done' && saved.assisted === false;
         return {
             status,
+            star,
             percent: open ? Math.round((filled / open) * 100) : 0,
             elapsed: seconds * 1000,
         };

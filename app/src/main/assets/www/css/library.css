@@ -250,6 +250,13 @@
     color: #2e7d32;
 }
 
+/* Solved without any help: a gold star before "Solved". */
+.lib-state .lib-star {
+    color: #e0a400;
+    margin: -2px 4px -2px -2px;
+    vertical-align: -2px;
+}
+
 .lib-state-sub {
     display: inline-flex;
     align-items: center;

@@ -108,6 +108,10 @@ html[data-theme="dark"] .lib-state.done {
     color: #8fd492;
 }
 
+html[data-theme="dark"] .lib-state .lib-star {
+    color: #f2c84b;
+}
+
 html[data-theme="dark"] .lib-search {
     background: var(--d-surface-2);
     color: var(--d-text);

@@ -10,6 +10,10 @@ files.
   (with its time) or solved. Puzzles in progress come first (the most
   recently opened at the top), then new ones, then solved ones under a
   "Completed" heading.
+- A puzzle solved without any help gets a **gold star** in its "Solved"
+  label. Any check or reveal from **Assist**, or **Error Check Mode** being
+  on while there are letters in the grid, rules the star out until the
+  puzzle is reset. (Puzzles started before stars were added don't get one.)
 - **Settings → Hide solved puzzles** (on the home page) leaves solved puzzles
   out of the list and search.
 - **+** in the top bar opens the phone's file picker; you can pick several

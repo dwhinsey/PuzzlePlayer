@@ -45,6 +45,7 @@
     const ICONS = {
         folder: '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M2.5 6.5A1.5 1.5 0 0 1 4 5h5l2.2 2.4H20a1.5 1.5 0 0 1 1.5 1.5v9.6A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5z" fill="currentColor"/></svg>',
         more: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="5.5" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="18.5" r="1.9" fill="currentColor"/></svg>',
+        star: '<svg class="lib-star" viewBox="0 0 24 24" width="14" height="14" aria-label="Solved without help" role="img"><path d="M12 2.6l2.83 5.97 6.55.8-4.83 4.5 1.25 6.48L12 17.2l-5.8 3.15 1.25-6.48-4.83-4.5 6.55-.8z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
         clock: '<svg class="lib-time-icon" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
         chevron: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     };
@@ -258,7 +259,9 @@
     }
 
     function statusLabel(p) {
-        if (p.status === 'done') return '<span class="lib-state done">Solved</span>' + timeLabel(p);
+        if (p.status === 'done') {
+            return '<span class="lib-state done">' + (p.star ? ICONS.star : '') + 'Solved</span>' + timeLabel(p);
+        }
         if (p.status === 'progress') return '<span class="lib-state progress">In Progress</span>' + timeLabel(p);
         return '<span class="lib-state new">New</span>';
     }
@@ -547,7 +550,7 @@
         if (!ok) return;
         Store.remove(Store.progressFile(p.id));
         Store.remove(Store.notesFile(p.id));
-        Object.assign(p, { status: 'new', percent: 0, elapsed: 0 });
+        Object.assign(p, { status: 'new', star: false, percent: 0, elapsed: 0 });
         save();
         render();
     }
@@ -832,7 +835,8 @@
         updateProgress(id, summary) {
             const p = puzzleById(id);
             if (!p) return;
-            const changed = p.status !== summary.status || p.percent !== summary.percent;
+            const changed = p.status !== summary.status || p.percent !== summary.percent ||
+                !!p.star !== !!summary.star;
             Object.assign(p, summary);
             dirty = true;
             if (changed) save();
