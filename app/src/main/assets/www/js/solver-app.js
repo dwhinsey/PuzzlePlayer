@@ -794,6 +794,34 @@
             }
         }
 
+        // A solved grid is finished: letters can't be typed, deleted or turned
+        // into a rebus any more (you can still move around and read the
+        // clues). Clear grid and Reset puzzle start it over.
+        _setLetter(r, c, letter) {
+            if (this.puzzleSolved) return;
+            super._setLetter(r, c, letter);
+        }
+
+        _enterLetter(letter) {
+            if (this.puzzleSolved) return;
+            super._enterLetter(letter);
+        }
+
+        _backspaceAction() {
+            if (this.puzzleSolved) return;
+            super._backspaceAction();
+        }
+
+        _openRebusOverlay() {
+            if (this.puzzleSolved) return;
+            super._openRebusOverlay();
+        }
+
+        _openInlineRebus() {
+            if (this.puzzleSolved) return;
+            super._openInlineRebus();
+        }
+
         // The base solver's behaviour is both on: typing into an empty square jumps
         // to the answer's next empty square, and on to the next clue with an
         // empty square at the end; typing over a letter moves one square on.
