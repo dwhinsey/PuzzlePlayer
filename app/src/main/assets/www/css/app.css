@@ -217,6 +217,23 @@ html[data-theme="dark"] .solver-view .grid-lines {
 
 .solver-view .mobile-clue-bar .clue-text {
     cursor: pointer;
+    border-radius: 8px;
+}
+
+/* Pressed: a light shade while a finger is down (js/solver-app.js). */
+.solver-view .mobile-clue-bar .clue-text,
+.solver-view .mobile-clue-bar .clue-nav-btn {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.solver-view .mobile-clue-bar .clue-text.pressing,
+.solver-view .mobile-clue-bar .clue-nav-btn.pressing {
+    background: rgba(20, 60, 120, 0.1);
+}
+
+html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-text.pressing,
+html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-nav-btn.pressing {
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* Long clues (js/solver-app.js, _markClueOverflow). The clue is centred

@@ -300,6 +300,15 @@
                     gap.addEventListener('click', (e) => e.stopPropagation());
                     if (beside === el.previousElementSibling) el.before(gap); else el.after(gap);
                 }
+                // Press shade on the clue and the arrows while a finger is
+                // down (css/app.css); it clears on lift, and on the clue as
+                // soon as it starts to scroll.
+                for (const target of [el, ...el.parentElement.querySelectorAll('.clue-nav-btn')]) {
+                    const off = () => target.classList.remove('pressing');
+                    target.addEventListener('pointerdown', () => target.classList.add('pressing'));
+                    for (const type of ['pointerup', 'pointercancel', 'pointerleave']) target.addEventListener(type, off);
+                    if (target === el) el.addEventListener('scroll', off, { passive: true });
+                }
             }
             if (document.fonts && document.fonts.ready) {
                 const refit = () => { if (!this.destroyed) this._fitClueText(); };
