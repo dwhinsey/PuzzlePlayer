@@ -66,9 +66,8 @@ adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
   -d content://com.example.mail/attachment/1 -t application/octet-stream | tee "$OUT/open-with.txt"
 grep -q "$PKG" "$OUT/open-with.txt" || { echo "STEP FAILED: not offered for application/octet-stream"; exit 1; }
 # Downloads opened by their media-library address (no file name), with the
-# type the website gave them: .jpz as zip or XML, .ipuz as JSON.
-for t in application/zip application/x-zip-compressed application/xml text/xml application/json \
-    binary/octet-stream application/unknown application/force-download; do
+# generic label the website gave them.
+for t in binary/octet-stream application/unknown application/force-download application/x-download; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
     -d content://media/external/file/1234 -t "$t" | grep -q "$PKG" \
     || { echo "STEP FAILED: not offered for $t"; exit 1; }
@@ -77,6 +76,13 @@ done
 for t in application/octet-stream binary/octet-stream; do
   adb shell cmd package query-activities --brief -a android.intent.action.VIEW -t "$t" | grep -q "$PKG" \
     || { echo "STEP FAILED: not offered for type-only $t"; exit 1; }
+done
+# Other kinds of file must not offer the app.
+for t in application/pdf image/jpeg text/plain application/zip application/json application/msword video/mp4; do
+  if adb shell cmd package query-activities --brief -a android.intent.action.VIEW \
+      -d content://media/external/file/1234 -t "$t" | grep -q "$PKG"; then
+    echo "STEP FAILED: offered for $t"; exit 1
+  fi
 done
 # A file manager that sends no type at all: matched by the name.
 for f in puzzle.jpz puzzle.puz puzzle.ipuz; do
