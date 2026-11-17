@@ -183,6 +183,42 @@ html[data-theme="dark"] .solver-view .grid-lines {
     box-shadow: inherit;
 }
 
+/* Clue bar: each arrow's tap area runs the full height of the bar and out
+   to the screen edge, and a gap between the arrows and the clue (where
+   taps do nothing) keeps a tap on the clue, which swaps across/down, from
+   landing on an arrow and the other way round. */
+.solver-view .mobile-clue-bar {
+    gap: 0;
+}
+
+.solver-view .mobile-clue-bar .clue-gap {
+    flex: 0 0 12px;
+    align-self: stretch;
+    margin: -6px 0;
+}
+
+.solver-view .mobile-clue-bar .clue-nav-btn {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    margin: -6px 0;
+    padding: 0 10px;
+}
+
+.solver-view .mobile-clue-bar .clue-nav-btn:first-child {
+    margin-left: -6px;
+}
+
+.solver-view .mobile-clue-bar .clue-nav-btn:last-child {
+    margin-right: -6px;
+}
+
+.solver-view .mobile-clue-bar .clue-text {
+    cursor: pointer;
+}
+
 /* Long clues (js/solver-app.js, _markClueOverflow). The clue is centred
    with auto margins rather than align-items, so one taller than the bar
    starts at its top instead of spilling out above it, out of reach; the

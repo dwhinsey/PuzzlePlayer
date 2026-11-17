@@ -288,6 +288,18 @@
         _setUpClueScroll() {
             for (const el of this.clueTextEls || []) {
                 el.addEventListener('scroll', () => this._markClueOverflow(el), { passive: true });
+                this._setUpClueTap(el);
+                // Dead zones between the arrows and the clue. A touch screen
+                // pulls a tap onto the nearest tappable thing, so an empty gap
+                // would still trigger an arrow; these catch it and do nothing.
+                for (const beside of [el.previousElementSibling, el.nextElementSibling]) {
+                    if (!beside) continue;
+                    const gap = document.createElement('span');
+                    gap.className = 'clue-gap';
+                    gap.setAttribute('aria-hidden', 'true');
+                    gap.addEventListener('click', (e) => e.stopPropagation());
+                    if (beside === el.previousElementSibling) el.before(gap); else el.after(gap);
+                }
             }
             if (document.fonts && document.fonts.ready) {
                 const refit = () => { if (!this.destroyed) this._fitClueText(); };
@@ -296,6 +308,38 @@
                 this.fontsLoaded = refit;
                 document.fonts.addEventListener('loadingdone', refit);
             }
+        }
+
+        /**
+         * Tapping the clue swaps between the across and down entries at the
+         * cursor (as tapping the selected square again does). Only a tap
+         * counts: a finger that moves, or a clue that scrolls, is a scroll,
+         * so long clues still scroll without swapping.
+         */
+        _setUpClueTap(el) {
+            let start = null;
+            el.addEventListener('pointerdown', (e) => {
+                start = { x: e.clientX, y: e.clientY, scroll: el.scrollTop, time: Date.now() };
+            });
+            el.addEventListener('pointercancel', () => { start = null; });
+            el.addEventListener('click', (e) => {
+                const s = start;
+                start = null;
+                if (!s) return;
+                const moved = Math.hypot(e.clientX - s.x, e.clientY - s.y);
+                if (moved > 10 || Math.abs(el.scrollTop - s.scroll) > 1 || Date.now() - s.time > 600) return;
+                this._swapDirectionAtCursor();
+            });
+        }
+
+        _swapDirectionAtCursor() {
+            if (!this.selected || this.rebusMode) return;
+            const { row, col } = this.selected;
+            const clues = this.cellClues[row][col];
+            if (!clues.across || !clues.down) return;
+            this.overwriteMode = false;
+            this.direction = this.direction === 'across' ? 'down' : 'across';
+            this._updateUI();
         }
 
         _fitClueText() {
