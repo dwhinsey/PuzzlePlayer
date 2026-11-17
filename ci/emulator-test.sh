@@ -3,7 +3,7 @@
 # Installs the APK, checks the app starts without crashing, then drives it
 # through its WebView with Playwright's Android support (see emulator-test.js).
 set -u
-PKG=com.hinseypuzzles.puzzleplayer
+PKG=com.puzplayer.app
 APK=${APK:-apk/app-debug.apk}
 OUT=emulator-output
 mkdir -p "$OUT"
@@ -31,7 +31,7 @@ dump_logs() {
   echo "===== crash buffer ====="
   cat "$OUT/crash.txt"
   echo "===== app / WebView log ====="
-  grep -a -E "AndroidRuntime|FATAL|$PKG|chromium|Console|PuzzlePlayer" "$OUT/logcat.txt" | grep -a -v -E "AppsFilter|dns_config|ShortcutService" | tail -80
+  grep -a -E "AndroidRuntime|FATAL|$PKG|chromium|Console|puzPlayer" "$OUT/logcat.txt" | grep -a -v -E "AppsFilter|dns_config|ShortcutService" | tail -80
 }
 
 app_crashed() {
@@ -59,7 +59,7 @@ check_alive || { echo "STEP FAILED: relaunch"; dump_logs; exit 1; }
 node ci/emulator-test.js phase2 || { echo "STEP FAILED: phase2"; dump_logs; exit 1; }
 if app_crashed; then echo "STEP FAILED: crash during test"; dump_logs; exit 1; fi
 
-# ----- "Open with PuzzlePlayer" -----
+# ----- "Open with puzPlayer" -----
 
 echo "Apps offered for a generic attachment:"
 adb shell cmd package query-activities --brief -a android.intent.action.VIEW \

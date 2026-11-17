@@ -1,4 +1,4 @@
-package com.hinseypuzzles.puzzleplayer;
+package com.puzplayer.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

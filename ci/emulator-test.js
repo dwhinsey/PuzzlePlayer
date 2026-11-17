@@ -22,7 +22,7 @@ async function shot(page, name) {
     // Playwright's Android support finds the app's WebView through adb.
     const [device] = await _android.devices({ omitDriverInstall: true });
     if (!device) fail('no Android device');
-    const webview = await device.webView({ pkg: 'com.hinseypuzzles.puzzleplayer' }, { timeout: 30000 });
+    const webview = await device.webView({ pkg: 'com.puzplayer.app' }, { timeout: 30000 });
     const page = await webview.page();
     if (!page) fail('no WebView page');
     const errors = [];

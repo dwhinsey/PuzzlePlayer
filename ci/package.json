@@ -1,5 +1,5 @@
 {
-  "name": "puzzleplayer-emulator-test",
+  "name": "puzplayer-emulator-test",
   "private": true,
   "description": "Drives the app on an Android emulator in CI. Not part of the app.",
   "dependencies": {

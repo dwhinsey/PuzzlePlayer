@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.hinseypuzzles.puzzleplayer"
+    namespace = "com.puzplayer.app"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.hinseypuzzles.puzzleplayer"
+        applicationId = "com.puzplayer.app"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

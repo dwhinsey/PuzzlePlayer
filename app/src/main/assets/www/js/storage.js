@@ -7,7 +7,7 @@
     'use strict';
 
     const bridge = global.AndroidBridge || null;
-    const PREFIX = 'puzzleplayer:';
+    const PREFIX = 'puzplayer:';
 
     function readRaw(name) {
         if (bridge) return bridge.read(name);

@@ -22,7 +22,7 @@
             </intent-filter>
 
             <!--
-                "Open with PuzzlePlayer" for puzzle files in other apps.
+                "Open with puzPlayer" for puzzle files in other apps.
                 Email apps and file managers rarely know these file types, so
                 .puz/.ipuz/.jpz files usually arrive as application/octet-stream
                 (generic binary). Accepting that type is what makes the app
@@ -103,7 +103,7 @@
                 <data android:pathPattern=".*\\..*\\..*\\.jpz" />
             </intent-filter>
 
-            <!-- "Share" to PuzzlePlayer. -->
+            <!-- "Share" to puzPlayer. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />

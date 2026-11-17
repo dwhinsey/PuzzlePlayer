@@ -29,7 +29,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: PuzzlePlayer-debug-apk
+          name: puzPlayer-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
   # Installs the APK on emulators, checks it starts, and runs a short
@@ -47,7 +47,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: PuzzlePlayer-debug-apk
+          name: puzPlayer-debug-apk
           path: apk
 
       - uses: actions/setup-node@v4

@@ -1,4 +1,4 @@
-package com.hinseypuzzles.puzzleplayer;
+package com.puzplayer.app;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -142,11 +142,11 @@ public class PuzzleBridge {
         } catch (IOException e) {
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
-            android.util.Log.e("PuzzlePlayer", "Could not save " + target.getName(), e);
+            android.util.Log.e("puzPlayer", "Could not save " + target.getName(), e);
             return;
         }
         if (!tmp.renameTo(target)) {
-            android.util.Log.e("PuzzlePlayer", "Could not save " + target.getName());
+            android.util.Log.e("puzPlayer", "Could not save " + target.getName());
         }
     }
 

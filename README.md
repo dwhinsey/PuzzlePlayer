@@ -1,4 +1,4 @@
-# PuzzlePlayer
+# puzPlayer
 
 An Android app for solving crosswords from local **.puz**, **.ipuz** and **.jpz**
 files.
@@ -15,11 +15,11 @@ files.
 - **+** in the top bar opens the phone's file picker; you can pick several
   files at once. Puzzles are copied into the app, so the originals can be moved
   or deleted afterwards. The same file added twice is spotted and skipped.
-- **Open with PuzzlePlayer**: tap a .puz, .ipuz or .jpz file in another app
-  (an email attachment, a download, a file manager) and choose PuzzlePlayer.
+- **Open with puzPlayer**: tap a .puz, .ipuz or .jpz file in another app
+  (an email attachment, a download, a file manager) and choose puzPlayer.
   The puzzle is added to the library and opens straight away; if it's already
-  there, it just opens. **Share → PuzzlePlayer** works too. Because these
-  files usually arrive with a generic "binary file" type, PuzzlePlayer may
+  there, it just opens. **Share → puzPlayer** works too. Because these
+  files usually arrive with a generic "binary file" type, puzPlayer may
   also be offered for other unrecognised files; it says so if one isn't a
   crossword.
 - Folders (nested if you like): the folder button creates one in the current
@@ -112,7 +112,7 @@ You can also open `app/src/main/assets/www/index.html` in a desktop browser
 ## Building
 
 - **GitHub Actions:** every push builds a debug APK. Open the run under the
-  repository's *Actions* tab and download the `PuzzlePlayer-debug-apk` artifact.
+  repository's *Actions* tab and download the `puzPlayer-debug-apk` artifact.
   The same run installs it on Android 15 and 16 emulators, checks that it
   starts, and runs a short import / solve / force-close / reopen test
   (`ci/`); screenshots from it are in the `emulator-output-*` artifacts.
