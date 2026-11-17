@@ -4,25 +4,8 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- White board -->
+    <!-- P, U, Z in Public Sans semibold (the app's font), centred in their squares -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,30h48v48h-48z" />
-    <!-- Black squares -->
-    <path
-        android:fillColor="#222222"
-        android:pathData="M62,30h16v16h-16z M30,62h16v16h-16z" />
-    <!-- Selected square -->
-    <path
-        android:fillColor="#FFD54F"
-        android:pathData="M46,46h16v16h-16z" />
-    <!-- Grid lines -->
-    <path
-        android:fillColor="#222222"
-        android:pathData="M45.25,30h1.5v48h-1.5z M61.25,30h1.5v48h-1.5z M30,45.25h48v1.5h-48z M30,61.25h48v1.5h-48z" />
-    <!-- Border -->
-    <path
-        android:fillColor="#222222"
-        android:pathData="M28,28h52v52h-52z M30,30v48h48v-48z"
-        android:fillType="evenOdd" />
+        android:fillColor="#111111"
+        android:pathData="M49.962 35.52V24.48H53.878Q55.071 24.48 56.012 24.888Q56.954 25.297 57.496 26.092Q58.038 26.886 58.038 28.042Q58.038 29.141 57.549 29.918Q57.059 30.695 56.178 31.106Q55.298 31.517 54.123 31.517H51.847V35.52ZM51.831 30.033H54.075Q55.048 30.033 55.662 29.451Q56.276 28.868 56.276 27.94Q56.276 26.991 55.636 26.47Q54.997 25.949 54.025 25.949H51.831Z M77.996 35.596Q76.464 35.596 75.531 35.089Q74.598 34.581 74.177 33.621Q73.755 32.662 73.755 31.307V24.404H75.661V31.494Q75.661 32.779 76.288 33.39Q76.915 34.002 77.996 34.002Q78.719 34.002 79.253 33.735Q79.786 33.468 80.077 32.913Q80.368 32.358 80.368 31.494V24.404H82.245V31.415Q82.245 32.723 81.816 33.659Q81.387 34.595 80.452 35.096Q79.518 35.596 77.996 35.596Z M73.782 59.52V58.576L79.586 50.057H74.101V48.48H82.218V49.384L76.347 57.927H82.17V59.52Z" />
 </vector>

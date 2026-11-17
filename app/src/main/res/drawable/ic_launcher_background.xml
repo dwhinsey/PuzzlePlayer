@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A corner of a crossword: the middle of the 3x3 grid is the always-visible
+         area; the outer squares run on into the edges, which masks crop. -->
+    <!-- Letter squares -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M42,0H66V42H42Z M66,0H108V42H66Z M0,42H42V66H0Z M66,42H108V66H66Z" />
+    <!-- Black squares -->
+    <path
+        android:fillColor="#222222"
+        android:pathData="M0,0H42V42H0Z M42,42H66V66H42Z M66,66H108V108H66Z" />
+    <!-- Highlighted word -->
+    <path
+        android:fillColor="#CFE8FF"
+        android:pathData="M0,66H42V108H0Z" />
+    <!-- Selected square -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M42,66H66V108H42Z" />
+    <!-- Grid lines, the app's grey -->
+    <path
+        android:fillColor="#797983"
+        android:pathData="M41.6,0H42.4V108H41.6Z M65.6,0H66.4V108H65.6Z M0,41.6H108V42.4H0Z M0,65.6H108V66.4H0Z" />
+</vector>
