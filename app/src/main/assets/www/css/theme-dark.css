@@ -275,7 +275,7 @@ html[data-theme="dark"] .cell-circle {
 }
 
 /* Shaded squares: the puzzle's shade colour at 24% (set per square by
-   js/solver-app.js) instead of the site's 68%. */
+   js/solver-app.js) instead of the base solver's 68%. */
 html[data-theme="dark"] .cell.shaded {
     box-shadow: inset 0 0 0 999px var(--shade-dark, var(--shade-color));
 }

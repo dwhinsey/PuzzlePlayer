@@ -1,8 +1,8 @@
 /*
- * Runs the site's CrosswordSolver (js/crossword-solver.js) inside the app.
+ * Runs the base CrosswordSolver (js/crossword-solver.js) inside the app.
  *
  *   - Converts a puzzle from js/parsers.js into the shape the solver expects
- *     (the shape the site's parseIpuz() produces).
+ *     (the shape the base solver's parseIpuz() produces).
  *   - Saves progress to the app's storage instead of localStorage, and
  *     reports it to the library.
  *   - Stops the solver cleanly when you leave a puzzle, and pauses it when
@@ -109,7 +109,7 @@
 
     // ----- Keyboard -----
     //
-    // The site's keyboard types on 'click'. On a touch screen a click only
+    // The base solver's keyboard types on 'click'. On a touch screen a click only
     // arrives when a lone finger lifts: at normal typing speed the next
     // finger lands before the last one lifts, and that key's click never
     // comes. Here every finger is tracked on its own instead:
@@ -181,7 +181,7 @@
         keyboard.addEventListener('pointerdown', (e) => {
             const key = e.target.closest('.kb-key');
             if (!key || key.classList.contains('kb-spacer') || !actionFor(key)) return;
-            e.preventDefault(); // keeps focus on the grid, as the site's mousedown handler does
+            e.preventDefault(); // keeps focus on the grid, as the base solver's mousedown handler does
             finish(e.pointerId, false);
             // Keys still held were pressed first, so they are typed first.
             for (const id of Array.from(held.keys())) finish(id, true);
@@ -217,7 +217,7 @@
         };
     }
 
-    // Strength of shaded squares in dark mode. The site's 68% suits white
+    // Strength of shaded squares in dark mode. The base solver's 68% suits white
     // squares but washes out dark ones and hides their numbers.
     const DARK_SHADE_ALPHA = 0.24;
 
@@ -557,7 +557,7 @@
         }
 
         _watchOverlays() {
-            // The site's code shows and hides these by toggling `hidden`.
+            // The base solver shows and hides these by toggling `hidden`.
             this.overlayWatcher = new MutationObserver(() => this._centreOnGrid());
             // Also any change inside the card (text, parts shown or hidden)
             // that alters its height.
@@ -663,7 +663,7 @@
 
         // ----- Clear and reset, from the Settings sheet -----
 
-        /** Runs one of the site's methods that asks window.confirm() first, answering yes. */
+        /** Runs one of the base solver's methods that asks window.confirm() first, answering yes. */
         _confirmed(method) {
             const original = window.confirm;
             window.confirm = () => true;
@@ -794,7 +794,7 @@
             }
         }
 
-        // The site's behaviour is both on: typing into an empty square jumps
+        // The base solver's behaviour is both on: typing into an empty square jumps
         // to the answer's next empty square, and on to the next clue with an
         // empty square at the end; typing over a letter moves one square on.
         _commitCellEntry(value) {
@@ -858,7 +858,7 @@
 
         // ----- Reveal -----
 
-        // The site marks every revealed square as revealed (purple), even
+        // The base solver marks every revealed square as revealed (purple), even
         // ones already filled in correctly. Only letters the reveal supplies
         // are marked; correct entries keep their colour (and lose any pencil).
         _revealCell(r, c) {
@@ -950,7 +950,7 @@
         } finally {
             incomingStore = null;
         }
-        // The site opens every puzzle on its Start/Resume card. A puzzle
+        // The base solver opens every puzzle on its Start/Resume card. A puzzle
         // already under way goes straight to the grid, clock running (a
         // solved one's clock stays stopped); a new one still gets the card.
         if (solver.hasSavedProgress) solver._startTimer();

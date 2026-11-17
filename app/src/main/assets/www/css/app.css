@@ -84,8 +84,8 @@ button {
     background: var(--page-bg);
 }
 
-/* The app's header, in the place the browser's address bar takes on the
-   site: back button, title and author. It replaces the solver's own back
+/* The app's header, where a browser's address bar would be: back button,
+   title and author. It replaces the solver's own back
    button, so the timer row keeps only the timer and tools. */
 .solver-header {
     display: flex;
@@ -170,7 +170,7 @@ html[data-theme="dark"] .solver-view .grid-lines {
     background: inherit;
     /* The patch reaches the square's top-left corner, so the circle breaks
        cleanly from its left side to its top; the number stays where it was
-       (the site places it 2px down, 3px in). */
+       (the base solver places it 2px down, 3px in). */
     top: 0;
     left: 0;
     padding: 2px 0.4px 0 3px;
@@ -376,9 +376,9 @@ html.colorblind .solver-view .cell.revealed::before {
 
 /* Grid numbers: 24% of a square, which puts them at about 0.44 of the
    letters' height on 15x15 and 21x21 grids, as in the NYT app (0.41-0.43).
-   The site uses 25%, but Android's WebView used to round anything under 8px
+   The base solver uses 25%, but Android's WebView used to round anything under 8px
    up to 8px (MainActivity lifts that floor), so phones showed bigger ones.
-   Regular weight, as in the NYT app (the site's are bold). */
+   Regular weight, as in the NYT app (the base solver's are bold). */
 .solver-view .cell-number {
     font-size: calc(var(--cell-size, 24px) * 0.24);
     font-weight: 400;
@@ -410,7 +410,7 @@ html.colorblind .solver-view .cell.revealed::before {
 }
 
 /* Text buttons ("Notes", and the help button labelled "Assist"): pills like
-   the site's Rebus button, a little smaller than the timer beside them. */
+   the base solver's Rebus button, a little smaller than the timer beside them. */
 .solver-view .icon-btn.assist-btn,
 .solver-view .icon-btn.notes-btn {
     width: auto;
@@ -558,16 +558,16 @@ html.colorblind .solver-view .cell.revealed::before {
 }
 
 
-/* The site's solver fills the screen below the status bar. */
+/* The solver fills the screen below the status bar. */
 .solver-host {
     flex: 1;
     min-height: 0;
 }
 
-/* On the site the solver's rows are centred together in the page. In the app
+/* The base solver centres its rows together in the page. In the app
    the grid area takes the spare height instead, so the top bar sits at the
    top of the screen and the keyboard at the bottom, the grid resting just
-   above the clue bar as on the site. */
+   above the clue bar. */
 .solver-view .solver-layout {
     flex: 1 1 auto;
 }
@@ -884,8 +884,8 @@ body.solving .dialog:not(.notes-dialog) {
 }
 
 /* Keys show as pressed only while a finger is on them (the .pressed class
-   from js/solver-app.js). The browser's own :active state, which the site's
-   CSS also styles, is held for a minimum time after a quick tap, so keys
+   from js/solver-app.js). The browser's own :active state, which the base
+   solver's CSS also styles, is held for a minimum time after a quick tap, so keys
    lingered in the pressed colour after the finger lifted. */
 .solver-view .kb-key:active:not(.pressed) {
     background: #ffffff;

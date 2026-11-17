@@ -85,9 +85,9 @@ WebView. The library and solver are HTML/CSS/JS in
 
 | File | Purpose |
 | --- | --- |
-| `js/crossword-solver.js` | The site's `js/solver.js`, unchanged apart from two layout queries marked `App:` |
-| `css/solver.css` | The site's solver CSS: touch layout always on, comment styles removed |
-| `js/solver-app.js` | Runs the site's solver in the app: puzzle conversion, saving, back button, pause |
+| `js/crossword-solver.js` | The base solver, shared with the web version, unchanged apart from two layout queries marked `App:` |
+| `css/solver.css` | The base solver's CSS: touch layout always on, comment styles removed |
+| `js/solver-app.js` | Runs the base solver in the app: puzzle conversion, saving, back button, pause |
 | `js/parsers.js` | .puz / .ipuz / .jpz (including zipped .jpz) readers |
 | `js/library.js` | Home page: list, folders, search, sort, import |
 | `js/storage.js` | Saving, via the Android bridge |
@@ -96,9 +96,10 @@ WebView. The library and solver are HTML/CSS/JS in
 | `fonts/` | Public Sans (regular and italic), the app's font, with its licence (SIL Open Font License) |
 | `js/app.js` | Wiring, back button, system bars |
 
-To bring a change from the website across, copy the site's `js/solver.js`
-over `js/crossword-solver.js` and its `css/solver.css` over `css/solver.css`,
-then redo the few `App:` edits described at the top of each file.
+To bring a change from the web version of the solver across, copy its
+`js/solver.js` over `js/crossword-solver.js` and its `css/solver.css` over
+`css/solver.css`, then redo the few `App:` edits described at the top of each
+file.
 
 The Java side (`MainActivity`, `PuzzleBridge`) provides the system file picker,
 storage in the app's private files directory (written atomically), window
