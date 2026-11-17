@@ -222,6 +222,43 @@ html[data-theme="dark"] .solver-view .grid-lines {
     z-index: 1;
 }
 
+/* Scroll bar for a clue too long for the bar (js/solver-app.js,
+   _markClueOverflow): a faint track just right of the clue with a darker
+   thumb, the clue text 5px narrower while it shows. */
+.solver-view .mobile-clue-bar .clue-text.scrollable {
+    padding-right: 5px;
+}
+
+.solver-view .mobile-clue-bar .clue-scroll {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(20, 60, 120, 0.12);
+    pointer-events: none;
+}
+
+.solver-view .mobile-clue-bar .clue-scroll.on {
+    display: block;
+}
+
+.solver-view .mobile-clue-bar .clue-scroll > span {
+    position: absolute;
+    left: 0;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(20, 50, 100, 0.42);
+}
+
+html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-scroll {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-scroll > span {
+    background: rgba(255, 255, 255, 0.45);
+}
+
 /* Pressed: a light shade while a finger is down (js/solver-app.js), on at
    once and fading out briefly on lift. The arrows shade themselves; the
    clue's shade is a layer behind it, the bar's full height. */

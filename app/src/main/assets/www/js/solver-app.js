@@ -306,6 +306,13 @@
                 // shade is its own layer, the clue's width and the bar's full
                 // height (the clue's box is shorter than the bar).
                 const bar = el.parentElement;
+                // Scroll bar for a clue too long for the bar (_markClueOverflow).
+                const track = document.createElement('span');
+                track.className = 'clue-scroll';
+                track.setAttribute('aria-hidden', 'true');
+                track.appendChild(document.createElement('span'));
+                bar.appendChild(track);
+                el.scrollTrack = track;
                 const shade = document.createElement('span');
                 shade.className = 'clue-press';
                 shade.setAttribute('aria-hidden', 'true');
@@ -367,14 +374,35 @@
         }
 
         _fitClueText() {
+            // Fit without the scroll bar's extra room, then add it (and the
+            // bar) only if the clue still overflows.
+            for (const el of this.clueTextEls || []) el.classList.remove('scrollable');
             super._fitClueText();
-            for (const el of this.clueTextEls || []) this._markClueOverflow(el);
+            for (const el of this.clueTextEls || []) {
+                if (el.scrollHeight - el.clientHeight > 1) el.classList.add('scrollable');
+                this._markClueOverflow(el);
+            }
         }
 
         _markClueOverflow(el) {
             const more = el.scrollHeight - el.clientHeight;
             el.classList.toggle('more-above', more > 1 && el.scrollTop > 1);
             el.classList.toggle('more-below', more > 1 && el.scrollTop < more - 1);
+            // The scroll bar: a track beside the clue, the thumb sized to the
+            // part showing and placed to match the scroll.
+            const track = el.scrollTrack;
+            if (!track) return;
+            const show = more > 1 && el.classList.contains('scrollable');
+            track.classList.toggle('on', show);
+            if (!show) return;
+            const height = el.clientHeight - 8;
+            track.style.left = (el.offsetLeft + el.offsetWidth) + 'px';
+            track.style.top = (el.offsetTop + 4) + 'px';
+            track.style.height = height + 'px';
+            const thumbHeight = Math.max(12, height * el.clientHeight / el.scrollHeight);
+            const thumb = track.firstElementChild;
+            thumb.style.height = thumbHeight + 'px';
+            thumb.style.top = ((height - thumbHeight) * Math.min(1, el.scrollTop / more)) + 'px';
         }
 
         /**
