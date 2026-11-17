@@ -117,9 +117,11 @@ html[data-theme="dark"] .lib-search::placeholder {
     color: var(--d-muted);
 }
 
-html[data-theme="dark"] .lib-empty-art rect,
-html[data-theme="dark"] .lib-empty-art path {
-    opacity: 0.55;
+/* The same picture as in light mode: light squares, with the frame, lines
+   and black squares in a darker slate. */
+html[data-theme="dark"] .lib-empty-art {
+    --art-square: #a9b5c6;
+    --art-line: #4e5a6c;
 }
 
 html[data-theme="dark"] .lib-empty-btn {

@@ -315,9 +315,9 @@
         box.className = 'lib-empty';
         box.innerHTML =
             '<div class="lib-empty-art" aria-hidden="true">' +
-            '<svg viewBox="0 0 64 64" width="72" height="72"><rect x="6" y="6" width="52" height="52" rx="3" fill="#fff" stroke="#9fb0c8" stroke-width="3"/>' +
-            '<path d="M23.3 6v52M40.7 6v52M6 23.3h52M6 40.7h52" stroke="#9fb0c8" stroke-width="2"/>' +
-            '<rect x="40.7" y="6" width="17.3" height="17.3" fill="#9fb0c8"/><rect x="6" y="40.7" width="17.3" height="17.3" fill="#9fb0c8"/></svg></div>' +
+            '<svg viewBox="0 0 64 64" width="72" height="72"><rect class="art-sq" x="6" y="6" width="52" height="52" rx="3" stroke-width="3"/>' +
+            '<path class="art-ln" d="M23.3 6v52M40.7 6v52M6 23.3h52M6 40.7h52" stroke-width="2"/>' +
+            '<rect class="art-bk" x="40.7" y="6" width="17.3" height="17.3"/><rect class="art-bk" x="6" y="40.7" width="17.3" height="17.3"/></svg></div>' +
             '<p class="lib-empty-title"></p><p class="lib-empty-text"></p>';
         box.querySelector('.lib-empty-title').textContent = title;
         box.querySelector('.lib-empty-text').textContent = text;

@@ -293,7 +293,13 @@
 
 .lib-empty-art {
     margin-bottom: 14px;
+    --art-square: #fff;
+    --art-line: #9fb0c8;
 }
+
+.lib-empty-art .art-sq { fill: var(--art-square); stroke: var(--art-line); }
+.lib-empty-art .art-ln { stroke: var(--art-line); }
+.lib-empty-art .art-bk { fill: var(--art-line); }
 
 .lib-empty-title {
     margin: 0 0 6px;
