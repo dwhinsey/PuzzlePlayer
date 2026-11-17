@@ -63,8 +63,12 @@
             },
         };
 
+        // A name given on the home page (Rename) wins over the file's own
+        // title, in the header and in the solver's pop-ups alike.
+        puzzle.title = entry.title || puzzle.title || Library.displayTitle(entry);
+
         Library.markOpened(entry.id);
-        headerTitle.textContent = puzzle.title || Library.displayTitle(entry);
+        headerTitle.textContent = puzzle.title;
         headerSub.textContent = puzzle.author || '';
         libraryView.hidden = true;
         solverView.hidden = false;
