@@ -4,34 +4,24 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- The app's navy, around a 3x3 corner of a crossword that fits inside
-         every launcher's mask, circles included. -->
-    <path
-        android:fillColor="#1B3A6B"
-        android:pathData="M0,0H108V108H0Z" />
-    <!-- Letter squares -->
+    <!-- A piece of a crossword that carries on past the icon's edge, whatever the launcher's mask -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M45.5,28.5H62.5V45.5H45.5Z M62.5,28.5H79.5V45.5H62.5Z M28.5,45.5H45.5V62.5H28.5Z M62.5,45.5H79.5V62.5H62.5Z" />
+        android:pathData="M0,0H108V108H0Z" />
     <!-- Black squares -->
     <path
         android:fillColor="#222222"
-        android:pathData="M28.5,28.5H45.5V45.5H28.5Z M45.5,45.5H62.5V62.5H45.5Z M62.5,62.5H79.5V79.5H62.5Z" />
+        android:pathData="M27,27H45V45H27Z M45,45H63V63H45Z M63,63H81V81H63Z" />
     <!-- Highlighted word -->
     <path
         android:fillColor="#CFE8FF"
-        android:pathData="M28.5,62.5H45.5V79.5H28.5Z" />
+        android:pathData="M0,63H45V81H0Z" />
     <!-- Selected square -->
     <path
         android:fillColor="#FFD54F"
-        android:pathData="M45.5,62.5H62.5V79.5H45.5Z" />
+        android:pathData="M45,63H63V81H45Z" />
     <!-- Grid lines, the app's grey -->
     <path
         android:fillColor="#797983"
-        android:pathData="M45.1,28.5H45.9V79.5H45.1Z M62.1,28.5H62.9V79.5H62.1Z M28.5,45.1H79.5V45.9H28.5Z M28.5,62.1H79.5V62.9H28.5Z" />
-    <!-- Grid edge -->
-    <path
-        android:fillColor="#222222"
-        android:fillType="evenOdd"
-        android:pathData="M27.6,27.6H80.4V80.4H27.6Z M28.5,28.5V79.5H79.5V28.5Z" />
+        android:pathData="M8.7,0H9.3V108H8.7Z M26.7,0H27.3V108H26.7Z M44.7,0H45.3V108H44.7Z M62.7,0H63.3V108H62.7Z M80.7,0H81.3V108H80.7Z M98.7,0H99.3V108H98.7Z M0,8.7H108V9.3H0Z M0,26.7H108V27.3H0Z M0,44.7H108V45.3H0Z M0,62.7H108V63.3H0Z M0,80.7H108V81.3H0Z M0,98.7H108V99.3H0Z" />
 </vector>
