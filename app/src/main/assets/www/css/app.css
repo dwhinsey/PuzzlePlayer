@@ -207,33 +207,60 @@ html[data-theme="dark"] .solver-view .grid-lines {
     padding: 0 10px;
 }
 
-.solver-view .mobile-clue-bar .clue-nav-btn:first-child {
+.solver-view .mobile-clue-bar .clue-nav-btn:first-of-type {
     margin-left: -6px;
 }
 
-.solver-view .mobile-clue-bar .clue-nav-btn:last-child {
+.solver-view .mobile-clue-bar .clue-nav-btn:last-of-type {
     margin-right: -6px;
 }
 
 .solver-view .mobile-clue-bar .clue-text {
     cursor: pointer;
-    border-radius: 8px;
+    /* Above its press shade (.clue-press). */
+    position: relative;
+    z-index: 1;
 }
 
-/* Pressed: a light shade while a finger is down (js/solver-app.js). */
+/* Pressed: a light shade while a finger is down (js/solver-app.js), on at
+   once and fading out briefly on lift. The arrows shade themselves; the
+   clue's shade is a layer behind it, the bar's full height. */
+.solver-view .mobile-clue-bar {
+    position: relative;
+    --press-shade: rgba(20, 60, 120, 0.1);
+}
+
+html[data-theme="dark"] .solver-view .mobile-clue-bar {
+    --press-shade: rgba(255, 255, 255, 0.08);
+}
+
 .solver-view .mobile-clue-bar .clue-text,
 .solver-view .mobile-clue-bar .clue-nav-btn {
     -webkit-tap-highlight-color: transparent;
 }
 
-.solver-view .mobile-clue-bar .clue-text.pressing,
-.solver-view .mobile-clue-bar .clue-nav-btn.pressing {
-    background: rgba(20, 60, 120, 0.1);
+.solver-view .mobile-clue-bar .clue-nav-btn {
+    transition: background-color 0.25s ease-out;
 }
 
-html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-text.pressing,
-html[data-theme="dark"] .solver-view .mobile-clue-bar .clue-nav-btn.pressing {
-    background: rgba(255, 255, 255, 0.08);
+.solver-view .mobile-clue-bar .clue-nav-btn.pressing {
+    background-color: var(--press-shade);
+    transition: none;
+}
+
+.solver-view .mobile-clue-bar .clue-press {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--press-shade);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease-out;
+}
+
+.solver-view .mobile-clue-bar .clue-press.on {
+    opacity: 1;
+    transition: none;
 }
 
 /* Long clues (js/solver-app.js, _markClueOverflow). The clue is centred

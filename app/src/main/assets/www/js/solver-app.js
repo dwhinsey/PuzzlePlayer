@@ -301,13 +301,28 @@
                     if (beside === el.previousElementSibling) el.before(gap); else el.after(gap);
                 }
                 // Press shade on the clue and the arrows while a finger is
-                // down (css/app.css); it clears on lift, and on the clue as
-                // soon as it starts to scroll.
-                for (const target of [el, ...el.parentElement.querySelectorAll('.clue-nav-btn')]) {
-                    const off = () => target.classList.remove('pressing');
-                    target.addEventListener('pointerdown', () => target.classList.add('pressing'));
-                    for (const type of ['pointerup', 'pointercancel', 'pointerleave']) target.addEventListener(type, off);
-                    if (target === el) el.addEventListener('scroll', off, { passive: true });
+                // down (css/app.css): on at once, fading on lift, and on the
+                // clue cleared as soon as it starts to scroll. The clue's
+                // shade is its own layer, the clue's width and the bar's full
+                // height (the clue's box is shorter than the bar).
+                const bar = el.parentElement;
+                const shade = document.createElement('span');
+                shade.className = 'clue-press';
+                shade.setAttribute('aria-hidden', 'true');
+                bar.appendChild(shade);
+                const pressClue = () => {
+                    shade.style.left = el.offsetLeft + 'px';
+                    shade.style.width = el.offsetWidth + 'px';
+                    shade.classList.add('on');
+                };
+                const releaseClue = () => shade.classList.remove('on');
+                el.addEventListener('pointerdown', pressClue);
+                for (const type of ['pointerup', 'pointercancel', 'pointerleave']) el.addEventListener(type, releaseClue);
+                el.addEventListener('scroll', releaseClue, { passive: true });
+                for (const btn of bar.querySelectorAll('.clue-nav-btn')) {
+                    const off = () => btn.classList.remove('pressing');
+                    btn.addEventListener('pointerdown', () => btn.classList.add('pressing'));
+                    for (const type of ['pointerup', 'pointercancel', 'pointerleave']) btn.addEventListener(type, off);
                 }
             }
             if (document.fonts && document.fonts.ready) {
