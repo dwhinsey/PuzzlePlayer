@@ -252,6 +252,32 @@
             if (isGrid(saved.pencilGrid, height, width, (v) => typeof v === 'boolean')) this.pencilGrid = saved.pencilGrid;
             if (isGrid(saved.revealedGrid, height, width, (v) => typeof v === 'boolean')) this.revealedGrid = saved.revealedGrid;
             if (typeof saved.seconds === 'number') this.elapsedSeconds = saved.seconds;
+            // Check marks: 'c' correct, 'w' wrong, '' none. The squares don't
+            // exist yet, so they are marked once the grid is built (create()).
+            if (isGrid(saved.checked, height, width, (v) => v === '' || v === 'c' || v === 'w')) {
+                this.pendingChecks = saved.checked;
+            }
+        }
+
+        /** The check marks on the grid, for saving. */
+        _checkGrid() {
+            if (!this.cellEls || !this.cellEls.length) return this.pendingChecks || undefined;
+            return this.cellEls.map((row) => row.map((el) => {
+                if (!el) return '';
+                if (el.classList.contains('correct')) return 'c';
+                return el.classList.contains('incorrect') ? 'w' : '';
+            }));
+        }
+
+        _restoreChecks() {
+            const marks = this.pendingChecks;
+            this.pendingChecks = null;
+            if (!marks) return;
+            marks.forEach((row, r) => row.forEach((m, c) => {
+                const el = this.cellEls[r] && this.cellEls[r][c];
+                if (!el || !m || !this.userGrid[r][c]) return;
+                el.classList.add(m === 'c' ? 'correct' : 'incorrect');
+            }));
         }
 
         _save() {
@@ -260,6 +286,7 @@
                 grid: this.userGrid,
                 pencilGrid: this.pencilGrid,
                 revealedGrid: this.revealedGrid,
+                checked: this._checkGrid(),
                 seconds: this.elapsedSeconds,
                 solved: !!this.puzzleSolved,
                 assisted: this.assisted,
@@ -936,6 +963,9 @@
             if (!this.puzzle.hasKey) { this._noKey(); return; }
             this._markAssisted();
             run();
+            // Checks change only the marks, which the base solver doesn't
+            // save; reveals save anyway.
+            this._save();
         }
 
         checkSquare() { this._assist(() => super.checkSquare()); }
@@ -1004,6 +1034,7 @@
         } finally {
             incomingStore = null;
         }
+        solver._restoreChecks();
         // The base solver opens every puzzle on its Start/Resume card. A puzzle
         // already under way goes straight to the grid, clock running (a
         // solved one's clock stays stopped); a new one still gets the card.
