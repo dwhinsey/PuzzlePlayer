@@ -23,16 +23,20 @@
         { key: 'shaded', label: 'Shaded', name: 'Shaded squares', sub: 'Default: the puzzle’s own shading' },
         { key: 'cursor', label: 'Cursor', name: 'Cursor', sub: 'The square you’re typing in' },
         { key: 'highlight', label: 'Highlight', name: 'Highlighted entry', sub: 'The answer you’re in, and the clue bar' },
+        { key: 'wrong', label: 'Incorrect', name: 'Incorrect letters', sub: 'Letters a check (or Error Check Mode) finds wrong' },
+        { key: 'revealed', label: 'Revealed', name: 'Revealed letters', sub: 'Letters filled in by Reveal' },
     ];
 
     const DEFAULTS = {
         light: {
             block: '#2a2a2a', cell: '#ffffff', letter: '#2a2a2a', line: '#797983', number: '#333333',
             circle: '#797983', shaded: null, cursor: '#ffd54f', highlight: '#cfe8ff',
+            wrong: '#c62828', revealed: '#6a1b9a',
         },
         dark: {
             block: '#000000', cell: '#303030', letter: '#dedede', line: '#000000', number: '#b0b0b0',
             circle: '#858585', shaded: null, cursor: '#c4a24f', highlight: '#2e4459',
+            wrong: '#ff6b6b', revealed: '#c792ea',
         },
     };
 
@@ -46,6 +50,8 @@
             shaded: ['#d9d9d9', '#e3ecf7', '#e3f1df', '#f7e6d4', '#f3dbe8', '#e7e1f5', '#fff2b3', '#cfd8dc'],
             cursor: ['#ffb74d', '#81c784', '#64b5f6', '#f48fb1', '#ba68c8', '#4dd0e1', '#fff176', '#ff8a65'],
             highlight: ['#d8f0d2', '#fde2c8', '#f6d5e8', '#e3dcf7', '#fff3b0', '#d5f1f0', '#e8e8e8', '#bcd9ff'],
+            wrong: ['#e53935', '#b71c1c', '#ff5722', '#e91e63', '#f57c00', '#ad1457', '#8e0000', '#d84315'],
+            revealed: ['#8e24aa', '#5e35b1', '#3949ab', '#1e88e5', '#00897b', '#6d4c41', '#ad1457', '#4527a0'],
         },
         dark: {
             ink: ['#ffffff', '#b0b0b0', '#bcd4f6', '#c8e6c9', '#ffccbc', '#e1bee7', '#ffe0a3', '#9e9e9e'],
@@ -55,11 +61,14 @@
             shaded: ['#4a4a4a', '#3d4652', '#3e4a3c', '#4d4234', '#4b3a44', '#433d52', '#55502e', '#2f4a4a'],
             cursor: ['#b9824a', '#5e9e62', '#4f7fd9', '#b5617f', '#8e6bb5', '#3f9ea6', '#c9c05a', '#b85c4a'],
             highlight: ['#2e4a36', '#4a3a2a', '#4a2e40', '#3a3352', '#4a4626', '#264a4a', '#3a3a3a', '#1f3a5c'],
+            wrong: ['#ff8a80', '#ef5350', '#ff7043', '#f06292', '#ffab40', '#ff5252', '#e57373', '#ffcdd2'],
+            revealed: ['#ce93d8', '#b39ddb', '#9fa8da', '#90caf9', '#80cbc4', '#bcaaa4', '#f48fb1', '#e1bee7'],
         },
     };
     const PRESET_KIND = {
         block: 'block', cell: 'cell', letter: 'ink', line: 'line', number: 'ink',
         circle: 'line', shaded: 'shaded', cursor: 'cursor', highlight: 'highlight',
+        wrong: 'wrong', revealed: 'revealed',
     };
 
     // ----- Colour helpers -----
@@ -187,7 +196,7 @@
         if (leftAction) h.appendChild(button('gc-back', '‹', leftAction));
         const t = el('div', 'gc-titles');
         t.appendChild(el('div', 'gc-title', title));
-        t.appendChild(el('div', 'gc-sub', sub));
+        if (sub) t.appendChild(el('div', 'gc-sub', sub));
         h.appendChild(t);
         h.appendChild(button('gc-link', rightLabel, rightAction));
         h.appendChild(button('gc-done', 'Done', close));
@@ -202,7 +211,7 @@
         const { el: p, theme } = panel;
         panel.key = null;
         p.replaceChildren();
-        p.appendChild(head('Customize ' + theme + ' colors', 'Changes show on the grid as you go', null, 'Reset', () => {
+        p.appendChild(head('Customize ' + theme + ' colors', null, null, 'Reset', () => {
             UI.confirm({
                 title: 'Reset ' + theme + ' colors?',
                 message: 'The grid goes back to the ' + theme + ' theme’s own colors.',
