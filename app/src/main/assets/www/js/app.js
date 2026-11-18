@@ -32,6 +32,7 @@
 
     function closeSolver() {
         if (!solver) return;
+        GridColors.close();
         solver.destroy();
         solver = null;
         openEntry = null;
@@ -194,6 +195,7 @@
 
         /** System back. Returns true if handled; false lets the app close. */
         handleBack() {
+            if (GridColors.handleBack()) return true;
             if (UI.closeTop()) return true;
             if (solver) {
                 if (!solver.handleBack()) closeSolver();

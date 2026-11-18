@@ -94,6 +94,17 @@
                     b.appendChild(label);
                     if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
                     if (item.checked) b.appendChild(el('span', 'sheet-item-check', '✓'));
+                    // A second, smaller button inside the row (e.g. "Customize…").
+                    if (item.extra) {
+                        const x = el('span', 'sheet-item-extra', item.extra.label);
+                        x.setAttribute('role', 'button');
+                        x.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            close(entry);
+                            item.extra.action();
+                        });
+                        b.appendChild(x);
+                    }
                     b.addEventListener('click', () => {
                         if (item.keepOpen && typeof items === 'function') {
                             if (item.action) item.action();

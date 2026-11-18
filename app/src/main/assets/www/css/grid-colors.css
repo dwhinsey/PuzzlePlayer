@@ -1,0 +1,416 @@
+/*
+ * Custom grid colours (js/grid-colors.js). Each colour applies only while
+ * its class is on <html>: cg-block, cg-cell, cg-letter, cg-line, cg-number,
+ * cg-circle, cg-shaded, cg-cursor, cg-highlight (and cg-sel for the cursor
+ * square's text). Loaded last, so these win over the theme's own rules.
+ * Only the grid and the clue bar change.
+ */
+
+/* ----- Black squares ----- */
+
+html.cg-block .solver-view .cell.block {
+    background: var(--cg-block);
+}
+
+/* Dark mode draws a black square's right and bottom edges in its own colour
+   unless a letter square is there (then they are grid lines). */
+html.cg-block .solver-view .cell.block:not(.open-right) {
+    border-right-color: var(--cg-block);
+}
+
+html.cg-block .solver-view .cell.block:not(.open-below) {
+    border-bottom-color: var(--cg-block);
+}
+
+/* ----- Background (letter squares) ----- */
+
+html.cg-cell .solver-view .solver-grid {
+    background: var(--cg-cell);
+}
+
+html.cg-cell .solver-view .cell:not(.block):not(.void):not(.selected):not(.active-word):not(.referenced):not(.rebus-editing) {
+    background: var(--cg-cell);
+}
+
+/* ----- Grid lines: light mode's line layer, dark mode's borders ----- */
+
+html.cg-line .solver-view .grid-lines {
+    stroke: var(--cg-line);
+}
+
+html.cg-line .solver-view .solver-grid {
+    border-color: var(--cg-line);
+}
+
+html.cg-line .solver-view .cell:not(.block) {
+    border-color: var(--cg-line);
+}
+
+html.cg-line .solver-view .cell.block.open-right {
+    border-right-color: var(--cg-line);
+}
+
+html.cg-line .solver-view .cell.block.open-below {
+    border-bottom-color: var(--cg-line);
+}
+
+/* ----- Letters, numbers, circles (checked, revealed and pencil letters
+   keep their own colours) ----- */
+
+html.cg-letter .solver-view .cell:not(.pencil):not(.correct):not(.incorrect):not(.revealed):not(.error-check-wrong) .cell-letter {
+    color: var(--cg-letter);
+}
+
+html.cg-number .solver-view .cell:not(.selected) .cell-number {
+    color: var(--cg-number);
+}
+
+html.cg-circle .solver-view .cell:not(.selected) .cell-circle {
+    border-color: var(--cg-circle);
+}
+
+/* The cursor square's own text, worked out to read on the cursor colour. */
+html.cg-sel .solver-view .cell.selected:not(.pencil):not(.correct):not(.incorrect):not(.revealed):not(.error-check-wrong) .cell-letter {
+    color: var(--cg-sel-text);
+}
+
+html.cg-sel .solver-view .cell.selected .cell-number {
+    color: var(--cg-sel-num);
+}
+
+html.cg-sel .solver-view .cell.selected .cell-circle {
+    border-color: var(--cg-sel-circle);
+}
+
+/* ----- Shaded squares: one colour for every shaded square, in place of the
+   puzzle's own; the cursor and highlight still show on them. ----- */
+
+html.cg-shaded .solver-view .cell.shaded {
+    box-shadow: none;
+}
+
+html.cg-shaded .solver-view .cell.shaded:not(.block):not(.void):not(.selected):not(.active-word):not(.referenced):not(.rebus-editing) {
+    background: var(--cg-shaded);
+}
+
+/* ----- Cursor ----- */
+
+html.cg-cursor .solver-view .cell.selected {
+    background: var(--cg-cursor);
+}
+
+html.cg-cursor .solver-view .cell.rebus-editing {
+    box-shadow: inset 0 0 0 3px var(--cg-cursor);
+}
+
+/* ----- Highlighted entry, and the clue bar with it ----- */
+
+html.cg-highlight .solver-view .cell.active-word:not(.selected) {
+    background: var(--cg-highlight);
+}
+
+html.cg-highlight .solver-view .mobile-clue-bar {
+    background: var(--cg-highlight);
+    color: var(--cg-hl-text);
+    --press-shade: var(--cg-hl-press);
+}
+
+html.cg-highlight .solver-view .mobile-clue-bar .clue-nav-btn {
+    color: var(--cg-hl-text);
+}
+
+html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll {
+    background: var(--cg-hl-track);
+}
+
+html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
+    background: var(--cg-hl-thumb);
+}
+
+/* ----- The Customize panel: in place of the keyboard ----- */
+
+.gc-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--ime);
+    z-index: 90;
+    box-sizing: border-box;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 12px 12px calc(12px + var(--inset-bottom));
+    background: #ffffff;
+    color: var(--text);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.16);
+    transform: translateY(100%);
+    transition: transform 0.2s ease;
+}
+
+.gc-panel.show {
+    transform: translateY(0);
+}
+
+.gc-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.gc-titles {
+    flex: 1;
+    min-width: 0;
+}
+
+.gc-title {
+    font-weight: 700;
+    font-size: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gc-sub {
+    font-size: 0.78em;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gc-back,
+.gc-link,
+.gc-done {
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gc-back {
+    font-size: 1.7em;
+    line-height: 1;
+    padding: 0 8px 4px 2px;
+    color: var(--muted);
+}
+
+.gc-link {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 8px 4px;
+}
+
+.gc-done {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--navy);
+    border-radius: 999px;
+    padding: 8px 18px;
+}
+
+.gc-chips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+}
+
+.gc-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 6px;
+    border: 1px solid #e1e6ee;
+    border-radius: 10px;
+    background: none;
+    font: inherit;
+    font-size: 0.78em;
+    font-weight: 500;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gc-chip:active {
+    background: #eef2f8;
+}
+
+/* A colour that has been changed from the theme's own. */
+.gc-chip.custom {
+    border-color: var(--navy-light);
+}
+
+.gc-chip-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gc-swatch {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* "The puzzle's own" (Shaded's default): stripes, not one colour. */
+.gc-swatch.gc-own {
+    background: repeating-linear-gradient(135deg, #d9d9d9 0 4px, #f2f2f2 4px 8px);
+}
+
+.gc-presets {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 7px;
+    margin-bottom: 12px;
+}
+
+.gc-preset {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    border: none;
+    background: none;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gc-preset .gc-swatch {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.gc-preset.on .gc-swatch {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 0 2px #ffffff, 0 0 0 4px var(--navy);
+}
+
+.gc-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gc-sliders {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.gc-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 14px;
+    margin: 0;
+    border-radius: 7px;
+    outline: none;
+}
+
+.gc-hue {
+    background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+
+.gc-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+.gc-hex {
+    flex: none;
+    width: 96px;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border: 1px solid #cfd6e0;
+    border-radius: 10px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-family: ui-monospace, 'Roboto Mono', monospace;
+    font-size: 0.95em;
+}
+
+/* Dark theme */
+
+html[data-theme="dark"] .gc-panel {
+    background: var(--d-surface);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .gc-done {
+    background: var(--d-accent);
+    color: var(--d-text);
+}
+
+html[data-theme="dark"] .gc-chip {
+    border-color: var(--d-line);
+}
+
+html[data-theme="dark"] .gc-chip:active {
+    background: var(--d-surface-2);
+}
+
+html[data-theme="dark"] .gc-chip.custom {
+    border-color: var(--d-accent);
+}
+
+html[data-theme="dark"] .gc-swatch {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+html[data-theme="dark"] .gc-swatch.gc-own {
+    background: repeating-linear-gradient(135deg, #4a4a4a 0 4px, #333333 4px 8px);
+}
+
+html[data-theme="dark"] .gc-preset.on .gc-swatch {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 0 0 2px var(--d-surface), 0 0 0 4px var(--d-accent);
+}
+
+html[data-theme="dark"] .gc-hex {
+    border-color: var(--d-line);
+}
+
+/* "Customize…" in the Settings sheet, beside Light and Dark (before the
+   tick, which stays at the far right). */
+.sheet-item-check {
+    order: 2;
+}
+
+.sheet-item-extra {
+    order: 1;
+    margin-left: 12px;
+    padding: 5px 12px;
+    border: 1.5px solid #c9d3e0;
+    border-radius: 999px;
+    background: #f4f7fb;
+    color: var(--navy);
+    font-size: 0.82em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sheet-item-extra:active {
+    background: #e3eaf4;
+}
+
+html[data-theme="dark"] .sheet-item-extra {
+    border-color: var(--d-line);
+    background: var(--d-surface-2);
+    color: var(--d-text);
+}

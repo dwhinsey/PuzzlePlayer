@@ -19,8 +19,27 @@
     let systemDark = bridge && bridge.isNightMode ? !!bridge.isNightMode() : !!(media && media.matches);
     const listeners = [];
 
+    // While the grid colours of one theme are being customised, the solver
+    // shows that theme whatever the setting (js/grid-colors.js).
+    let previewTheme = null;
+
     function isDark() {
+        if (previewTheme) return previewTheme === 'dark';
         return settings.theme === 'dark' || (settings.theme === 'system' && systemDark);
+    }
+
+    // Custom grid colours, per theme: { light: { block: '#...' }, dark: {} }.
+    // Saved a moment after the last change, as a colour slider sends many.
+    function gridColorsFor(theme) {
+        const all = settings.gridColors && typeof settings.gridColors === 'object' ? settings.gridColors : {};
+        const own = all[theme];
+        return own && typeof own === 'object' ? own : {};
+    }
+
+    let gridSaveTimer = null;
+    function saveGridColorsSoon() {
+        clearTimeout(gridSaveTimer);
+        gridSaveTimer = setTimeout(() => Store.writeJSON(FILE, settings), 300);
     }
 
     function apply() {
@@ -69,13 +88,23 @@
      * sheet open; Clear and Reset close it.
      */
     function open(extraItems) {
+        // In a puzzle, Light and Dark each offer their grid colours.
+        const customize = (theme) => (global.GridColors && GridColors.available()
+            ? { label: 'Customize…', action: () => GridColors.open(theme) }
+            : null);
         const items = () => {
             const t = settings.theme;
             const extra = typeof extraItems === 'function' ? extraItems() : (extraItems || []);
             return [
                 { section: 'Appearance' },
-                { indent: 1, label: 'Light', checked: t === 'light', action: () => setTheme('light') },
-                { indent: 1, label: 'Dark', checked: t === 'dark', action: () => setTheme('dark') },
+                {
+                    indent: 1, label: 'Light', checked: t === 'light', action: () => setTheme('light'),
+                    extra: customize('light'),
+                },
+                {
+                    indent: 1, label: 'Dark', checked: t === 'dark', action: () => setTheme('dark'),
+                    extra: customize('dark'),
+                },
                 {
                     indent: 1,
                     label: 'Match phone setting',
@@ -192,6 +221,29 @@
             },
         ],
         onChange: (fn) => listeners.push(fn),
+        /** The custom grid colours of 'light' or 'dark' (key → '#rrggbb'). */
+        gridColors: (theme) => ({ ...gridColorsFor(theme) }),
+        /** Sets one custom grid colour, or clears it (value null). */
+        setGridColor(theme, key, value) {
+            if (!settings.gridColors || typeof settings.gridColors !== 'object') settings.gridColors = {};
+            const own = { ...gridColorsFor(theme) };
+            if (value) own[key] = value;
+            else delete own[key];
+            settings.gridColors[theme] = own;
+            saveGridColorsSoon();
+            for (const fn of listeners) fn(isDark());
+        },
+        /** Clears all of a theme's custom grid colours. */
+        resetGridColors(theme) {
+            if (settings.gridColors) delete settings.gridColors[theme];
+            saveGridColorsSoon();
+            for (const fn of listeners) fn(isDark());
+        },
+        /** Shows the solver in 'light' or 'dark' for now, or as set (null). */
+        previewTheme(theme) {
+            previewTheme = theme || null;
+            applySmoothly();
+        },
         /** Called by the Android side when the phone's dark theme changes. */
         setSystemDark(dark) {
             systemDark = !!dark;
