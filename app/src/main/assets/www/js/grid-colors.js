@@ -300,12 +300,10 @@
             lightness.style.background = 'linear-gradient(90deg, #000, ' + mid + ', #fff)';
         }
         hue.addEventListener('input', () => {
-            // A grey has no hue to turn; give it some colour first.
+            // A grey has no hue to turn; give it some colour first. The
+            // lightness stays where it is (near white or black the change is
+            // slight, but the lightness slider doesn't move by itself).
             if (hsl[1] < 0.08) hsl[1] = 0.55;
-            if (hsl[2] < 0.06 || hsl[2] > 0.94) {
-                hsl[2] = 0.5;
-                lightness.value = 50;
-            }
             hsl[0] = Number(hue.value);
             lightness.style.background = 'linear-gradient(90deg, #000, ' + fromHsl(hsl[0], hsl[1], 0.5) + ', #fff)';
             set(fromHsl(hsl[0], hsl[1], hsl[2]), true);
