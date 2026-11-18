@@ -167,6 +167,11 @@ html[data-theme="dark"] .solver-view .grid-lines {
     color: #2a2a2a;
 }
 
+/* Clue numbers in the letters' colour. */
+:where(html:not([data-theme="dark"])) .solver-view .cell-number {
+    color: #2a2a2a;
+}
+
 /* The timer and the buttons beside it (pencil, Notes, Assist, Info) in the
    same charcoal. Pressed-in buttons (.active) keep their blue. */
 :where(html:not([data-theme="dark"]) .solver-view .solver-topbar) .timer-display,

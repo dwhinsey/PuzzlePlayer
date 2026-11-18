@@ -22,7 +22,7 @@ html[data-theme="dark"] {
     --d-cell: #303030;
     --d-block: #000000;
     --d-grid-line: #000000;
-    --d-number: #b0b0b0;
+    --d-number: var(--d-letter); /* clue numbers match the letters */
     --d-letter: #dedede;
     --d-selected: #c4a24f;
     --d-selected-text: #111111;

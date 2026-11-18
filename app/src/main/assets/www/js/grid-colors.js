@@ -16,9 +16,9 @@
     const KEYS = [
         { key: 'block', label: 'Black squares', name: 'Black squares', sub: 'The squares with no letter' },
         { key: 'cell', label: 'Background', name: 'Background', sub: 'The grid’s letter squares' },
-        { key: 'letter', label: 'Letters', name: 'Letters', sub: 'Letters you type' },
         { key: 'line', label: 'Grid lines', name: 'Grid lines', sub: 'The lines between squares' },
-        { key: 'number', label: 'Numbers', name: 'Numbers', sub: 'Clue numbers in the squares' },
+        { key: 'letter', label: 'Letters', name: 'Letters', sub: 'Letters you type, and the clue numbers' },
+        { key: 'pencil', label: 'Pencil', name: 'Pencil letters', sub: 'Letters typed with the pencil on' },
         { key: 'circle', label: 'Circles', name: 'Circles', sub: 'Circled squares' },
         { key: 'shaded', label: 'Shaded', name: 'Shaded squares', sub: 'Default: the puzzle’s own shading' },
         { key: 'cursor', label: 'Cursor', name: 'Cursor', sub: 'The square you’re typing in' },
@@ -30,12 +30,12 @@
 
     const DEFAULTS = {
         light: {
-            block: '#2a2a2a', cell: '#ffffff', letter: '#2a2a2a', line: '#797983', number: '#333333',
+            block: '#2a2a2a', cell: '#ffffff', letter: '#2a2a2a', line: '#797983', pencil: '#6b6b6b',
             circle: '#797983', shaded: null, cursor: '#ffd54f', highlight: '#cfe8ff',
             correct: '#2e7d32', wrong: '#c62828', revealed: '#6a1b9a',
         },
         dark: {
-            block: '#000000', cell: '#303030', letter: '#dedede', line: '#000000', number: '#b0b0b0',
+            block: '#000000', cell: '#303030', letter: '#dedede', line: '#000000', pencil: '#8a8a8a',
             circle: '#858585', shaded: null, cursor: '#c4a24f', highlight: '#2e4459',
             correct: '#6cc070', wrong: '#ff6b6b', revealed: '#c792ea',
         },
@@ -44,6 +44,7 @@
     // Suggested colours for each kind of thing, after the theme's own.
     const PRESETS = {
         light: {
+            pencil: ['#8a8a8a', '#9e9e9e', '#5c7da8', '#6f8f73', '#a07a5a', '#8a6fa8', '#4a4a4a', '#b0b0b0'],
             ink: ['#000000', '#444444', '#1d3d6e', '#2e5e3e', '#7a2e2e', '#5b3a7a', '#6b4e2e', '#797983'],
             block: ['#000000', '#444444', '#1d3d6e', '#2e3b4e', '#3e2e2e', '#2e3e2e', '#4a3a5a', '#797983'],
             line: ['#2a2a2a', '#000000', '#b0b0b8', '#9fb0c8', '#1d3d6e', '#c62828', '#2e7d32', '#d0d0d0'],
@@ -56,6 +57,7 @@
             revealed: ['#8e24aa', '#5e35b1', '#3949ab', '#1e88e5', '#00897b', '#6d4c41', '#ad1457', '#4527a0'],
         },
         dark: {
+            pencil: ['#a8a8a8', '#6e6e6e', '#8fa9cf', '#94b897', '#c4a382', '#ad97c9', '#c8c8c8', '#5e5e5e'],
             ink: ['#ffffff', '#b0b0b0', '#bcd4f6', '#c8e6c9', '#ffccbc', '#e1bee7', '#ffe0a3', '#9e9e9e'],
             block: ['#161616', '#15181d', '#1b1916', '#0d1b2a', '#1a2a1a', '#2a1a1a', '#222222', '#2e2e2e'],
             line: ['#858585', '#1c1c1c', '#444444', '#5a6577', '#9e9e9e', '#2b323c', '#6b5b3e', '#3e5a3e'],
@@ -69,7 +71,7 @@
         },
     };
     const PRESET_KIND = {
-        block: 'block', cell: 'cell', letter: 'ink', line: 'line', number: 'ink',
+        block: 'block', cell: 'cell', letter: 'ink', line: 'line', pencil: 'pencil',
         circle: 'line', shaded: 'shaded', cursor: 'cursor', highlight: 'highlight',
         correct: 'correct', wrong: 'wrong', revealed: 'revealed',
     };
@@ -152,17 +154,18 @@
             root.style.setProperty('--cg-hl-track', light ? 'rgba(20, 60, 120, 0.12)' : 'rgba(255, 255, 255, 0.12)');
             root.style.setProperty('--cg-hl-thumb', light ? 'rgba(20, 50, 100, 0.42)' : 'rgba(255, 255, 255, 0.45)');
         }
-        // The cursor square's letter, number and circle: on a custom cursor,
+        // The cursor square's letter, number and circle (numbers are in the
+        // letters' colour): on a custom cursor,
         // whichever of dark or light text reads on it; otherwise as the theme
         // does it (light: the usual colours; dark: dark text on the gold).
-        const sel = custom.cursor || custom.letter || custom.number || custom.circle;
+        const sel = custom.cursor || custom.letter || custom.circle;
         root.classList.toggle('cg-sel', !!sel);
         if (sel) {
             let text;
             let num;
             let circle;
             if (custom.cursor) text = num = circle = textOn(custom.cursor);
-            else if (theme === 'light') [text, num, circle] = [eff.letter, eff.number, eff.circle];
+            else if (theme === 'light') [text, num, circle] = [eff.letter, eff.letter, eff.circle];
             else text = num = circle = '#111111';
             root.style.setProperty('--cg-sel-text', text);
             root.style.setProperty('--cg-sel-num', num);
