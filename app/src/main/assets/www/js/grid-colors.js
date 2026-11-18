@@ -262,20 +262,21 @@
         });
         p.appendChild(row);
 
-        // Any colour: hue and lightness sliders, and a hex box.
+        // Any colour: hue, saturation and lightness sliders, and a hex box.
         const controls = el('div', 'gc-controls');
         const sliders = el('div', 'gc-sliders');
-        const hue = el('input', 'gc-range gc-hue');
-        hue.type = 'range';
-        hue.min = 0;
-        hue.max = 360;
-        hue.setAttribute('aria-label', 'Hue');
-        const lightness = el('input', 'gc-range gc-light');
-        lightness.type = 'range';
-        lightness.min = 0;
-        lightness.max = 100;
-        lightness.setAttribute('aria-label', 'Lightness');
-        sliders.append(hue, lightness);
+        const range = (cls, max, label) => {
+            const r = el('input', 'gc-range ' + cls);
+            r.type = 'range';
+            r.min = 0;
+            r.max = max;
+            r.setAttribute('aria-label', label);
+            sliders.appendChild(r);
+            return r;
+        };
+        const hue = range('gc-hue', 360, 'Hue');
+        const saturation = range('gc-sat', 100, 'Saturation');
+        const lightness = range('gc-light', 100, 'Lightness');
         const hex = el('input', 'gc-hex');
         hex.type = 'text';
         hex.autocomplete = 'off';
@@ -287,6 +288,14 @@
         p.appendChild(controls);
 
         let hsl = [0, 0, 0];
+        // The saturation track runs from grey to full colour at about the
+        // current lightness; the lightness track through the current colour.
+        function paintTracks() {
+            const [h, sat, l] = hsl;
+            const lMid = Math.min(0.75, Math.max(0.25, l));
+            saturation.style.background = 'linear-gradient(90deg, ' + fromHsl(h, 0, lMid) + ', ' + fromHsl(h, 1, lMid) + ')';
+            lightness.style.background = 'linear-gradient(90deg, #000, ' + fromHsl(h, Math.max(sat, 0.001), 0.5) + ', #fff)';
+        }
         function sync(fromSliders) {
             const c = Settings.gridColors(theme)[k.key] || DEFAULTS[theme][k.key];
             const shown = c || '#d9d9d9';
@@ -295,28 +304,37 @@
             if (fromSliders) return;
             hsl = toHsl(shown);
             hue.value = Math.round(hsl[0]);
+            saturation.value = Math.round(hsl[1] * 100);
             lightness.value = Math.round(hsl[2] * 100);
-            const mid = fromHsl(hsl[0], Math.max(hsl[1], 0.001), 0.5);
-            lightness.style.background = 'linear-gradient(90deg, #000, ' + mid + ', #fff)';
+            paintTracks();
         }
-        hue.addEventListener('input', () => {
-            // A grey has no hue to turn; give it some colour first. The
-            // lightness stays where it is (near white or black the change is
-            // slight, but the lightness slider doesn't move by itself).
-            if (hsl[1] < 0.08) hsl[1] = 0.55;
-            hsl[0] = Number(hue.value);
-            lightness.style.background = 'linear-gradient(90deg, #000, ' + fromHsl(hsl[0], hsl[1], 0.5) + ', #fff)';
+        const fromSliders = () => {
+            paintTracks();
             set(fromHsl(hsl[0], hsl[1], hsl[2]), true);
+        };
+        hue.addEventListener('input', () => {
+            // A grey has no hue to turn; give it some colour first (the
+            // saturation slider moves to show it; lightness never does).
+            if (hsl[1] < 0.08) {
+                hsl[1] = 0.55;
+                saturation.value = 55;
+            }
+            hsl[0] = Number(hue.value);
+            fromSliders();
+        });
+        saturation.addEventListener('input', () => {
+            hsl[1] = Number(saturation.value) / 100;
+            fromSliders();
         });
         lightness.addEventListener('input', () => {
             hsl[2] = Number(lightness.value) / 100;
-            set(fromHsl(hsl[0], hsl[1], hsl[2]), true);
+            fromSliders();
         });
         hex.addEventListener('input', () => {
             const c = parseHex(hex.value);
             if (c) set(c);
         });
-        hex.addEventListener('blur', sync);
+        hex.addEventListener('blur', () => sync());
         hex.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') hex.blur();
         });

@@ -330,7 +330,7 @@ html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 13px;
 }
 
 .gc-range {
