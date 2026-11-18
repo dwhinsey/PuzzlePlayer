@@ -95,6 +95,8 @@
                     if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
                     if (item.checked) b.appendChild(el('span', 'sheet-item-check', '✓'));
                     // A second, smaller button inside the row (e.g. "Customize…").
+                    // Unticked, the row keeps an invisible tick's room, so the
+                    // button stays put when the tick comes and goes.
                     if (item.extra) {
                         const x = el('span', 'sheet-item-extra', item.extra.label);
                         x.setAttribute('role', 'button');
@@ -104,6 +106,12 @@
                             item.extra.action();
                         });
                         b.appendChild(x);
+                        if (!item.checked) {
+                            const spacer = el('span', 'sheet-item-check', '✓');
+                            spacer.style.visibility = 'hidden';
+                            spacer.setAttribute('aria-hidden', 'true');
+                            b.appendChild(spacer);
+                        }
                     }
                     b.addEventListener('click', () => {
                         if (item.keepOpen && typeof items === 'function') {
