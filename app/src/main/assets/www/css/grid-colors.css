@@ -1,7 +1,8 @@
 /*
  * Custom grid colours (js/grid-colors.js). Each colour applies only while
  * its class is on <html>: cg-block, cg-cell, cg-letter, cg-line, cg-number,
- * cg-circle, cg-shaded, cg-cursor, cg-highlight, cg-wrong, cg-revealed (and
+ * cg-circle, cg-shaded, cg-cursor, cg-highlight, cg-correct, cg-wrong,
+ * cg-revealed (and
  * cg-sel for the cursor square's text). Loaded last, so these win over the theme's own rules.
  * Only the grid and the clue bar change.
  */
@@ -82,7 +83,11 @@ html.cg-sel .solver-view .cell.selected .cell-circle {
     border-color: var(--cg-sel-circle);
 }
 
-/* ----- Incorrect and revealed letters, and Colorblind Mode's marks ----- */
+/* ----- Checked and revealed letters, and Colorblind Mode's marks ----- */
+
+html.cg-correct .solver-view .cell.correct .cell-letter {
+    color: var(--cg-correct);
+}
 
 html.cg-wrong .solver-view .cell.incorrect .cell-letter,
 html.cg-wrong .solver-view .cell.error-check-wrong .cell-letter {
