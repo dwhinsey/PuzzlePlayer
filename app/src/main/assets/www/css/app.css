@@ -155,6 +155,18 @@ html[data-theme="dark"] .solver-view .grid-lines {
     display: none;
 }
 
+/* Light mode: black squares and letters in a soft charcoal, the same as
+   the clue numbers, rather than near-black. Checked, revealed and pencil
+   letters keep their own colours (:where keeps these rules weak enough
+   for theirs to win). */
+:where(html:not([data-theme="dark"])) .solver-view .cell.block {
+    background: #333;
+}
+
+:where(html:not([data-theme="dark"])) .solver-view .cell-letter {
+    color: #333;
+}
+
 /* Circled squares, NYT-style: the circle nearly fills the square, in the
    grid lines' grey at about 2 screen pixels, and
    breaks around the clue number: the number sits on a patch of the
