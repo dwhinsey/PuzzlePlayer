@@ -375,6 +375,8 @@
     global.GridColors = {
         /** Whether Customize… is offered: only with a puzzle open. */
         available: () => document.body.classList.contains('solving'),
+        /** Whether the Customize panel is open. */
+        isOpen: () => !!panel,
         open,
         close,
         /** Back: from a colour to the list, then closes. True if handled. */
