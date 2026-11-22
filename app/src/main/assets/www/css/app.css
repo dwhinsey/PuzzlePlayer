@@ -398,13 +398,13 @@ html.colorblind .solver-view .cell.revealed::before {
     color: #c62828;
 }
 
-/* Grid numbers: 24% of a square, which puts them at about 0.44 of the
-   letters' height on 15x15 and 21x21 grids, as in the NYT app (0.41-0.43).
-   The base solver uses 25%, but Android's WebView used to round anything under 8px
-   up to 8px (MainActivity lifts that floor), so phones showed bigger ones.
-   Regular weight, as in the NYT app (the base solver's are bold). */
+/* Grid numbers: 27% of a square, a little bigger than the NYT app's
+   (about 0.42 of the letters' height), for easier reading. (Android's
+   WebView used to round anything under 8px up to 8px; MainActivity lifts
+   that floor.) Regular weight, as in the NYT app (the base solver's are
+   bold). */
 .solver-view .cell-number {
-    font-size: calc(var(--cell-size, 24px) * 0.24);
+    font-size: calc(var(--cell-size, 24px) * 0.27);
     font-weight: 400;
 }
 
