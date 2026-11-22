@@ -238,6 +238,10 @@
             g.every((row) => Array.isArray(row) && row.length === width && row.every(test));
     }
 
+    const BACKSPACE_ICON = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">' +
+        '<path d="M8 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-7-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>' +
+        '<path d="M11.5 9l6 6M17.5 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
     class AppCrosswordSolver extends CrosswordSolver {
         _load() {
             this.appStore = incomingStore;
@@ -700,6 +704,10 @@
 
         _buildMobileKeyboard() {
             const keyboard = super._buildMobileKeyboard();
+            // Backspace: the base solver's arrow, with its X centred in the
+            // arrow's body (as on Gboard) rather than nearer the point.
+            const backspace = keyboard.querySelector('.kb-backspace');
+            if (backspace) backspace.innerHTML = BACKSPACE_ICON;
             this.releaseKeys = attachFastKeyboard(keyboard, this);
             return keyboard;
         }
