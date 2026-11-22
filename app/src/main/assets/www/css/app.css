@@ -197,7 +197,9 @@ html[data-theme="dark"] .solver-view .grid-lines {
        (the base solver places it 2px down, 3px in). */
     top: 0;
     left: 0;
-    padding: 2px 0.4px 0 3px;
+    /* 2px down and 3px in on a 15x15 grid's square, scaled with the square
+       so smaller squares don't push the number into the letter. */
+    padding: calc(var(--cell-size, 24px) * 0.073) 0.4px 0 calc(var(--cell-size, 24px) * 0.109);
     /* A text box keeps room below the digits for descenders; trim most of
        it so the circle stops as close below the number as beside it. */
     clip-path: inset(0 0 0.13em 0);
@@ -398,13 +400,14 @@ html.colorblind .solver-view .cell.revealed::before {
     color: #c62828;
 }
 
-/* Grid numbers: 27% of a square, a little bigger than the NYT app's
-   (about 0.42 of the letters' height), for easier reading. (Android's
-   WebView used to round anything under 8px up to 8px; MainActivity lifts
-   that floor.) Regular weight, as in the NYT app (the base solver's are
-   bold). */
+/* Grid numbers: 27% of a square on squares 27px and up (a 15x15 grid on a
+   phone, or bigger), sliding down on smaller squares, where they would
+   crowd the letter: about 26% at 17x17, 25% at 19x19, 23.6% at 21x21 on a
+   phone. (Android's WebView used to round anything under 8px up to 8px;
+   MainActivity lifts that floor.) Regular weight, as in the NYT app (the
+   base solver's are bold). */
 .solver-view .cell-number {
-    font-size: calc(var(--cell-size, 24px) * 0.27);
+    font-size: calc(var(--cell-size, 24px) * 0.27 - max(0px, 27px - var(--cell-size, 24px)) * 0.09);
     font-weight: 400;
 }
 
