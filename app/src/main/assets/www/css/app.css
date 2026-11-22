@@ -920,6 +920,17 @@ body.solving .dialog:not(.notes-dialog) {
     background: #bcc2cc;
 }
 
+/* Squarer keys (5px corners) on the same background as the area above the
+   grid, so the grid and clue bar sit on one surface. Dark mode does the
+   same through --d-keyboard (css/theme-dark.css). */
+.solver-view .kb-key {
+    border-radius: 5px;
+}
+
+.solver-view .mobile-keyboard {
+    background: var(--page-bg);
+}
+
 /* No panning or zooming starts from the keyboard, so a finger that drifts
    while pressing a key isn't taken for a scroll and cancelled. */
 .solver-view .mobile-keyboard {
@@ -940,7 +951,8 @@ body.solving .dialog:not(.notes-dialog) {
     padding-bottom: 2px;
     background: #ffffff;
     color: #111;
-    border-radius: 12px;
+    /* A touch rounder than the keys (5px) for its larger size. */
+    border-radius: 7px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.06);
     font-family: 'Public Sans', Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     font-weight: 600;

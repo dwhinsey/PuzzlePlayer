@@ -35,7 +35,7 @@ html[data-theme="dark"] {
 
     /* Clue bar and keyboard */
     --d-clue-bar: #2b323c;
-    --d-keyboard: #1a1a1a;
+    --d-keyboard: var(--d-bg); /* the same as above the grid */
     --d-key: #3b3b3b;
     --d-key-special: #2a2a2a;
     --d-key-special-pressed: #3c3c3c;
