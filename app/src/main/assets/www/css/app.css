@@ -439,7 +439,6 @@ html.colorblind .solver-view .cell.revealed::before {
 .solver-view .icon-btn.notes-btn {
     width: auto;
     padding: 0 13px;
-    border-radius: 18px;
     font-size: 1.1em;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -499,7 +498,6 @@ html.colorblind .solver-view .cell.revealed::before {
 .solver-host.compact-top .icon-btn.notes-btn {
     font-size: 1em;
     padding: 0 12px;
-    border-radius: 16px;
 }
 
 @media (min-width: 701px) {
@@ -535,7 +533,6 @@ html.colorblind .solver-view .cell.revealed::before {
     .solver-host.compact-top .icon-btn.notes-btn {
         font-size: 1.25em;
         padding: 0 16px;
-        border-radius: 21px;
     }
 }
 
@@ -561,7 +558,6 @@ html.colorblind .solver-view .cell.revealed::before {
     .solver-view .icon-btn.assist-btn,
     .solver-view .icon-btn.notes-btn {
         padding: 0 18px;
-        border-radius: 25px;
         font-size: 1.44em;
     }
 
@@ -965,4 +961,12 @@ body.solving .dialog:not(.notes-dialog) {
 ::view-transition-new(root) {
     animation-duration: 0.28s;
     animation-timing-function: ease-in-out;
+}
+
+/* The timer and the buttons beside it (pencil, Notes, Assist, Info): rounded
+   rectangles with 6px corners, like the keyboard's keys, instead of pills
+   and a circle. */
+html .solver-view .solver-topbar .timer-wrap,
+html .solver-view .solver-topbar .icon-btn {
+    border-radius: 6px;
 }
