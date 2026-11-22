@@ -812,7 +812,7 @@
             return [
                 { section: 'This puzzle' },
                 { indent: 1, label: 'Clear grid', action: () => this.clearGrid() },
-                { indent: 1, label: 'Reset puzzle', sub: Settings.showTimer() ? 'Clears the grid and the timer' : 'Clears the grid', danger: true, action: () => this.resetPuzzle() },
+                { indent: 1, label: 'Reset puzzle', danger: true, action: () => this.resetPuzzle() },
             ];
         }
 

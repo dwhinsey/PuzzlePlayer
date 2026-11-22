@@ -108,7 +108,6 @@
                 {
                     indent: 1,
                     label: 'Match phone setting',
-                    sub: 'Light or dark, following the phone’s dark theme',
                     checked: t === 'system',
                     action: () => setTheme('system'),
                 },
@@ -157,7 +156,6 @@
             {
                 indent: 1,
                 label: 'Skip filled squares',
-                sub: 'Typing jumps over squares that already have a letter',
                 checked: settings.skipFilled !== false,
                 action: () => {
                     settings.skipFilled = settings.skipFilled === false;
@@ -167,7 +165,6 @@
             {
                 indent: 1,
                 label: 'Auto-advance to next clue',
-                sub: 'At the end of an answer, move on to the next clue',
                 checked: settings.autoAdvance !== false,
                 action: () => {
                     settings.autoAdvance = settings.autoAdvance === false;
@@ -178,7 +175,6 @@
             {
                 indent: 1,
                 label: 'Error Check Mode',
-                sub: 'Wrong letters turn red as you type them',
                 checked: !!settings.errorCheck,
                 action: () => {
                     settings.errorCheck = !settings.errorCheck;
@@ -189,7 +185,6 @@
             {
                 indent: 1,
                 label: 'Colorblind Mode',
-                sub: 'Wrong letters get a dot, revealed get a corner mark',
                 checked: !!settings.colorblind,
                 action: () => {
                     settings.colorblind = !settings.colorblind;
@@ -201,7 +196,6 @@
             {
                 indent: 1,
                 label: 'Show timer',
-                sub: 'Off: no times here or on the home page',
                 checked: settings.showTimer !== false,
                 action: () => {
                     settings.showTimer = settings.showTimer === false;
