@@ -400,14 +400,13 @@ html.colorblind .solver-view .cell.revealed::before {
     color: #c62828;
 }
 
-/* Grid numbers: 27% of a square on squares 27px and up (a 15x15 grid on a
-   phone, or bigger), sliding down on smaller squares, where they would
-   crowd the letter: about 26% at 17x17, 25% at 19x19, 23.6% at 21x21 on a
-   phone. (Android's WebView used to round anything under 8px up to 8px;
-   MainActivity lifts that floor.) Regular weight, as in the NYT app (the
-   base solver's are bold). */
+/* Grid numbers: 27% of a square at every grid size (their offset from the
+   corner scales with the square too, so they keep clear of the letter on
+   small squares). (Android's WebView used to round anything under 8px up
+   to 8px; MainActivity lifts that floor.) Regular weight, as in the NYT
+   app (the base solver's are bold). */
 .solver-view .cell-number {
-    font-size: calc(var(--cell-size, 24px) * 0.27 - max(0px, 27px - var(--cell-size, 24px)) * 0.09);
+    font-size: calc(var(--cell-size, 24px) * 0.27);
     font-weight: 400;
 }
 
