@@ -313,6 +313,14 @@
         return row;
     }
 
+    /** Folders as slim rows in one card, divided by thin lines. */
+    function folderGroup(folders) {
+        const group = document.createElement('div');
+        group.className = 'lib-folders';
+        for (const f of folders) group.appendChild(folderRow(f));
+        return group;
+    }
+
     function emptyState(title, text, withButton) {
         const box = document.createElement('div');
         box.className = 'lib-empty';
@@ -388,7 +396,7 @@
             const puzzles = lib.puzzles.filter((p) => puzzleMatches(p, query));
             if (folders.length) {
                 frag.appendChild(sectionLabel('Folders'));
-                for (const f of folders) frag.appendChild(folderRow(f));
+                frag.appendChild(folderGroup(folders));
             }
             const shown = addPuzzles(puzzles, true, (n) => plural(n, 'puzzle'));
             if (!folders.length && !shown) {
@@ -397,7 +405,7 @@
         } else {
             const folders = sortFolders(lib.folders.filter((f) => (f.parentId || null) === currentFolder));
             const puzzles = lib.puzzles.filter((p) => (p.folderId || null) === currentFolder);
-            for (const f of folders) frag.appendChild(folderRow(f));
+            if (folders.length) frag.appendChild(folderGroup(folders));
             const shown = addPuzzles(puzzles, false, folders.length ? (n) => plural(n, 'puzzle') : null);
             if (!folders.length && !shown) {
                 if (puzzles.length) {

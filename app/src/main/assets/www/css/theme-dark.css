@@ -75,6 +75,21 @@ html[data-theme="dark"] .lib-row {
     box-shadow: inset 0 0 0 1px var(--d-tile-edge);
 }
 
+/* Folders: one card, its rows divided by the tiles' edge colour. */
+html[data-theme="dark"] .lib-folders {
+    background: var(--d-surface);
+    box-shadow: inset 0 0 0 1px var(--d-tile-edge);
+}
+
+html[data-theme="dark"] .lib-folders .lib-row {
+    background: transparent;
+    box-shadow: none;
+}
+
+html[data-theme="dark"] .lib-folders .lib-row + .lib-row {
+    border-top-color: var(--d-tile-edge);
+}
+
 html[data-theme="dark"] .lib-row:active,
 html[data-theme="dark"] .lib-row.pressing {
     background: var(--d-surface-2);
