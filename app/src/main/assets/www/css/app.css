@@ -638,7 +638,7 @@ html.colorblind .solver-view .cell.revealed::before {
     display: flex;
     flex-direction: column;
     background: #ffffff;
-    border-radius: 18px 18px 0 0;
+    border-radius: 6px 6px 0 0;
     padding-bottom: calc(8px + max(var(--inset-bottom), var(--ime)));
     box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.18);
     transform: translateY(100%);
@@ -755,7 +755,7 @@ html.colorblind .solver-view .cell.revealed::before {
     overflow-y: auto;
     padding: 22px 22px 14px;
     background: #ffffff;
-    border-radius: 14px;
+    border-radius: 6px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     transform: translate(-50%, -50%) scale(0.96);
     opacity: 0;
@@ -794,7 +794,7 @@ body.solving .dialog:not(.notes-dialog) {
     font-size: 1.05em;
     padding: 10px 12px;
     border: 1.5px solid #a8b4c6;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
 }
 
@@ -814,7 +814,7 @@ body.solving .dialog:not(.notes-dialog) {
     font-weight: 700;
     padding: 9px 16px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: none;
     color: var(--navy);
     cursor: pointer;
@@ -864,7 +864,7 @@ body.solving .dialog:not(.notes-dialog) {
     height: min(38vh, 280px);
     padding: 10px 12px;
     border: 1.5px solid #a8b4c6;
-    border-radius: 8px;
+    border-radius: 6px;
     background: #ffffff;
     color: var(--text);
     font: inherit;
@@ -888,7 +888,7 @@ body.solving .dialog:not(.notes-dialog) {
     max-width: calc(100% - 48px);
     box-sizing: border-box;
     padding: 11px 18px;
-    border-radius: 999px;
+    border-radius: 6px;
     background: #222a36;
     color: #ffffff;
     font-size: 0.92em;
@@ -918,11 +918,11 @@ body.solving .dialog:not(.notes-dialog) {
     background: #bcc2cc;
 }
 
-/* Squarer keys (5px corners) on the same background as the area above the
+/* Squarer keys (6px corners, like every box in the app) on the same background as the area above the
    grid, so the grid and clue bar sit on one surface. Dark mode does the
    same through --d-keyboard (css/theme-dark.css). */
 .solver-view .kb-key {
-    border-radius: 5px;
+    border-radius: 6px;
 }
 
 .solver-view .mobile-keyboard {
@@ -949,8 +949,8 @@ body.solving .dialog:not(.notes-dialog) {
     padding-bottom: 2px;
     background: #ffffff;
     color: #111;
-    /* A touch rounder than the keys (5px) for its larger size. */
-    border-radius: 7px;
+    /* The same 6px corners as the keys. */
+    border-radius: 6px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.06);
     font-family: 'Public Sans', Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     font-weight: 600;
@@ -970,5 +970,14 @@ body.solving .dialog:not(.notes-dialog) {
    and a circle. */
 html .solver-view .solver-topbar .timer-wrap,
 html .solver-view .solver-topbar .icon-btn {
+    border-radius: 6px;
+}
+
+/* The base solver's own boxes (the Assist menu, the pause and result
+   cards and their button, rebus entry) with the app's 6px corners. */
+.solver-view .help-menu,
+.solver-view .solver-overlay-card,
+.solver-view .overlay-start-btn,
+.solver-view .rebus-display {
     border-radius: 6px;
 }

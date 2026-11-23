@@ -171,7 +171,7 @@ html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
     padding: 10px 12px calc(10px + var(--inset-bottom));
     background: #ffffff;
     color: var(--text);
-    border-radius: 18px 18px 0 0;
+    border-radius: 6px 6px 0 0;
     box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.16);
     transform: translateY(100%);
     transition: transform 0.2s ease;
@@ -238,7 +238,7 @@ html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
     font-weight: 700;
     color: #ffffff;
     background: var(--navy);
-    border-radius: 999px;
+    border-radius: 6px;
     padding: 8px 18px;
 }
 
@@ -255,7 +255,7 @@ html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
     min-width: 0;
     padding: 6px 6px;
     border: 1px solid #e1e6ee;
-    border-radius: 10px;
+    border-radius: 6px;
     background: none;
     font: inherit;
     font-size: 0.78em;
@@ -368,7 +368,7 @@ html.cg-highlight .solver-view .mobile-clue-bar .clue-scroll > span {
     box-sizing: border-box;
     padding: 9px 10px;
     border: 1px solid #cfd6e0;
-    border-radius: 10px;
+    border-radius: 6px;
     background: none;
     color: inherit;
     font: inherit;
@@ -427,7 +427,7 @@ html[data-theme="dark"] .gc-hex {
     margin-left: 12px;
     padding: 5px 12px;
     border: 1.5px solid #c9d3e0;
-    border-radius: 999px;
+    border-radius: 6px;
     background: #f4f7fb;
     color: var(--navy);
     font-size: 0.82em;
