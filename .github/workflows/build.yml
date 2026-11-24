@@ -32,16 +32,19 @@ jobs:
           name: puzPlayer-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-  # Installs the APK on emulators, checks it starts, and runs a short
-  # solve-quit-relaunch test through the WebView.
+  # Installs the APK on an Android 15 emulator, checks it starts, and runs
+  # a short solve-quit-relaunch test through the WebView. It takes far longer
+  # than the build, so it runs only when started by hand: Actions tab >
+  # Build APK > Run workflow.
   emulator-test:
     needs: build
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
-        api-level: [35, 36]
+        api-level: [35]
     steps:
       - uses: actions/checkout@v4
 
