@@ -83,6 +83,8 @@
 
 .lib-topbar.searching {
     padding-left: 6px;
+    /* The box ends 10px from the edge, in line with the tiles below. */
+    padding-right: 10px;
 }
 
 .lib-search-field {
