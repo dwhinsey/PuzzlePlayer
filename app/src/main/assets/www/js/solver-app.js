@@ -229,6 +229,12 @@
     // doesn't need, so the grid and the space above it sit a little higher.
     const KEYBOARD_EXTRA = 8;
 
+    // On a phone with more spare room than this around the timer row (as on
+    // a Pixel, whose navigation bar is short), half of what's over it also
+    // goes under the keyboard, so the grid isn't left far below the header.
+    // Up to this much (a Galaxy S24 Ultra has 20px), nothing changes.
+    const ROOM_KEPT = 28;
+
     // Size limits for the notes pop-up (px).
     const NOTES_MAX_HEIGHT = 340;
     const NOTES_MIN_HEIGHT = 180;
@@ -605,7 +611,8 @@
         /**
          * Up to KEYBOARD_EXTRA px of space under the keyboard (css/app.css,
          * --kb-extra), from whatever room is left once the timer row and a
-         * full-width grid have theirs, so it never makes the grid smaller.
+         * full-width grid have theirs, so it never makes the grid smaller;
+         * more on a phone with a lot of room to spare (ROOM_KEPT).
          */
         _setKeyboardExtra() {
             const root = this.root;
@@ -613,7 +620,12 @@
             if (!this.topbarEl || !wrap || !root.clientHeight || !wrap.clientWidth) return;
             const room = root.clientHeight - this._otherRowsHeight() - this.topbarEl.offsetHeight;
             const gridHeight = this._plannedGridHeight(wrap.clientWidth);
-            const extra = Math.max(0, Math.min(KEYBOARD_EXTRA, Math.floor(room - gridHeight)));
+            const spare = Math.floor(room - gridHeight);
+            let extra = Math.max(0, Math.min(KEYBOARD_EXTRA, spare));
+            // Phones only: tablets keep the 8px.
+            if (spare > ROOM_KEPT && window.innerWidth < 600) {
+                extra = KEYBOARD_EXTRA + Math.floor((spare - ROOM_KEPT) / 2);
+            }
             if (root.style.getPropertyValue('--kb-extra') !== extra + 'px') {
                 root.style.setProperty('--kb-extra', extra + 'px');
             }

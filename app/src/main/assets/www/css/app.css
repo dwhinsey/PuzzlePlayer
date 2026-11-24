@@ -595,7 +595,7 @@ html.colorblind .solver-view .cell.revealed::before {
 }
 
 /* The keyboard runs under the navigation bar, keeping its keys above it.
-   --kb-extra (up to 8px, js/solver-app.js) is room the grid doesn't need,
+   --kb-extra (8px, more on tall phones; js/solver-app.js) is room the grid doesn't need,
    moved from above the grid to below the keys. */
 .solver-view .mobile-keyboard {
     padding-bottom: calc(10px + var(--kb-extra, 0px) + var(--inset-bottom));
