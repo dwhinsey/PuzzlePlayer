@@ -1072,3 +1072,59 @@ html[data-theme="dark"] .sheet-radio.on {
 html[data-theme="dark"] .sheet-radio.on::after {
     background: var(--d-accent);
 }
+
+/* The row above the grid: no boxes. The timer and the tools sit on the
+   page, with thin lines between pencil, Notes and Assist; a pressed-in
+   pencil (or Assist with its menu open) gets a tinted rounded square. */
+html .solver-view .solver-topbar .timer-wrap,
+html .solver-view .solver-topbar .icon-btn {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+html .solver-view .solver-topbar .timer-wrap {
+    padding-left: 4px;
+}
+
+html .solver-view .solver-topbar .topbar-right {
+    gap: 0;
+}
+
+html .solver-view .solver-topbar .topbar-right .notes-btn {
+    position: relative;
+    margin-left: 10px;
+    padding: 0 12px;
+}
+
+html .solver-view .solver-topbar .help-wrap {
+    margin-left: 10px;
+}
+
+html .solver-view .solver-topbar .help-wrap .assist-btn {
+    padding: 0 12px;
+}
+
+html .solver-view .solver-topbar .topbar-right .notes-btn::before,
+html .solver-view .solver-topbar .help-wrap::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 22%;
+    bottom: 22%;
+    width: 1.5px;
+    background: rgba(127, 127, 127, 0.45);
+    pointer-events: none;
+}
+
+html .solver-view .solver-topbar .pencil-btn.active,
+html .solver-view .solver-topbar .help-btn.active {
+    background: #cfe8ff;
+    color: #1d3d6e;
+}
+
+html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active,
+html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active {
+    background: var(--d-word);
+    color: #ffffff;
+}
