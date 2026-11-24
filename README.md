@@ -1,7 +1,7 @@
 # puzPlayer
 
 A simple Android app for solving crosswords from local **.puz**, **.ipuz** and **.jpz**
-files.
+files. Features customizable light and dark themes, a puz library interface with QoL features, and accessibility modes
 
 <p>
   <img src="docs/screenshots/library-light.jpg" width="24%" alt="Home page, light mode">
@@ -10,21 +10,17 @@ files.
   <img src="docs/screenshots/solver-dark.jpg" width="24%" alt="Solving a puzzle, dark mode">
 </p>
 
-## How it's built
+## How to install
+
+On an Android device, download and open the `puzPlayer-debug-apk` artifact from the most recent run on the Actions tab. You may be prompted to update some permissions and run a virus scan.
+
+Requires Android 8.0 or newer
+
+## More info
 
 The app is a small native Android shell (plain Java, no libraries) around a
 WebView. The library and solver are HTML/CSS/JS in
 `app/src/main/assets/www/`.
-
-## Building
-
-- **GitHub Actions:** every push builds a debug APK. Open the run under the
-  repository's *Actions* tab and download the `puzPlayer-debug-apk` artifact.
-
-To install the APK on a phone, download it and open it; Android will ask you
-to allow installs from that source the first time.
-
-Requires Android 8.0 or newer.
 
 ## License
 
