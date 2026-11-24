@@ -797,6 +797,11 @@ body.solving .dialog:not(.notes-dialog) {
     opacity: 0.55;
 }
 
+/* About sits apart from the Library settings above it. */
+.sheet-item-about {
+    margin: 10px 0 8px;
+}
+
 /* About (home page Settings) */
 .about-version {
     margin: -6px 0 14px;

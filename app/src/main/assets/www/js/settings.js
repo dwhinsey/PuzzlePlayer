@@ -195,7 +195,7 @@
                     for (const fn of libraryListeners) fn();
                 },
             },
-            { label: 'About', chevron: true, action: openAbout },
+            { label: 'About', chevron: true, className: 'sheet-item-about', action: openAbout },
         ],
         onLibraryChange: (fn) => libraryListeners.push(fn),
         /** Whether a pressed key shows its letter above it (default on). */

@@ -91,7 +91,8 @@
                     // gets a tick.
                     const control = item.control || null;
                     const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') +
-                        (item.checked ? ' checked' : '') + (control ? ' has-' + control : ''));
+                        (item.checked ? ' checked' : '') + (control ? ' has-' + control : '') +
+                        (item.className ? ' ' + item.className : ''));
                     b.type = 'button';
                     b.disabled = !!item.disabled;
                     if (item.indent) b.style.paddingLeft = (20 + item.indent * 18) + 'px';
