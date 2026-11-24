@@ -447,3 +447,9 @@ html.colorblind[data-theme="dark"] .solver-view .cell.revealed::before {
 html[data-theme="dark"] .solver-view .cell-letter {
     transform: translate(0.4px, 0.4px);
 }
+
+/* Switch and radio rows keep plain labels when on (css/app.css). */
+html[data-theme="dark"] .sheet-item.has-switch .sheet-item-label,
+html[data-theme="dark"] .sheet-item.has-radio .sheet-item-label {
+    color: var(--d-text);
+}

@@ -86,14 +86,25 @@
                         list.appendChild(el('div', 'sheet-section', item.section));
                         continue;
                     }
-                    const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') + (item.checked ? ' checked' : ''));
+                    // control: 'switch' (an on/off setting) or 'radio' (one of
+                    // a set) shows that control; otherwise a checked item
+                    // gets a tick.
+                    const control = item.control || null;
+                    const b = el('button', 'sheet-item' + (item.danger ? ' danger' : '') +
+                        (item.checked ? ' checked' : '') + (control ? ' has-' + control : ''));
                     b.type = 'button';
                     b.disabled = !!item.disabled;
                     if (item.indent) b.style.paddingLeft = (20 + item.indent * 18) + 'px';
+                    if (control) {
+                        b.setAttribute('role', control);
+                        b.setAttribute('aria-checked', item.checked ? 'true' : 'false');
+                    }
+                    if (control === 'radio') b.appendChild(el('span', 'sheet-radio' + (item.checked ? ' on' : '')));
                     const label = el('span', 'sheet-item-label', item.label);
                     b.appendChild(label);
                     if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
-                    if (item.checked) b.appendChild(el('span', 'sheet-item-check', '✓'));
+                    if (control === 'switch') b.appendChild(el('span', 'sheet-switch' + (item.checked ? ' on' : '')));
+                    else if (item.checked && !control) b.appendChild(el('span', 'sheet-item-check', '✓'));
                     // A second, smaller button inside the row (e.g. "Customize…").
                     // Unticked, the row keeps an invisible tick's room, so the
                     // button stays put when the tick comes and goes.
@@ -106,7 +117,7 @@
                             item.extra.action();
                         });
                         b.appendChild(x);
-                        if (!item.checked) {
+                        if (!item.checked && !control) {
                             const spacer = el('span', 'sheet-item-check', '✓');
                             spacer.style.visibility = 'hidden';
                             spacer.setAttribute('aria-hidden', 'true');

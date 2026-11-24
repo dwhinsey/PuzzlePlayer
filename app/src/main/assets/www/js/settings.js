@@ -98,16 +98,17 @@
             return [
                 { section: 'Appearance' },
                 {
-                    indent: 1, label: 'Light', checked: t === 'light', action: () => setTheme('light'),
+                    indent: 1, label: 'Light', control: 'radio', checked: t === 'light', action: () => setTheme('light'),
                     extra: customize('light'),
                 },
                 {
-                    indent: 1, label: 'Dark', checked: t === 'dark', action: () => setTheme('dark'),
+                    indent: 1, label: 'Dark', control: 'radio', checked: t === 'dark', action: () => setTheme('dark'),
                     extra: customize('dark'),
                 },
                 {
                     indent: 1,
                     label: 'Match phone setting',
+                    control: 'radio',
                     checked: t === 'system',
                     action: () => setTheme('system'),
                 },
@@ -136,12 +137,14 @@
             {
                 indent: 1,
                 label: 'Hide solved puzzles',
+                control: 'switch',
                 checked: !!settings.hideSolved,
                 action: () => setHideSolved(!settings.hideSolved),
             },
             {
                 indent: 1,
                 label: 'Preview folder contents',
+                control: 'switch',
                 checked: !!settings.previewFolders,
                 action: () => {
                     settings.previewFolders = !settings.previewFolders;
@@ -168,6 +171,7 @@
             {
                 indent: 1,
                 label: 'Skip filled squares',
+                control: 'switch',
                 checked: settings.skipFilled !== false,
                 action: () => {
                     settings.skipFilled = settings.skipFilled === false;
@@ -177,6 +181,7 @@
             {
                 indent: 1,
                 label: 'Auto-advance to next clue',
+                control: 'switch',
                 checked: settings.autoAdvance !== false,
                 action: () => {
                     settings.autoAdvance = settings.autoAdvance === false;
@@ -187,6 +192,7 @@
             {
                 indent: 1,
                 label: 'Error Check Mode',
+                control: 'switch',
                 checked: !!settings.errorCheck,
                 action: () => {
                     settings.errorCheck = !settings.errorCheck;
@@ -197,6 +203,7 @@
             {
                 indent: 1,
                 label: 'Colorblind Mode',
+                control: 'switch',
                 checked: !!settings.colorblind,
                 action: () => {
                     settings.colorblind = !settings.colorblind;
@@ -208,6 +215,7 @@
             {
                 indent: 1,
                 label: 'Show timer',
+                control: 'switch',
                 checked: settings.showTimer !== false,
                 action: () => {
                     settings.showTimer = settings.showTimer === false;
@@ -219,6 +227,7 @@
             {
                 indent: 1,
                 label: 'Letter pop-up on key press',
+                control: 'switch',
                 checked: settings.keyPreview !== false,
                 action: () => {
                     settings.keyPreview = settings.keyPreview === false;
