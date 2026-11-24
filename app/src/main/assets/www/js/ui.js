@@ -243,6 +243,25 @@
             });
         },
 
+        /**
+         * A dialog showing `body` (an element) under a title, with one
+         * button (closeLabel, default "Close").
+         */
+        info({ title, body, closeLabel }) {
+            const dlg = el('div', 'dialog');
+            dlg.setAttribute('role', 'dialog');
+            dlg.appendChild(el('div', 'dialog-title', title));
+            dlg.appendChild(body);
+            const actions = el('div', 'dialog-actions');
+            const closeBtn = el('button', 'dialog-btn primary', closeLabel || 'Close');
+            closeBtn.type = 'button';
+            actions.appendChild(closeBtn);
+            dlg.appendChild(actions);
+            let entry;
+            closeBtn.addEventListener('click', () => close(entry));
+            entry = open(dlg, () => close(entry));
+        },
+
         /** A message with a single OK button. */
         alert({ title, message }) {
             return UI.confirm({ title, message, okLabel: 'OK', alertOnly: true });

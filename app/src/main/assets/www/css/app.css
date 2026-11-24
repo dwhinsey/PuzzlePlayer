@@ -789,6 +789,27 @@ body.solving .dialog:not(.notes-dialog) {
     overflow-wrap: anywhere;
 }
 
+/* About (home page Settings) */
+.about-version {
+    margin: -6px 0 14px;
+    color: var(--muted);
+}
+
+.about-text {
+    margin: 0 0 10px;
+    line-height: 1.45;
+}
+
+.about-links {
+    margin-top: 14px;
+}
+
+.about-link {
+    color: var(--navy-light);
+    font-weight: 600;
+    text-decoration: none;
+}
+
 .dialog-input {
     width: 100%;
     box-sizing: border-box;

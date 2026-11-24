@@ -79,6 +79,36 @@
         for (const fn of libraryListeners) fn();
     }
 
+    // ----- About (home page Settings) -----
+
+    const LINKS = {
+        site: 'https://hinseypuzzles.com',
+        privacy: 'https://github.com/dwhinsey/PuzzlePlayer/blob/ccr-f3737f77-qcvs9g/PRIVACY.md',
+        source: 'https://github.com/dwhinsey/PuzzlePlayer',
+    };
+
+    /** Links open in the phone's browser (MainActivity sends them there). */
+    function link(text, href) {
+        const a = UI.el('a', 'about-link', text);
+        a.href = href;
+        a.rel = 'noopener';
+        return a;
+    }
+
+    function openAbout() {
+        const version = (bridge && bridge.getVersion && bridge.getVersion()) || '1.0';
+        const body = UI.el('div', 'about');
+        body.appendChild(UI.el('p', 'about-version', 'Version ' + version));
+        const credit = UI.el('p', 'about-text', 'Created by Derek Hinsey. See more from him at ');
+        credit.appendChild(link('hinseypuzzles.com', LINKS.site));
+        body.appendChild(credit);
+        body.appendChild(UI.el('p', 'about-text', 'Free and open source under the MIT License.'));
+        const links = UI.el('p', 'about-text about-links');
+        links.append(link('Privacy Policy', LINKS.privacy), ' \u00b7 ', link('Source code on GitHub', LINKS.source));
+        body.appendChild(links);
+        UI.info({ title: 'puzPlayer', body });
+    }
+
     const libraryListeners = [];
     const solverListeners = [];
 
@@ -165,6 +195,7 @@
                     for (const fn of libraryListeners) fn();
                 },
             },
+            { label: 'About', action: openAbout },
         ],
         onLibraryChange: (fn) => libraryListeners.push(fn),
         /** Whether a pressed key shows its letter above it (default on). */

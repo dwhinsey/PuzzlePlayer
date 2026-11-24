@@ -157,6 +157,16 @@ public class PuzzleBridge {
         return activity.insetsJson();
     }
 
+    /** The app's version name (build.gradle.kts), for About. */
+    @JavascriptInterface
+    public String getVersion() {
+        try {
+            return activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     /** Whether the phone is using its dark theme. */
     @JavascriptInterface
     public boolean isNightMode() {

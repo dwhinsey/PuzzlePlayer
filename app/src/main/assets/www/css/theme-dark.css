@@ -453,3 +453,8 @@ html[data-theme="dark"] .sheet-item.has-switch .sheet-item-label,
 html[data-theme="dark"] .sheet-item.has-radio .sheet-item-label {
     color: var(--d-text);
 }
+
+/* About's links (css/app.css). */
+html[data-theme="dark"] .about-link {
+    color: #9dbcf5;
+}
