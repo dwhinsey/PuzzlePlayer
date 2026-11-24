@@ -4,13 +4,13 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- A piece of a crossword that carries on past the icon's edge, whatever the launcher's mask (19.5dp squares) -->
+    <!-- A piece of a crossword that carries on past the icon's edge, whatever the launcher's mask (19.5dp squares), in the app's light-mode colours -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M0,0H108V108H0Z" />
     <!-- Black squares -->
     <path
-        android:fillColor="#222222"
+        android:fillColor="#2A2A2A"
         android:pathData="M24.75,24.75H44.25V44.25H24.75Z M44.25,44.25H63.75V63.75H44.25Z M63.75,63.75H83.25V83.25H63.75Z" />
     <!-- Highlighted word -->
     <path
@@ -23,5 +23,5 @@
     <!-- Grid lines, the app's grey -->
     <path
         android:fillColor="#797983"
-        android:pathData="M4.925,0H5.575V108H4.925Z M24.425,0H25.075V108H24.425Z M43.925,0H44.575V108H43.925Z M63.425,0H64.075V108H63.425Z M82.925,0H83.575V108H82.925Z M102.425,0H103.075V108H102.425Z M0,4.925H108V5.575H0Z M0,24.425H108V25.075H0Z M0,43.925H108V44.575H0Z M0,63.425H108V64.075H0Z M0,82.925H108V83.575H0Z M0,102.425H108V103.075H0Z" />
+        android:pathData="M4.995,0H5.505V108H4.995Z M24.495,0H25.005V108H24.495Z M43.995,0H44.505V108H43.995Z M63.495,0H64.005V108H63.495Z M82.995,0H83.505V108H82.995Z M102.495,0H103.005V108H102.495Z M0,4.995H108V5.505H0Z M0,24.495H108V25.005H0Z M0,43.995H108V44.505H0Z M0,63.495H108V64.005H0Z M0,82.995H108V83.505H0Z M0,102.495H108V103.005H0Z" />
 </vector>
