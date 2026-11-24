@@ -225,6 +225,10 @@
     // before it switches to its compact size.
     const TOPBAR_MIN_ROOM = 24;
 
+    // Extra space (px) under the keyboard, taken only from room the grid
+    // doesn't need, so the grid and the space above it sit a little higher.
+    const KEYBOARD_EXTRA = 8;
+
     // Size limits for the notes pop-up (px).
     const NOTES_MAX_HEIGHT = 340;
     const NOTES_MIN_HEIGHT = 180;
@@ -335,6 +339,7 @@
         _layout() {
             if (this.destroyed) return;
             this._chooseTopbarSize();
+            this._setKeyboardExtra();
             super._layout();
             this._centreTopbar();
             this._centreOnGrid();
@@ -576,18 +581,42 @@
             if (!topbar || !wrap || !root.clientHeight || !wrap.clientWidth) return;
             if (!root.classList.contains('compact-top')) this.fullTopbarHeight = topbar.offsetHeight;
             if (!this.fullTopbarHeight) return;
-            // Height of the other rows: clue bar and keyboard (whose padding
-            // includes the navigation bar).
+            const room = root.clientHeight - this._otherRowsHeight() - this.fullTopbarHeight;
+            const gridHeight = wrap.clientWidth / this.puzzle.width * this.puzzle.height;
+            root.classList.toggle('compact-top', room - gridHeight < TOPBAR_MIN_ROOM);
+        }
+
+        /**
+         * Height of the rows other than the timer row and the grid: the clue
+         * bar and the keyboard (whose padding includes the navigation bar),
+         * leaving out the keyboard's extra space (_setKeyboardExtra).
+         */
+        _otherRowsHeight() {
             let others = 0;
-            for (const child of root.children) {
-                if (child === topbar || child.contains(wrap)) continue;
+            for (const child of this.root.children) {
+                if (child === this.topbarEl || child.contains(this.gridWrapEl)) continue;
                 const cs = getComputedStyle(child);
                 if (cs.display === 'none' || cs.position === 'absolute' || cs.position === 'fixed') continue;
                 others += child.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
             }
-            const room = root.clientHeight - others - this.fullTopbarHeight;
+            return others - (parseFloat(this.root.style.getPropertyValue('--kb-extra')) || 0);
+        }
+
+        /**
+         * Up to KEYBOARD_EXTRA px of space under the keyboard (css/app.css,
+         * --kb-extra), from whatever room is left once the timer row and a
+         * full-width grid have theirs, so it never makes the grid smaller.
+         */
+        _setKeyboardExtra() {
+            const root = this.root;
+            const wrap = this.gridWrapEl;
+            if (!this.topbarEl || !wrap || !root.clientHeight || !wrap.clientWidth) return;
+            const room = root.clientHeight - this._otherRowsHeight() - this.topbarEl.offsetHeight;
             const gridHeight = wrap.clientWidth / this.puzzle.width * this.puzzle.height;
-            root.classList.toggle('compact-top', room - gridHeight < TOPBAR_MIN_ROOM);
+            const extra = Math.max(0, Math.min(KEYBOARD_EXTRA, Math.floor(room - gridHeight)));
+            if (root.style.getPropertyValue('--kb-extra') !== extra + 'px') {
+                root.style.setProperty('--kb-extra', extra + 'px');
+            }
         }
 
         /**
