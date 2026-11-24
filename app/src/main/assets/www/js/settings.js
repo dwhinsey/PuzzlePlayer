@@ -129,6 +129,8 @@
         isDark,
         open,
         hideSolved: () => !!settings.hideSolved,
+        /** In-progress puzzles go first, most recently opened on top (default on). */
+        progressFirst: () => settings.progressFirst !== false,
         /** Folder rows show how many puzzles (and solved) they hold (default off). */
         previewFolders: () => !!settings.previewFolders,
         /** Items for the home page's Settings sheet (not shown in a puzzle). */
@@ -140,6 +142,17 @@
                 control: 'switch',
                 checked: !!settings.hideSolved,
                 action: () => setHideSolved(!settings.hideSolved),
+            },
+            {
+                indent: 1,
+                label: 'Keep In Progress puzzles on top',
+                control: 'switch',
+                checked: settings.progressFirst !== false,
+                action: () => {
+                    settings.progressFirst = settings.progressFirst === false;
+                    Store.writeJSON(FILE, settings);
+                    for (const fn of libraryListeners) fn();
+                },
             },
             {
                 indent: 1,

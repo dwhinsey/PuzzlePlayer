@@ -374,17 +374,25 @@
 
         // Puzzles in three groups: in progress first, then new, then (under
         // their own heading) solved; the chosen sort applies within each.
-        // Solved ones can be hidden from Settings.
+        // Solved ones can be hidden from Settings. With "Keep In Progress
+        // puzzles on top" off, in-progress and new puzzles are one group in
+        // the chosen sort.
         const hideSolved = Settings.hideSolved();
+        const progressFirst = Settings.progressFirst();
         const addPuzzles = (puzzles, showFolder, heading) => {
             const sorted = sortPuzzles(puzzles);
-            // In progress: the most recently opened first (puzzles opened
-            // before this was recorded follow, in the chosen sort order).
-            const inProgress = sorted.filter((p) => p.status === 'progress');
-            const byOpened = inProgress.map((p, i) => [p, i]).sort((a, b) =>
-                ((b[0].opened || 0) - (a[0].opened || 0)) || (a[1] - b[1])).map(([p]) => p);
-            const active = byOpened
-                .concat(sorted.filter((p) => p.status !== 'progress' && p.status !== 'done'));
+            let active;
+            if (progressFirst) {
+                // In progress: the most recently opened first (puzzles opened
+                // before this was recorded follow, in the chosen sort order).
+                const inProgress = sorted.filter((p) => p.status === 'progress');
+                const byOpened = inProgress.map((p, i) => [p, i]).sort((a, b) =>
+                    ((b[0].opened || 0) - (a[0].opened || 0)) || (a[1] - b[1])).map(([p]) => p);
+                active = byOpened
+                    .concat(sorted.filter((p) => p.status !== 'progress' && p.status !== 'done'));
+            } else {
+                active = sorted.filter((p) => p.status !== 'done');
+            }
             const solved = hideSolved ? [] : sorted.filter((p) => p.status === 'done');
             if (active.length && heading) frag.appendChild(sectionLabel(heading(active.length)));
             for (const p of active) frag.appendChild(puzzleRow(p, showFolder));
