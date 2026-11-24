@@ -1205,3 +1205,26 @@ html .solver-host.compact-top .solver-topbar .pencil-btn {
         font-size: 1.45em;
     }
 }
+
+/* The pause icon's bars nearly as tall as the timer digits beside it. */
+html .solver-view .solver-topbar .timer-pause-btn svg {
+    width: 19px;
+    height: 19px;
+}
+
+html .solver-host.compact-top .solver-topbar .timer-pause-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+@media (min-width: 701px) {
+    html .solver-view .solver-topbar .timer-pause-btn svg {
+        width: 25px;
+        height: 25px;
+    }
+
+    html .solver-host.compact-top .solver-topbar .timer-pause-btn svg {
+        width: 21px;
+        height: 21px;
+    }
+}
