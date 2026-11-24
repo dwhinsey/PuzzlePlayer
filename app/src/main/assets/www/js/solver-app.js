@@ -661,10 +661,15 @@
             // widen its column (and push the grid off the screen).
             this.gridEl.style.gridTemplateColumns = 'repeat(' + this.puzzle.width + ', minmax(0, 1fr))';
             this.gridEl.style.gridTemplateRows = 'repeat(' + this.puzzle.height + ', minmax(0, 1fr))';
-            // Letter size by grid size (see .cell-letter in app.css): the
-            // smaller the squares, the more of each square the letter fills.
+            // Letter size and weight by grid size (see .cell-letter in
+            // app.css), changing a little with each square: 21 wide or more
+            // (Sunday) 66% in weight 400; each square fewer adds 12.5 to the
+            // weight and takes 0.5% off the size (15 wide: 475 at 63%; 9
+            // wide: 550 at 60%), down to 5 wide (600 at 58%).
             const span = Math.max(this.puzzle.width, this.puzzle.height);
-            this.gridEl.style.setProperty('--letter-scale', span <= 11 ? '0.62' : span <= 17 ? '0.64' : '0.66');
+            const fewer = Math.min(16, Math.max(0, 21 - span));
+            this.gridEl.style.setProperty('--letter-scale', (0.66 - fewer * 0.005).toFixed(3));
+            this.gridEl.style.setProperty('--letter-weight', String(400 + fewer * 12.5));
             this._watchOverlays();
             this._setUpClueScroll();
             // "?" becomes "Assist"; Clear Grid and Reset Puzzle move to the
