@@ -1289,3 +1289,10 @@ html .solver-host.compact-top .solver-topbar .tool-icon svg {
     width: 1.05em;
     height: 1.05em;
 }
+
+/* Light mode: the timer (and Info in its place) in medium weight, to match
+   the outline icons beside it; dark mode keeps bold with its filled ones. */
+html:not([data-theme="dark"]) .solver-view .solver-topbar .timer-display,
+html:not([data-theme="dark"]) .solver-view .solver-topbar .icon-btn.info-btn {
+    font-weight: 500;
+}
