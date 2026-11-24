@@ -84,7 +84,7 @@
     const LINKS = {
         site: 'https://hinseypuzzles.com',
         privacy: 'https://hinseypuzzles.com/puzplayer/privacy.html',
-        source: 'https://github.com/dwhinsey/PuzzlePlayer',
+        source: 'https://github.com/dwhinsey/puzPlayer',
     };
 
     /** Links open in the phone's browser (MainActivity sends them there). */
