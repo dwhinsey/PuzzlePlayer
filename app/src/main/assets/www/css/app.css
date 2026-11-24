@@ -1303,4 +1303,14 @@ html:not([data-theme="dark"]) .solver-view .solver-topbar .icon-btn.info-btn {
 .solver-view .cell-letter {
     font-size: calc(var(--cell-size, 24px) * 0.66);
     font-weight: 400;
+    /* A line box no taller than the letter (centring is unchanged), so a
+       big letter can never make its square, and so the grid, grow. */
+    line-height: 1;
+}
+
+/* Squares never grow to fit their contents: the grid stays the width of
+   the screen whatever the letters' size. */
+.solver-view .cell {
+    min-width: 0;
+    min-height: 0;
 }

@@ -657,6 +657,10 @@
 
         _render() {
             super._render();
+            // Tracks with no content minimum, so nothing in a square can
+            // widen its column (and push the grid off the screen).
+            this.gridEl.style.gridTemplateColumns = 'repeat(' + this.puzzle.width + ', minmax(0, 1fr))';
+            this.gridEl.style.gridTemplateRows = 'repeat(' + this.puzzle.height + ', minmax(0, 1fr))';
             this._watchOverlays();
             this._setUpClueScroll();
             // "?" becomes "Assist"; Clear Grid and Reset Puzzle move to the
