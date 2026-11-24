@@ -1128,3 +1128,30 @@ html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active {
     background: var(--d-word);
     color: #ffffff;
 }
+
+/* The pencil's square is a little smaller than the button (which keeps its
+   full size to tap): a tint 3px in from each edge, behind the icon. */
+html .solver-view .solver-topbar .pencil-btn {
+    position: relative;
+}
+
+html .solver-view .solver-topbar .pencil-btn.active {
+    background: transparent;
+}
+
+html .solver-view .solver-topbar .pencil-btn.active::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    z-index: -1;
+    border-radius: 5px;
+    background: #cfe8ff;
+}
+
+html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active {
+    background: transparent;
+}
+
+html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active::before {
+    background: var(--d-word);
+}
