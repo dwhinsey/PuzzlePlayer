@@ -2,10 +2,6 @@
 
 _Effective November 24, 2026_
 
-puzPlayer is a crossword app for Android. This policy explains what happens to your information when you use it.
-
-## The short version
-
 puzPlayer does not collect, store on any server, share, or sell any personal information. Everything stays on your device.
 
 ## What the app stores, and where
