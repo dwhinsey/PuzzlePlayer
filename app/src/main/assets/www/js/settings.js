@@ -128,6 +128,8 @@
         isDark,
         open,
         hideSolved: () => !!settings.hideSolved,
+        /** Folder rows show how many puzzles (and solved) they hold (default off). */
+        previewFolders: () => !!settings.previewFolders,
         /** Items for the home page's Settings sheet (not shown in a puzzle). */
         libraryItems: () => [
             { section: 'Library' },
@@ -136,6 +138,16 @@
                 label: 'Hide solved puzzles',
                 checked: !!settings.hideSolved,
                 action: () => setHideSolved(!settings.hideSolved),
+            },
+            {
+                indent: 1,
+                label: 'Preview folder contents',
+                checked: !!settings.previewFolders,
+                action: () => {
+                    settings.previewFolders = !settings.previewFolders;
+                    Store.writeJSON(FILE, settings);
+                    for (const fn of libraryListeners) fn();
+                },
             },
         ],
         onLibraryChange: (fn) => libraryListeners.push(fn),

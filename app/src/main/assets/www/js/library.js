@@ -292,6 +292,17 @@
     }
 
     function folderRow(f) {
+        // With "Preview folder contents" on (home page Settings), the counts.
+        let meta = '';
+        if (Settings.previewFolders()) {
+            const stats = folderStats(f.id);
+            const subs = lib.folders.filter((x) => x.parentId === f.id).length;
+            const bits = [];
+            if (subs) bits.push(plural(subs, 'folder'));
+            bits.push(plural(stats.total, 'puzzle'));
+            if (stats.total) bits.push(stats.done + ' solved');
+            meta = '<span class="lib-row-meta">' + Parsers.escapeHtml(bits.join(' · ')) + '</span>';
+        }
         const row = document.createElement('div');
         row.className = 'lib-row lib-folder';
         row.dataset.folder = f.id;
@@ -301,6 +312,7 @@
             '<span class="lib-status lib-folder-icon">' + ICONS.folder + '</span>' +
             '<span class="lib-row-body">' +
             '<span class="lib-row-title">' + Parsers.escapeHtml(f.name) + '</span>' +
+            meta +
             '</span>' +
             '<span class="lib-row-side lib-chevron">' + ICONS.chevron + '</span>';
         return row;
