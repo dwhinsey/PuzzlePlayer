@@ -217,7 +217,7 @@
         const { el: p, theme } = panel;
         panel.key = null;
         p.replaceChildren();
-        p.appendChild(head('Customize ' + theme + ' colors', null, null, 'Reset', () => {
+        p.appendChild(head('Customize ' + theme + ' colors', null, backToSettings, 'Reset', () => {
             UI.confirm({
                 title: 'Reset ' + theme + ' colors?',
                 message: 'The grid goes back to the ' + theme + ' theme’s own colors.',
@@ -344,6 +344,13 @@
         sync();
     }
 
+    /** Closes the panel and opens the Settings sheet it came from. */
+    function backToSettings() {
+        close();
+        const gear = document.querySelector('.solver-view .settings-btn');
+        if (gear) gear.click();
+    }
+
     /** Opens the Customize panel for 'light' or 'dark', over the keyboard. */
     function open(theme) {
         close();
@@ -379,11 +386,11 @@
         isOpen: () => !!panel,
         open,
         close,
-        /** Back: from a colour to the list, then closes. True if handled. */
+        /** Back: from a colour to the list, then back to Settings. True if handled. */
         handleBack() {
             if (!panel) return false;
             if (panel.key) renderList();
-            else close();
+            else backToSettings();
             return true;
         },
     };
