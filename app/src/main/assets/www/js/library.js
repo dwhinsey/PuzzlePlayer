@@ -499,11 +499,12 @@
             items: [
                 {
                     label: stats.total ? 'Delete folder, keep puzzles' : 'Delete folder',
-                    sub: stats.total ? 'Its contents move to ' + parentName : null,
+                    sub: stats.total ? 'Its puzzles move to ' + parentName : null,
+                    // The folder and every folder inside it go; all their
+                    // puzzles move to the level the folder was on.
                     action: () => {
-                        for (const x of lib.folders) if (x.parentId === f.id) x.parentId = f.parentId || null;
-                        for (const p of lib.puzzles) if (p.folderId === f.id) p.folderId = f.parentId || null;
-                        lib.folders = lib.folders.filter((x) => x.id !== f.id);
+                        for (const p of lib.puzzles) if (p.folderId && ids.has(p.folderId)) p.folderId = f.parentId || null;
+                        lib.folders = lib.folders.filter((x) => !ids.has(x.id));
                         save();
                         render();
                     },
