@@ -582,7 +582,7 @@
             if (!root.classList.contains('compact-top')) this.fullTopbarHeight = topbar.offsetHeight;
             if (!this.fullTopbarHeight) return;
             const room = root.clientHeight - this._otherRowsHeight() - this.fullTopbarHeight;
-            const gridHeight = wrap.clientWidth / this.puzzle.width * this.puzzle.height;
+            const gridHeight = this._plannedGridHeight(wrap.clientWidth);
             root.classList.toggle('compact-top', room - gridHeight < TOPBAR_MIN_ROOM);
         }
 
@@ -612,7 +612,7 @@
             const wrap = this.gridWrapEl;
             if (!this.topbarEl || !wrap || !root.clientHeight || !wrap.clientWidth) return;
             const room = root.clientHeight - this._otherRowsHeight() - this.topbarEl.offsetHeight;
-            const gridHeight = wrap.clientWidth / this.puzzle.width * this.puzzle.height;
+            const gridHeight = this._plannedGridHeight(wrap.clientWidth);
             const extra = Math.max(0, Math.min(KEYBOARD_EXTRA, Math.floor(room - gridHeight)));
             if (root.style.getPropertyValue('--kb-extra') !== extra + 'px') {
                 root.style.setProperty('--kb-extra', extra + 'px');
@@ -664,23 +664,71 @@
         }
 
         /**
-         * The grid sits at the bottom of the space it's given, leaving a band
-         * between the header and the grid. Move the timer row down to the
-         * middle of that band. A transform, so the solver's own measurements
-         * of the layout are untouched.
-         *
-         * A grid wider than it is tall (11x9, say) leaves a much bigger band:
-         * it's centred in its space instead, the spare height split above and
-         * below it, and the timer row goes in the middle of the part above.
-         * Square and tall grids (15x15, 21x21, 14x15) keep the layout above.
+         * Held upright, the screen is laid out as for a square puzzle whatever
+         * the puzzle's shape, so the timer row keeps its size and place:
+         * the height a square grid as wide as the screen would take.
+         * Sideways, the grid's own shape.
+         */
+        _plannedGridHeight(width) {
+            if (window.innerHeight >= window.innerWidth) return width;
+            return width / this.puzzle.width * this.puzzle.height;
+        }
+
+        /**
+         * Held upright: the grid goes in the square a square puzzle would
+         * fill (the screen's width, or less on a short screen), as big as
+         * fits and centred in it, so a wide or tall puzzle doesn't move or
+         * resize anything else on the screen. Sideways: the base solver's
+         * fit.
+         */
+        _fitGridToContainer() {
+            const grid = this.gridEl;
+            if (window.innerHeight < window.innerWidth) {
+                this.squareSide = 0;
+                grid.style.marginBottom = '';
+                super._fitGridToContainer();
+                return;
+            }
+            const availW = this.gridWrapEl.clientWidth;
+            const availH = this._availableGridHeight();
+            if (availW <= 0 || availH <= 0) return;
+            const { width, height } = this.puzzle;
+            const span = Math.max(width, height);
+            // The square: the screen's width, or as tall as fits on a short
+            // screen. The same for every puzzle shape.
+            const side = Math.min(availW, Math.floor(availH));
+            const cell = side / span;
+            if (cell <= 0) return;
+            this.squareSide = side;
+            if (width >= height && side === availW) {
+                // As wide as the screen: CSS gives the exact width.
+                grid.style.width = '100%';
+                grid.style.height = 'auto';
+            } else {
+                // Sizes in px are inside the grid's border.
+                const cs = getComputedStyle(grid);
+                const bx = (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
+                const by = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+                grid.style.width = cell * width - bx + 'px';
+                grid.style.height = cell * height - by + 'px';
+            }
+            grid.style.setProperty('--cell-size', cell + 'px');
+            // The square sits at the bottom of the space; the grid is centred
+            // in it (and across by the wrapper).
+            grid.style.marginBottom = (side - cell * height) / 2 + 'px';
+        }
+
+        /**
+         * The square the grid is placed in sits at the bottom of the space
+         * it's given, leaving a band between the header and it. Move the
+         * timer row down to the middle of that band. A transform, so the
+         * solver's own measurements of the layout are untouched.
          */
         _centreTopbar() {
             if (!this.topbarEl || !this.gridEl || !this.gridWrapEl) return;
-            const wide = this.puzzle.width > this.puzzle.height;
-            this.gridWrapEl.style.alignItems = wide ? 'center' : '';
-            const gridTop = this.gridEl.getBoundingClientRect().top;
-            const wrapTop = this.gridWrapEl.getBoundingClientRect().top;
-            const spare = Math.max(0, Math.round(gridTop - wrapTop));
+            const wrap = this.gridWrapEl.getBoundingClientRect();
+            const top = this.squareSide ? wrap.bottom - this.squareSide : this.gridEl.getBoundingClientRect().top;
+            const spare = Math.max(0, Math.round(top - wrap.top));
             this.topbarEl.style.transform = spare ? 'translateY(' + Math.round(spare / 2) + 'px)' : '';
         }
 
