@@ -510,7 +510,6 @@
                 },
                 stats.total ? {
                     label: 'Delete folder and its ' + plural(stats.total, 'puzzle'),
-                    sub: 'Your progress in them is lost too',
                     danger: true,
                     action: async () => {
                         const ok = await UI.confirm({
