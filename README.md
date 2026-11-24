@@ -1,6 +1,6 @@
 # puzPlayer
 
-A modern-looking, snappy-feeling Android app for solving crosswords from local **.puz**, **.ipuz** and **.jpz**
+A simple Android app for solving crosswords from local **.puz**, **.ipuz** and **.jpz**
 files.
 
 <p>
