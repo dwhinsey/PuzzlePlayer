@@ -316,12 +316,8 @@
             set(fromHsl(hsl[0], hsl[1], hsl[2]), true);
         };
         hue.addEventListener('input', () => {
-            // A grey has no hue to turn; give it some colour first (the
-            // saturation slider moves to show it; lightness never does).
-            if (hsl[1] < 0.08) {
-                hsl[1] = 0.55;
-                saturation.value = 55;
-            }
+            // Only the hue changes; the other sliders never move with it
+            // (on a grey, raise saturation to see the hue).
             hsl[0] = Number(hue.value);
             fromSliders();
         });
