@@ -83,7 +83,7 @@
 
     const LINKS = {
         site: 'https://hinseypuzzles.com',
-        privacy: 'https://github.com/dwhinsey/PuzzlePlayer/blob/ccr-f3737f77-qcvs9g/PRIVACY.md',
+        privacy: 'https://hinseypuzzles.com/puzplayer/privacy.html',
         source: 'https://github.com/dwhinsey/PuzzlePlayer',
     };
 
