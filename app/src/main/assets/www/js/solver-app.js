@@ -729,21 +729,14 @@
         clearGrid() {
             UI.confirm({
                 title: 'Clear the grid?',
-                message: Settings.showTimer() ? 'All letters are removed. The timer keeps running.' : 'All letters are removed.',
                 okLabel: 'Clear',
                 danger: true,
             }).then((ok) => { if (ok && !this.destroyed) this._confirmed(super.clearGrid); });
         }
 
         resetPuzzle() {
-            const hasNotes = !!this._readNotes().trim();
             UI.confirm({
                 title: 'Reset the puzzle?',
-                message: Settings.showTimer()
-                    ? (hasNotes
-                        ? 'All letters are removed, the timer goes back to zero, and your notes are deleted.'
-                        : 'All letters are removed and the timer goes back to zero.')
-                    : (hasNotes ? 'All letters and your notes are removed.' : 'All letters are removed.'),
                 okLabel: 'Reset',
                 danger: true,
             }).then((ok) => {

@@ -220,7 +220,6 @@
         p.appendChild(head('Customize ' + theme + ' colors', null, backToSettings, 'Reset', () => {
             UI.confirm({
                 title: 'Reset ' + theme + ' colors?',
-                message: 'The grid goes back to the ' + theme + ' theme’s own colors.',
                 okLabel: 'Reset',
                 danger: true,
             }).then((ok) => {
