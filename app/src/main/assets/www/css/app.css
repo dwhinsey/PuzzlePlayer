@@ -789,6 +789,14 @@ body.solving .dialog:not(.notes-dialog) {
     overflow-wrap: anywhere;
 }
 
+/* The › on a Settings row that opens something else (About). */
+.sheet-item-chevron {
+    display: flex;
+    flex: none;
+    margin-left: auto;
+    opacity: 0.55;
+}
+
 /* About (home page Settings) */
 .about-version {
     margin: -6px 0 14px;

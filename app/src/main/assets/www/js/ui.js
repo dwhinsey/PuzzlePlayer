@@ -104,6 +104,13 @@
                     b.appendChild(label);
                     if (item.sub) b.appendChild(el('span', 'sheet-item-sub', item.sub));
                     if (control === 'switch') b.appendChild(el('span', 'sheet-switch' + (item.checked ? ' on' : '')));
+                    // A row that opens something else (e.g. About) ends in a ›.
+                    if (item.chevron) {
+                        const c = el('span', 'sheet-item-chevron');
+                        c.setAttribute('aria-hidden', 'true');
+                        c.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 5.5l6.5 6.5L9 18.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        b.appendChild(c);
+                    }
                     else if (item.checked && !control) b.appendChild(el('span', 'sheet-item-check', '✓'));
                     // A second, smaller button inside the row (e.g. "Customize…").
                     // Unticked, the row keeps an invisible tick's room, so the
