@@ -41,4 +41,4 @@ If this policy changes, the new version will be posted at this address with a ne
 
 ## Contact
 
-If you have questions about this policy, open an issue at https://github.com/dwhinsey/PuzzlePlayer/issues.
+If you have questions about this policy, email derek@hinseypuzzles.com.
