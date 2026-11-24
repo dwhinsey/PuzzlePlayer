@@ -1168,17 +1168,23 @@ html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active::before {
     background: var(--d-word);
 }
 
-/* Notes, Assist and Info in the same size and weight as the timer digits,
-   at every size the row takes; the pencil icon a little larger than the
+/* Notes, Assist, Info and the timer digits in one size and weight
+   (semibold), at every size the row takes; the pencil icon a little larger than the
    digits are tall. */
 html .solver-view .solver-topbar .icon-btn.notes-btn,
 html .solver-view .solver-topbar .icon-btn.assist-btn {
-    font-size: 1.3em;
-    font-weight: 700;
+    font-size: 1.2em;
+    font-weight: 600;
 }
 
-html .solver-view .solver-topbar .pencil-btn {
-    font-size: 1.3em;
+html .solver-view .solver-topbar .pencil-btn,
+html .solver-view .solver-topbar .timer-display {
+    font-size: 1.2em;
+}
+
+/* Semibold throughout the row: a little lighter than bold. */
+html .solver-view .solver-topbar .timer-display {
+    font-weight: 600;
 }
 
 html .solver-view .solver-topbar .pencil-btn svg {
@@ -1188,43 +1194,46 @@ html .solver-view .solver-topbar .pencil-btn svg {
 
 html .solver-host.compact-top .solver-topbar .icon-btn.notes-btn,
 html .solver-host.compact-top .solver-topbar .icon-btn.assist-btn,
-html .solver-host.compact-top .solver-topbar .pencil-btn {
-    font-size: 1.15em;
+html .solver-host.compact-top .solver-topbar .pencil-btn,
+html .solver-host.compact-top .solver-topbar .timer-display {
+    font-size: 1.06em;
 }
 
 @media (min-width: 701px) {
     html .solver-view .solver-topbar .icon-btn.notes-btn,
     html .solver-view .solver-topbar .icon-btn.assist-btn,
-    html .solver-view .solver-topbar .pencil-btn {
-        font-size: 1.7em;
+    html .solver-view .solver-topbar .pencil-btn,
+    html .solver-view .solver-topbar .timer-display {
+        font-size: 1.57em;
     }
 
     html .solver-host.compact-top .solver-topbar .icon-btn.notes-btn,
     html .solver-host.compact-top .solver-topbar .icon-btn.assist-btn,
-    html .solver-host.compact-top .solver-topbar .pencil-btn {
-        font-size: 1.45em;
+    html .solver-host.compact-top .solver-topbar .pencil-btn,
+    html .solver-host.compact-top .solver-topbar .timer-display {
+        font-size: 1.34em;
     }
 }
 
 /* The pause icon's bars nearly as tall as the timer digits beside it. */
 html .solver-view .solver-topbar .timer-pause-btn svg {
-    width: 19px;
-    height: 19px;
+    width: 17.5px;
+    height: 17.5px;
 }
 
 html .solver-host.compact-top .solver-topbar .timer-pause-btn svg {
-    width: 17px;
-    height: 17px;
+    width: 15.5px;
+    height: 15.5px;
 }
 
 @media (min-width: 701px) {
     html .solver-view .solver-topbar .timer-pause-btn svg {
-        width: 25px;
-        height: 25px;
+        width: 23px;
+        height: 23px;
     }
 
     html .solver-host.compact-top .solver-topbar .timer-pause-btn svg {
-        width: 21px;
-        height: 21px;
+        width: 19.5px;
+        height: 19.5px;
     }
 }

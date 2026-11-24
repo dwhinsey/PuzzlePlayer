@@ -238,6 +238,13 @@
             g.every((row) => Array.isArray(row) && row.length === width && row.every(test));
     }
 
+    const PAUSE_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
+        '<rect x="5.3" y="4" width="3.2" height="16" rx="1.07" fill="currentColor"/>' +
+        '<rect x="15.5" y="4" width="3.2" height="16" rx="1.07" fill="currentColor"/></svg>';
+    const PENCIL_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' +
+        '<path d="M3 21l1.5-5.5L16 4l4 4-11.5 11.5L3 21z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/>' +
+        '<line x1="14" y1="6" x2="18" y2="10" stroke="currentColor" stroke-width="2.1"/></svg>';
+
     const BACKSPACE_ICON = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">' +
         '<path d="M8 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-7-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>' +
         '<path d="M10.5 9l6 6M16.5 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
@@ -674,6 +681,12 @@
             });
             const timerWrap = this.topbarEl.querySelector('.timer-wrap');
             this.topbarEl.insertBefore(infoBtn, timerWrap);
+            // Pause and pencil icons with lines about as thick as the
+            // semibold text beside them: slim rounded bars, a firmer outline.
+            const pauseBtn = timerWrap && timerWrap.querySelector('.timer-pause-btn');
+            if (pauseBtn) pauseBtn.innerHTML = PAUSE_ICON;
+            const pencilBtn = this.topbarEl.querySelector('.pencil-btn');
+            if (pencilBtn) pencilBtn.innerHTML = PENCIL_ICON;
             for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
                 if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
             }
