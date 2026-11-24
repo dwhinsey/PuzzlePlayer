@@ -241,9 +241,20 @@
     const PAUSE_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
         '<rect x="5.3" y="4" width="3.2" height="16" rx="1.07" fill="currentColor"/>' +
         '<rect x="15.5" y="4" width="3.2" height="16" rx="1.07" fill="currentColor"/></svg>';
-    const PENCIL_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' +
-        '<path d="M3 21l1.5-5.5L16 4l4 4-11.5 11.5L3 21z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/>' +
-        '<line x1="14" y1="6" x2="18" y2="10" stroke="currentColor" stroke-width="2.1"/></svg>';
+    const LINE = 'fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"';
+    const icons = (line, fill) =>
+        '<svg class="ic-line" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' + line + '</svg>' +
+        '<svg class="ic-fill" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">' + fill + '</svg>';
+    const PENCIL_ICONS = icons(
+        '<path d="M3 21l1.5-5.5L16 4l4 4-11.5 11.5L3 21z" ' + LINE + '/><path d="M14 6l4 4" ' + LINE + '/>',
+        '<path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>');
+    const NOTES_ICONS = icons(
+        '<path d="M4.5 4.5h15v9.5l-5.5 5.5H4.5z" ' + LINE + '/><path d="M14 19.5v-5.5h5.5" ' + LINE + '/>',
+        '<path fill="currentColor" d="M5 3.5h14A1.5 1.5 0 0 1 20.5 5v8.5h-5A2 2 0 0 0 13.5 15.5v5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5z"/>' +
+        '<path fill="currentColor" d="M15.3 20.2v-3.4c0-.7.5-1.2 1.2-1.2h3.4z"/>');
+    const ASSIST_ICONS = icons(
+        '<path d="M9 17.5h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V17.5h5.2v-1.7c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" ' + LINE + '/>',
+        '<path fill="currentColor" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>');
 
     const BACKSPACE_ICON = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">' +
         '<path d="M8 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-7-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>' +
@@ -685,8 +696,18 @@
             // semibold text beside them: slim rounded bars, a firmer outline.
             const pauseBtn = timerWrap && timerWrap.querySelector('.timer-pause-btn');
             if (pauseBtn) pauseBtn.innerHTML = PAUSE_ICON;
-            const pencilBtn = this.topbarEl.querySelector('.pencil-btn');
-            if (pencilBtn) pencilBtn.innerHTML = PENCIL_ICON;
+            // Pencil, Notes and Assist as icons: outline in light mode,
+            // filled in dark mode (both are in the button; CSS shows one).
+            const toolIcon = (btn, icons, label) => {
+                if (!btn) return;
+                btn.innerHTML = icons;
+                btn.classList.add('tool-icon');
+                btn.setAttribute('aria-label', label);
+                btn.title = label;
+            };
+            toolIcon(this.topbarEl.querySelector('.pencil-btn'), PENCIL_ICONS, 'Pencil');
+            toolIcon(notesBtn, NOTES_ICONS, 'Notes');
+            toolIcon(this.helpBtn, ASSIST_ICONS, 'Assist');
             for (const b of Array.from(this.helpMenuEl.querySelectorAll('.solver-btn'))) {
                 if (/^(Clear Grid|Reset Puzzle)$/.test(b.textContent.trim())) b.remove();
             }

@@ -1073,9 +1073,9 @@ html[data-theme="dark"] .sheet-radio.on::after {
     background: var(--d-accent);
 }
 
-/* The row above the grid: no boxes. The timer and the tools sit on the
-   page, with thin lines between pencil, Notes and Assist; a pressed-in
-   pencil (or Assist with its menu open) gets a tinted rounded square. */
+/* The row above the grid: no boxes. The timer and the tool icons sit on
+   the page; a pressed-in pencil (or Assist with its menu open) gets a
+   tinted rounded square. */
 html .solver-view .solver-topbar .timer-wrap,
 html .solver-view .solver-topbar .icon-btn {
     border: none;
@@ -1088,39 +1088,31 @@ html .solver-view .solver-topbar .timer-wrap {
 }
 
 html .solver-view .solver-topbar .topbar-right {
-    gap: 0;
+    gap: 6px;
 }
 
-html .solver-view .solver-topbar .topbar-right .notes-btn {
-    position: relative;
-    margin-left: 10px;
-    padding: 0 12px;
+/* Pencil, Notes and Assist are icon buttons, the same square size (their
+   height is set with the pencil's above, per layout). */
+html .solver-view .solver-topbar .tool-icon.notes-btn,
+html .solver-view .solver-topbar .tool-icon.assist-btn {
+    width: auto;
+    aspect-ratio: 1 / 1;
+    padding: 0;
 }
 
-html .solver-view .solver-topbar .help-wrap {
-    margin-left: 10px;
+html .solver-view .solver-topbar .tool-icon svg {
+    width: 1.05em;
+    height: 1.05em;
 }
 
-html .solver-view .solver-topbar .help-wrap .assist-btn {
-    padding: 0 12px;
+/* Outline icons in light mode, filled ones in dark mode. */
+html .solver-view .solver-topbar .tool-icon .ic-fill,
+html[data-theme="dark"] .solver-view .solver-topbar .tool-icon .ic-line {
+    display: none;
 }
 
-html .solver-view .solver-topbar .topbar-right .notes-btn::before,
-html .solver-view .solver-topbar .help-wrap::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 22%;
-    bottom: 22%;
-    width: 1.5px;
-    background: rgba(127, 127, 127, 0.45);
-    pointer-events: none;
-}
-
-/* Half a line further right, so a highlighted Assist sits as far from its
-   line as a highlighted pencil does from the one after it. */
-html .solver-view .solver-topbar .help-wrap::before {
-    left: -5.5px;
+html[data-theme="dark"] .solver-view .solver-topbar .tool-icon .ic-fill {
+    display: block;
 }
 
 html .solver-view .solver-topbar .pencil-btn.active,
@@ -1136,8 +1128,7 @@ html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active {
 }
 
 /* The pencil's and Assist's squares are a little smaller than the buttons
-   (which keep their full size to tap): a tint 3px in from each edge, so
-   both sit the same distance from the dividers. */
+   (which keep their full size to tap): a tint 3px in from each edge. */
 html .solver-view .solver-topbar .pencil-btn,
 html .solver-view .solver-topbar .help-btn {
     position: relative;
