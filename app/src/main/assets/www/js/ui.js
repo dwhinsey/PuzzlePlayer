@@ -172,6 +172,13 @@
                     e.preventDefault();
                     if (input.value.trim()) done(input.value.trim());
                 });
+                // Opens straight away where it will sit with the phone's
+                // keyboard up (centred in the space above it), instead of
+                // opening mid-screen and jumping up when the keyboard opens.
+                if (global.App && App.keyboardTop) {
+                    const insetTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--inset-top')) || 0;
+                    dlg.style.top = Math.round((insetTop + App.keyboardTop()) / 2) + 'px';
+                }
                 entry = open(dlg, () => done(null));
                 setTimeout(() => {
                     input.focus();
