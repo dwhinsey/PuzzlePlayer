@@ -403,11 +403,11 @@ html.colorblind .solver-view .cell.revealed::before {
 /* Grid numbers: 25.5% of a square at every grid size (their offset from the
    corner scales with the square too, so they keep clear of the letter on
    small squares). (Android's WebView used to round anything under 8px up
-   to 8px; MainActivity lifts that floor.) Regular weight, as in the NYT
-   app (the base solver's are bold). */
+   to 8px; MainActivity lifts that floor.) Medium weight: a touch heavier
+   than the letters, so they read easily (the base solver's are bold). */
 .solver-view .cell-number {
     font-size: calc(var(--cell-size, 24px) * 0.255);
-    font-weight: 400;
+    font-weight: 500;
 }
 
 /* The row above the grid: the timer on the left; pencil, Notes and Assist
@@ -1297,11 +1297,13 @@ html:not([data-theme="dark"]) .solver-view .solver-topbar .icon-btn.info-btn {
     font-weight: 600;
 }
 
-/* Grid letters: 66% of a square (the base solver's are 54%), in regular
+/* Grid letters: by grid size (--letter-scale, set in js/solver-app.js):
+   62% of a square on a midi, 64% on a weekday grid, 66% on a Sunday one,
+   whose small squares need the extra (the base solver's are 54%). Regular
    weight, about the size of the AmuseLabs and NYT apps' letters. A rebus
    square still sets its own smaller size (inline), which wins over this. */
 .solver-view .cell-letter {
-    font-size: calc(var(--cell-size, 24px) * 0.66);
+    font-size: calc(var(--cell-size, 24px) * var(--letter-scale, 0.64));
     font-weight: 400;
     /* A line box no taller than the letter (centring is unchanged), so a
        big letter can never make its square, and so the grid, grow. */
