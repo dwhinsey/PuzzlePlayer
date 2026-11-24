@@ -1167,3 +1167,41 @@ html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active::before,
 html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active::before {
     background: var(--d-word);
 }
+
+/* Notes, Assist and Info in the same size and weight as the timer digits,
+   at every size the row takes; the pencil icon a little larger than the
+   digits are tall. */
+html .solver-view .solver-topbar .icon-btn.notes-btn,
+html .solver-view .solver-topbar .icon-btn.assist-btn {
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+html .solver-view .solver-topbar .pencil-btn {
+    font-size: 1.3em;
+}
+
+html .solver-view .solver-topbar .pencil-btn svg {
+    width: 1.05em;
+    height: 1.05em;
+}
+
+html .solver-host.compact-top .solver-topbar .icon-btn.notes-btn,
+html .solver-host.compact-top .solver-topbar .icon-btn.assist-btn,
+html .solver-host.compact-top .solver-topbar .pencil-btn {
+    font-size: 1.15em;
+}
+
+@media (min-width: 701px) {
+    html .solver-view .solver-topbar .icon-btn.notes-btn,
+    html .solver-view .solver-topbar .icon-btn.assist-btn,
+    html .solver-view .solver-topbar .pencil-btn {
+        font-size: 1.7em;
+    }
+
+    html .solver-host.compact-top .solver-topbar .icon-btn.notes-btn,
+    html .solver-host.compact-top .solver-topbar .icon-btn.assist-btn,
+    html .solver-host.compact-top .solver-topbar .pencil-btn {
+        font-size: 1.45em;
+    }
+}
