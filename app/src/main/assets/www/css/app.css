@@ -1117,6 +1117,12 @@ html .solver-view .solver-topbar .help-wrap::before {
     pointer-events: none;
 }
 
+/* Half a line further right, so a highlighted Assist sits as far from its
+   line as a highlighted pencil does from the one after it. */
+html .solver-view .solver-topbar .help-wrap::before {
+    left: -5.5px;
+}
+
 html .solver-view .solver-topbar .pencil-btn.active,
 html .solver-view .solver-topbar .help-btn.active {
     background: #cfe8ff;
@@ -1129,17 +1135,21 @@ html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active {
     color: #ffffff;
 }
 
-/* The pencil's square is a little smaller than the button (which keeps its
-   full size to tap): a tint 3px in from each edge, behind the icon. */
-html .solver-view .solver-topbar .pencil-btn {
+/* The pencil's and Assist's squares are a little smaller than the buttons
+   (which keep their full size to tap): a tint 3px in from each edge, so
+   both sit the same distance from the dividers. */
+html .solver-view .solver-topbar .pencil-btn,
+html .solver-view .solver-topbar .help-btn {
     position: relative;
 }
 
-html .solver-view .solver-topbar .pencil-btn.active {
+html .solver-view .solver-topbar .pencil-btn.active,
+html .solver-view .solver-topbar .help-btn.active {
     background: transparent;
 }
 
-html .solver-view .solver-topbar .pencil-btn.active::before {
+html .solver-view .solver-topbar .pencil-btn.active::before,
+html .solver-view .solver-topbar .help-btn.active::before {
     content: '';
     position: absolute;
     inset: 3px;
@@ -1148,10 +1158,12 @@ html .solver-view .solver-topbar .pencil-btn.active::before {
     background: #cfe8ff;
 }
 
-html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active {
+html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active,
+html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active {
     background: transparent;
 }
 
-html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active::before {
+html[data-theme="dark"] .solver-view .solver-topbar .pencil-btn.active::before,
+html[data-theme="dark"] .solver-view .solver-topbar .help-btn.active::before {
     background: var(--d-word);
 }
